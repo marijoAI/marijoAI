@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build neural networks without coding">
+    <title>MarijoAI - No-Code Neural Networks</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/homepage.css">
+    <link rel="stylesheet" href="styles/clean-data.css">
+    <link rel="stylesheet" href="styles/create.css">
+    <link rel="stylesheet" href="styles/train.css">
+    <link rel="stylesheet" href="styles/predict.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">🧠</span>
+                    <span class="logo-text">MarijoAI</span>
+                </a>
+                
+                <div class="nav-links">
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="clean-data.html" class="nav-link">Clean Data</a>
+                    <a href="create.html" class="nav-link">Create</a>
+                    <a href="train.html" class="nav-link">Train</a>
+                    <a href="predict.html" class="nav-link">Predict</a>
+                    <a href="exercises.html" class="nav-link">Exercises</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <!-- Home Page -->
+        <div id="homepage" class="page" style="margin-top: 4em;">
+            <div class="homepage">
+                <div class="container">
+                    <div class="hero-section">
+                        <h1 class="hero-title">
+                            Build Neural Networks
+                            <span class="gradient-text"> Without Coding</span>
+                        </h1>
+                        <p class="hero-subtitle">
+                            Create, train, and deploy powerful neural networks using our intuitive visual interface. 
+                            No programming knowledge required!
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="create.html" class="btn btn-primary">Start Building</a>
+                            <a href="clean-data.html" class="btn btn-secondary">Clean Your Data</a>
+                        </div>
+                    </div>
+
+                    <div class="features-section">
+                        <h2 class="section-title">How It Works</h2>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <div class="feature-icon">🧹</div>
+                                <h3>Clean Data</h3>
+                                <p>
+                                    Upload your dataset and let our AI-powered tools clean and preprocess your data. 
+                                    Handle missing values, outliers, and data formatting automatically.
+                                </p>
+                                <a href="clean-data.html" class="feature-link">Try Clean Data →</a>
+                            </div>
+
+                            <div class="feature-card">
+                                <div class="feature-icon">🏗️</div>
+                                <h3>Create Model</h3>
+                                <p>
+                                    Design your neural network architecture with our visual builder. 
+                                    Choose input layers, hidden layers with various activation functions, and output layers.
+                                </p>
+                                <a href="create.html" class="feature-link">Build Model →</a>
+                            </div>
+
+                            <div class="feature-card">
+                                <div class="feature-icon">🚀</div>
+                                <h3>Train Model</h3>
+                                <p>
+                                    Train your neural network with your cleaned data. 
+                                    Monitor training progress, implement early stopping, and download your trained model.
+                                </p>
+                                <a href="train.html" class="feature-link">Train Model →</a>
+                            </div>
+
+                            <div class="feature-card">
+                                <div class="feature-icon">🔮</div>
+                                <h3>Make Predictions</h3>
+                                <p>
+                                    Use your trained model to make predictions on new data. 
+                                    Upload test data and get instant predictions with confidence scores.
+                                </p>
+                                <a href="predict.html" class="feature-link">Predict Now →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="benefits-section">
+                        <h2 class="section-title">Why Choose MarijoAI?</h2>
+                        <div class="benefits-grid">
+                            <div class="benefit-item">
+                                <h4>🎯 No Coding Required</h4>
+                                <p>Build complex neural networks through an intuitive visual interface</p>
+                            </div>
+                            <div class="benefit-item">
+                                <h4>⚡ Fast & Efficient</h4>
+                                <p>Leverage browser-based neural networks for instant training and predictions</p>
+                            </div>
+                            <div class="benefit-item">
+                                <h4>🔒 Privacy First</h4>
+                                <p>All processing happens in your browser - your data never leaves your device</p>
+                            </div>
+                            <div class="benefit-item">
+                                <h4>📊 Real-time Monitoring</h4>
+                                <p>Watch your model train with live loss and accuracy history</p>
+                            </div>
+                            <div class="benefit-item">
+                                <h4>💾 Export Models</h4>
+                                <p>Download your trained models as JSON for use in other applications</p>
+                            </div>
+                            <div class="benefit-item">
+                                <h4>🎨 Designed for Students</h4>
+                                <p>Exercises to learn about Neural Networks are provided with this software</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cta-section">
+                        <h2>Ready to Build Your First Neural Network?</h2>
+                        <p>Start with cleaning your data or jump straight into model creation</p>
+                        <div class="cta-buttons">
+                            <a href="clean-data.html" class="btn btn-success">Clean My Data</a>
+                            <a href="create.html" class="btn btn-primary">Create Model</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="js/neural-network.js"></script>
+    <script src="js/clean-data.js"></script>
+    <script src="js/create.js"></script>
+    <script src="js/train.js"></script>
+    <script src="js/predict.js"></script>
+</body>
+</html>

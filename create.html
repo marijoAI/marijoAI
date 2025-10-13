@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create neural network models with our visual builder">
+    <title>Create Neural Network - MarijoAI</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/create.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">🧠</span>
+                    <span class="logo-text">MarijoAI</span>
+                </a>
+                
+                <div class="nav-links">
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="clean-data.html" class="nav-link">Clean Data</a>
+                    <a href="create.html" class="nav-link active">Create</a>
+                    <a href="train.html" class="nav-link">Train</a>
+                    <a href="predict.html" class="nav-link">Predict</a>
+                    <a href="exercises.html" class="nav-link">Exercises</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="create">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Create Neural Network</h1>
+                    <p>Design your custom neural network architecture with our visual builder</p>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h2>Model Architecture</h2>
+                        
+                        <!-- Input Layer -->
+                        <div class="layer-config">
+                            <h3>Input Layer</h3>
+                            <div class="form-group">
+                                <label for="input-units">Number of input features:</label>
+                                <input type="number" id="input-units" value="10" min="1" />
+                            </div>
+                            <div class="form-group">
+                                <label for="input-name">Layer name:</label>
+                                <input type="text" id="input-name" value="input" />
+                            </div>
+                        </div>
+
+                        <!-- Hidden Layers -->
+                        <div class="layer-config">
+                            <div class="layer-header">
+                                <h3>Hidden Layers</h3>
+                                <button class="btn btn-success btn-small" id="add-layer-btn">+ Add Layer</button>
+                            </div>
+                            
+                            <div id="hidden-layers-container">
+                                <div class="hidden-layer" data-layer-id="1">
+                                    <div class="layer-title">
+                                        <span>Hidden Layer 1</span>
+                                        <button class="btn btn-secondary btn-small remove-layer-btn">Remove</button>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="units-1">Units:</label>
+                                        <input type="number" id="units-1" value="64" min="1" />
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="activation-1">Activation function:</label>
+                                        <select id="activation-1">
+                                            <option value="relu">ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="softmax">Softmax</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="elu">ELU</option>
+                                            <option value="selu">SELU</option>
+                                            <option value="swish">Swish</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="name-1">Layer name:</label>
+                                        <input type="text" id="name-1" value="hidden_1" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Output Layer -->
+                        <div class="layer-config">
+                            <h3>Output Layer</h3>
+                            <div class="form-group">
+                                <label for="output-units">Number of outputs:</label>
+                                <input type="number" id="output-units" value="1" min="1" />
+                            </div>
+                            <div class="form-group">
+                                <label for="output-activation">Activation function:</label>
+                                <select id="output-activation">
+                                    <option value="sigmoid">Sigmoid</option>
+                                    <option value="relu">ReLU</option>
+                                    <option value="tanh">Tanh</option>
+                                    <option value="softmax">Softmax</option>
+                                    <option value="linear">Linear</option>
+                                    <option value="elu">ELU</option>
+                                    <option value="selu">SELU</option>
+                                    <option value="swish">Swish</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="output-name">Layer name:</label>
+                                <input type="text" id="output-name" value="output" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Model Preview</h2>
+                        
+                        <div class="model-visualization">
+                            <div class="layer-visual input-layer">
+                                <div class="layer-box">
+                                    <div class="layer-name">Input Layer</div>
+                                    <div class="layer-details" id="input-details">10 features</div>
+                                </div>
+                            </div>
+
+                            <div id="hidden-layers-visual">
+                                <div class="layer-visual hidden-layer-visual">
+                                    <div class="layer-box">
+                                        <div class="layer-name">hidden_1</div>
+                                        <div class="layer-details">64 units • relu</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layer-visual output-layer">
+                                <div class="layer-box">
+                                    <div class="layer-name">Output Layer</div>
+                                    <div class="layer-details" id="output-details">1 outputs • sigmoid</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="model-stats">
+                            <h3>Model Statistics</h3>
+                            <div class="stat-item">
+                                <span>Total Parameters:</span>
+                                <span class="stat-value" id="total-parameters">705</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Hidden Layers:</span>
+                                <span class="stat-value" id="hidden-layers-count">1</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Total Layers:</span>
+                                <span class="stat-value" id="total-layers">3</span>
+                            </div>
+                        </div>
+
+                        <div class="model-actions">
+                            <button class="btn btn-primary" id="download-model-btn">Download Model JSON</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Model Configuration (JSON)</h2>
+                    <div class="json-preview">
+                        <pre id="json-preview"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/neural-network.js"></script>
+    <script src="js/shared.js"></script>
+    <script src="js/create.js"></script>
+</body>
+</html>
+

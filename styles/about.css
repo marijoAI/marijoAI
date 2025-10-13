@@ -1,0 +1,551 @@
+/* About Page Styles */
+
+.about {
+    padding: 2rem 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.about .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.about .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.about .page-header p {
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Section Styles */
+.about .section {
+    background: white;
+    margin-bottom: 2rem;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about .section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.about .section h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    font-weight: 600;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 0.5rem;
+}
+
+.about .section p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #34495e;
+    margin-bottom: 1.5rem;
+}
+
+/* Features Overview */
+.features-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.feature-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    background: #e9ecef;
+    transform: translateY(-3px);
+}
+
+.feature-item .feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.feature-item h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.feature-item p {
+    color: #7f8c8d;
+    line-height: 1.6;
+}
+
+/* Neural Network Diagram */
+.neural-network-diagram {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.neural-network-diagram h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.neural-svg {
+    max-width: 100%;
+    height: auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+.neural-svg .layer-label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: #2c3e50;
+}
+
+.neural-svg .layer-detail {
+    font-size: 12px;
+    fill: #7f8c8d;
+}
+
+.neural-svg .flow-label {
+    font-size: 12px;
+    fill: #666;
+    font-weight: 500;
+}
+
+/* Network Explanation */
+.network-explanation {
+    margin-top: 2rem;
+}
+
+.network-explanation h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.explanation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.explanation-item {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.explanation-item h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.explanation-item p {
+    color: #7f8c8d;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Activation Functions */
+.activation-functions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.activation-function {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.activation-function:hover {
+    background: #e9ecef;
+    transform: translateY(-3px);
+}
+
+.activation-function h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.function-visualization {
+    margin: 1rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.function-svg {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+}
+
+.function-svg .axis-label {
+    font-size: 12px;
+    fill: #666;
+    font-weight: 500;
+}
+
+.activation-function p {
+    margin: 0.8rem 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.activation-function p strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Platform Capabilities */
+.capabilities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.capability-category {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    border-top: 4px solid #3498db;
+}
+
+.capability-category h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.capability-category ul {
+    list-style: none;
+    padding: 0;
+}
+
+.capability-category li {
+    padding: 0.5rem 0;
+    color: #7f8c8d;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.capability-category li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #27ae60;
+    font-weight: bold;
+}
+
+/* Use Cases */
+.use-cases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.use-case {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    border-left: 4px solid #e74c3c;
+}
+
+.use-case h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.use-case p {
+    margin: 0.8rem 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.use-case p strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Getting Started Steps */
+.steps {
+    margin-top: 2rem;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.step:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: #3498db;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 1.5rem;
+    flex-shrink: 0;
+}
+
+.step-content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.step-content p {
+    color: #7f8c8d;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Technical Details */
+.technical-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.tech-item {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    border-top: 4px solid #9b59b6;
+}
+
+.tech-item h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.tech-item p {
+    color: #7f8c8d;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Call to Action */
+.about .cta-section {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    margin-top: 2rem;
+}
+
+.about .cta-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: white;
+    border: none;
+}
+
+.about .cta-section p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.about .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.about .cta-buttons .btn {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.about .cta-buttons .btn-primary {
+    background: white;
+    color: #667eea;
+}
+
+.about .cta-buttons .btn-primary:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.about .cta-buttons .btn-secondary {
+    background: transparent;
+    color: white;
+    border-color: white;
+}
+
+.about .cta-buttons .btn-secondary:hover {
+    background: white;
+    color: #667eea;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .about {
+        padding: 1rem 0;
+    }
+    
+    .about .section {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .about .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .about .page-header p {
+        font-size: 1rem;
+    }
+    
+    .about .section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .features-overview {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .activation-functions {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .capabilities-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .use-cases {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .technical-details {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .explanation-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .step {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .step-number {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .about .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .about .cta-buttons .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .neural-svg {
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .about .section {
+        padding: 1rem;
+    }
+    
+    .about .page-header {
+        padding: 1.5rem 1rem;
+    }
+    
+    .about .cta-section {
+        padding: 2rem 1rem;
+    }
+    
+    .about .cta-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .about .cta-section p {
+        font-size: 1rem;
+    }
+}
+

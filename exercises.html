@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Educational exercises for learning neural networks">
+    <title>Exercises - MarijoAI</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/exercises.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">🧠</span>
+                    <span class="logo-text">MarijoAI</span>
+                </a>
+                
+                <div class="nav-links">
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="clean-data.html" class="nav-link">Clean Data</a>
+                    <a href="create.html" class="nav-link">Create</a>
+                    <a href="train.html" class="nav-link">Train</a>
+                    <a href="predict.html" class="nav-link">Predict</a>
+                    <a href="exercises.html" class="nav-link active">Exercises</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div id="exercises" class="page">
+            <div class="exercises">
+                <div class="container">
+                    <div class="page-header" style="margin-top: 6em;">
+                        <h1>🧪 Neural Network Exercises</h1>
+                        <p>Practice and learn neural network concepts through hands-on exercises designed for high school students</p>
+                    </div>
+
+                    <div class="card">
+                        <h2>Before You Start</h2>
+                        <p><a href="data/wisconsin_breast_cancer_dataset.csv" download>Download the Wisconsin breast cancer dataset</a>, and clean it using the Clean Data page (select 'yes' to the question about the Header row, and keep the other Cleaning Options as default).</p>
+                        <p>Then, split it into a training and a validation sets, keeping "Validation Split" at the default value (this will be available after cleaning).</p>
+                        <p>Download the prepared datasets and use them throughout the exercises below.</p>
+                    </div>
+
+                    <div class="exercises-grid">
+
+                        <!-- Exercise 1 -->
+                        <div class="exercise-card" data-exercise="1">
+                            <div class="exercise-header">
+                                <div class="exercise-number">1</div>
+                                <h3>Building Your First Breast Cancer Classifier</h3>
+                            </div>
+                            <div class="exercise-content">
+                                <p><strong>Objective:</strong> Build a neural network to classify breast cancer as benign or malignant</p>
+                                <div class="exercise-tasks">
+                                    <h4>Tasks:</h4>
+                                    <ol>
+                                        <li>Examine the datasets (30 features + 1 diagnosis column + 1 ID column)</li>
+                                        <li>Create a neural network with the following <strong>exact architecture</strong>:
+                                            <ul style="margin-top: 8px; margin-left: 20px;">
+                                                <li><strong>Input Layer:</strong> 30 neurons (one for each feature)</li>
+                                                <li><strong>Hidden Layer 1:</strong> 16 neurons with ReLU activation</li>
+                                                <li><strong>Hidden Layer 2:</strong> 8 neurons with ReLU activation</li>
+                                                <li><strong>Output Layer:</strong> 1 neuron with Sigmoid activation (for binary classification)</li>
+                                            </ul>
+                                        </li>
+                                        <li>Train the model you created in the Train page, using the default settings, passing the training dataset you downloaded after cleaning as training data, and selecting "Diagnosis" as the target.</li>
+                                    </ol>
+                                </div>
+                                <div class="exercise-questions">
+                                    <h4>Reflection Questions:</h4>
+                                    <ul>
+                                        <li>What is a Neural Network?.</li>
+                                        <li>Why was the Sigmoid activation function used for the output layer?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exercise 2 -->
+                        <div class="exercise-card" data-exercise="2">
+                            <div class="exercise-header">
+                                <div class="exercise-number">2</div>
+                                <h3>Exploring Activation Functions</h3>
+                            </div>
+                            <div class="exercise-content">
+                                <p><strong>Objective:</strong> Compare different activation functions and their effects on breast cancer classification</p>
+                                <div class="exercise-tasks">
+                                    <h4>Tasks:</h4>
+                                    <ol>
+                                        <li>Create 3 identical neural networks with this <strong>architecture</strong>:
+                                            <ul style="margin-top: 8px; margin-left: 20px;">
+                                                <li><strong>Input:</strong> 30 neurons</li>
+                                                <li><strong>Hidden:</strong> 12 neurons (the activation function will vary)</li>
+                                                <li><strong>Output:</strong> 1 neuron with Sigmoid</li>
+                                            </ul>
+                                        </li>
+                                        <li>Model 1: Use <strong>ReLU</strong> for hidden layer</li>
+                                        <li>Model 2: Use <strong>Sigmoid</strong> for hidden layer</li>
+                                        <li>Model 3: Use <strong>Tanh</strong> for hidden layer</li>
+                                        <li>Train all three with the default settings</li>
+                                        <li>Compare their training performance and final accuracy</li>
+                                    </ol>
+                                </div>
+                                <div class="exercise-questions">
+                                    <h4>Reflection Questions:</h4>
+                                    <ul>
+                                        <li>Which activation function performed best?</li>
+                                        <li>From what you see, what are the advantages and disadvantages of each activation function?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exercise 3 -->
+                        <div class="exercise-card" data-exercise="3">
+                            <div class="exercise-header">
+                                <div class="exercise-number">3</div>
+                                <h3>Learning Rate Experiment</h3>
+                            </div>
+                            <div class="exercise-content">
+                                <p><strong>Objective:</strong> Understand how learning rate affects training on breast cancer classification</p>
+                                <div class="exercise-tasks">
+                                    <h4>Tasks:</h4>
+                                    <ol>
+                                        <li>Create a neural network with this <strong>architecture</strong>:
+                                            <ul style="margin-top: 8px; margin-left: 20px;">
+                                                <li><strong>Input:</strong> 30 neurons</li>
+                                                <li><strong>Hidden:</strong> 10 neurons with ReLU</li>
+                                                <li><strong>Output:</strong> 1 neuron with Sigmoid</li>
+                                            </ul>
+                                        </li>
+                                        <li>Train the same model 3 times with different learning rates: 0.01, 0.001, and 0.0001</li>
+                                        <li>Continue experimenting with different learning rates</li>
+                                        <li>Keep the other hyperparameters at default for all experiments</li>
+                                        <li>Record the final training loss and accuracy for each learning rate</li>
+                                    </ol>
+                                </div>
+                                <div class="exercise-questions">
+                                    <h4>Reflection Questions:</h4>
+                                    <ul>
+                                        <li>What happens when the learning rate is too low?</li>
+                                        <li>What happens when the learning rate is too high?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exercise 4 -->
+                        <div class="exercise-card" data-exercise="4">
+                            <div class="exercise-header">
+                                <div class="exercise-number">4</div>
+                                <h3>Overfitting Investigation</h3>
+                            </div>
+                            <div class="exercise-content">
+                                <p><strong>Objective:</strong> Learn to identify and prevent overfitting in breast cancer classification</p>
+                                <div class="exercise-tasks">
+                                    <h4>Tasks:</h4>
+                                    <ol>
+                                        <li>Create a complex neural network with this <strong>architecture</strong>:
+                                            <ul style="margin-top: 8px; margin-left: 20px;">
+                                                <li><strong>Input:</strong> 30 neurons</li>
+                                                <li><strong>Hidden Layer 1:</strong> 64 neurons with ReLU</li>
+                                                <li><strong>Hidden Layer 2:</strong> 32 neurons with ReLU</li>
+                                                <li><strong>Hidden Layer 3:</strong> 16 neurons with ReLU</li>
+                                                <li><strong>Output:</strong> 1 neuron with Sigmoid</li>
+                                            </ul>
+                                        </li>
+                                        <li>Train for 200 epochs with the other hyperparameters at default</li>
+                                        <li>Monitor both training loss AND validation loss</li>
+                                        <li>Enable early stopping with patience=10 and train the Model again</li>
+                                    </ol>
+                                </div>
+                                <div class="exercise-questions">
+                                    <h4>Reflection Questions:</h4>
+                                    <ul>
+                                        <li>What is overfitting?</li>
+                                        <li>How does early stopping help prevent overfitting?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exercise 5 -->
+                        <div class="exercise-card" data-exercise="5">
+                            <div class="exercise-header">
+                                <div class="exercise-number">5</div>
+                                <h3>Data Normalization Impact</h3>
+                            </div>
+                            <div class="exercise-content">
+                                <p><strong>Objective:</strong> Learn why data normalization is important</p>
+                                <div class="exercise-tasks">
+                                    <h4>Tasks:</h4>
+                                    <ol>
+                                        <li>Download the dataset and do the cleaning again, but this time, don't normalize the data.</li>
+                                        <li>Train a model without normalization</li>
+                                        <li>Train an identical model with normalization</li>
+                                        <li>Compare the final accuracy</li>
+                                    </ol>
+                                </div>
+                                <div class="exercise-questions">
+                                    <h4>Reflection Questions:</h4>
+                                    <ul>
+                                        <li>How did normalization improve training?</li>
+                                        <li>When is normalization most important?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exercise 6 -->
+                        <div class="exercise-card" data-exercise="6">
+                            <div class="exercise-header">
+                                <div class="exercise-number">6</div>
+                                <h3>Batch Size Experiment</h3>
+                            </div>
+                            <div class="exercise-content">
+                                <p><strong>Objective:</strong> Understand how batch size affects training</p>
+                                <div class="exercise-tasks">
+                                    <h4>Tasks:</h4>
+                                    <ol>
+                                        <li>Train the same model with batch sizes: 8, 16, 32, 64</li>
+                                        <li>Keep all other parameters identical</li>
+                                        <li>Record the final training loss and accuracy for each batch size</li>
+                                        <li>Analyze the trade-offs between different batch sizes</li>
+                                    </ol>
+                                </div>
+                                <div class="exercise-questions">
+                                    <h4>Reflection Questions:</h4>
+                                    <ul>
+                                        <li>How does batch size affect training?</li>
+                                        <li>What are the advantages of smaller vs larger batch sizes?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exercise 7 -->
+                        <div class="exercise-card" data-exercise="7">
+                            <div class="exercise-header">
+                                <div class="exercise-number">7</div>
+                                <h3>Model Architecture Comparison</h3>
+                            </div>
+                            <div class="exercise-content">
+                                <p><strong>Objective:</strong> Compare shallow vs deep neural network architectures for breast cancer classification</p>
+                                <div class="exercise-tasks">
+                                    <h4>Tasks:</h4>
+                                    <ol>
+                                        <li>Create 3 different architectures (all with 30 inputs and 1 sigmoid output):
+                                            <ul style="margin-top: 8px; margin-left: 20px;">
+                                                <li><strong>Model A (Shallow):</strong> Input(30) → Hidden(24 neurons, ReLU) → Output(1)</li>
+                                                <li><strong>Model B (Medium):</strong> Input(30) → Hidden(16, ReLU) → Hidden(12, ReLU) → Output(1)</li>
+                                                <li><strong>Model C (Deep):</strong> Input(30) → Hidden(12, ReLU) → Hidden(10, ReLU) → Hidden(8, ReLU) → Hidden(6, ReLU) → Output(1)</li>
+                                            </ul>
+                                        </li>
+                                        <li>Train all models with the hyperparameters at default</li>
+                                        <li>Compare final accuracy and loss for each model</li>
+                                        <li>Determine which architecture is best for this problem</li>
+                                    </ol>
+                                </div>
+                                <div class="exercise-questions">
+                                    <h4>Reflection Questions:</h4>
+                                    <ul>
+                                        <li>When is a deeper network better than a wider one?</li>
+                                        <li>What are the trade-offs of deeper networks?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exercise 8 -->
+                        <div class="exercise-card" data-exercise="8">
+                            <div class="exercise-header">
+                                <div class="exercise-number">8</div>
+                                <h3>Real-World Prediction Project</h3>
+                            </div>
+                            <div class="exercise-content">
+                                <p><strong>Objective:</strong> Apply all learned concepts to a complete breast cancer prediction project</p>
+                                <div class="exercise-tasks">
+                                    <h4>Tasks:</h4>
+                                    <ol>
+                                        <li>Design and train multiple neural network architectures</li>
+                                        <li>Experiment with different hyperparameters (learning rate, batch size, epochs)</li>
+                                        <li>Compare all models and select the best one based on performance metrics</li>
+                                        <li>Make predictions on validation data and evaluate performance</li>
+                                        <li>Document your findings and explain which approach worked best</li>
+                                    </ol>
+                                </div>
+                                <div class="exercise-questions">
+                                    <h4>Reflection Questions:</h4>
+                                    <ul>
+                                        <li>What challenges did you face in creating the best Model architecture possible?</li>
+                                        <li>How could this breast cancer prediction model be used in real-world medical applications?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/exercises.js"></script>
+</body>
+</html>

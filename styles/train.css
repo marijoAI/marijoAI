@@ -1,0 +1,96 @@
+.train {
+  padding: 40px 0;
+}
+
+.data-info,
+.model-info {
+  background: rgba(102, 126, 234, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.data-info h3,
+.model-info h3 {
+  color: #667eea;
+  margin-bottom: 10px;
+}
+
+.data-info p,
+.model-info p {
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.progress-container {
+  margin-bottom: 20px;
+}
+
+.progress-text {
+  text-align: center;
+  margin-top: 10px;
+  color: #666;
+  font-weight: 600;
+}
+
+.training-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.metric {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.metric-label {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 5px;
+}
+
+.metric-value {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+}
+
+.final-metrics {
+  margin-bottom: 20px;
+}
+
+.final-metrics h3 {
+  color: white;
+  margin-bottom: 15px;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .training-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .metric {
+    padding: 10px;
+  }
+  
+  .metric-value {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,209 @@
+.predict {
+  padding: 40px 0;
+}
+
+.prediction-info {
+  margin-bottom: 20px;
+}
+
+.prediction-info p {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.requirements {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.requirements h4 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+.requirements ul {
+  list-style: none;
+  padding: 0;
+}
+
+.requirements li {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 5px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.requirements li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.prediction-summary {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.prediction-summary h3 {
+  color: white;
+  margin-bottom: 15px;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Evaluation metrics container and matrix table styles */
+.evaluation-metrics {
+  background: #f8f9ff;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  margin: 15px 0 20px 0;
+}
+
+.evaluation-metrics .summary-stats .stat {
+  background: white;
+}
+
+.confusion-matrix table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.confusion-matrix th,
+.confusion-matrix td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  color: #333;
+}
+
+.confusion-matrix thead th {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+}
+
+.stat-label {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+}
+
+/* Evaluation metrics override: render dark text on white card */
+.evaluation-metrics h3 {
+  color: #333;
+}
+
+.evaluation-metrics .stat-label {
+  color: #555;
+}
+
+.evaluation-metrics .stat-value {
+  color: #333;
+}
+
+.predictions-table {
+  overflow-x: auto;
+  margin: 20px 0;
+}
+
+.predictions-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.predictions-table th {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.predictions-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.predictions-table tr:hover {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.confidence-badge {
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.table-note {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.form-group small {
+  display: block;
+  color: #666;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .summary-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .predictions-table {
+    font-size: 14px;
+  }
+  
+  .predictions-table th,
+  .predictions-table td {
+    padding: 8px;
+  }
+  
+  .stat {
+    padding: 10px;
+  }
+  
+  .stat-value {
+    font-size: 16px;
+  }
+}
