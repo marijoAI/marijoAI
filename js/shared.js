@@ -12,6 +12,7 @@ class SharedUtils {
         document.addEventListener('DOMContentLoaded', () => {
             this.initializeGlobalEventListeners();
             this.setInitialStyles();
+            this.initNoCookiesBanner();
         });
     }
 
@@ -42,6 +43,16 @@ class SharedUtils {
                     if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
                 }
             }
+
+            if (e.target.matches('.banner-dismiss')) {
+                const banner = document.getElementById('no-cookies-banner');
+                if (banner) {
+                    banner.style.display = 'none';
+                }
+                try {
+                    localStorage.setItem('noCookiesBannerDismissed', '1');
+                } catch (err) {}
+            }
         });
     }
 
@@ -50,6 +61,19 @@ class SharedUtils {
         if (mainContent) {
             mainContent.style.paddingTop = '80px';
             mainContent.style.minHeight = 'calc(100vh - 80px)';
+        }
+    }
+
+    initNoCookiesBanner() {
+        try {
+            const dismissed = localStorage.getItem('noCookiesBannerDismissed') === '1';
+            if (dismissed) return;
+        } catch (e) {
+            // localStorage may be unavailable in some contexts; fail open (show banner)
+        }
+        const banner = document.getElementById('no-cookies-banner');
+        if (banner) {
+            banner.style.display = 'block';
         }
     }
 }

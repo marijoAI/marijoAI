@@ -11,7 +11,10 @@
 		'/create': { templateId: 'tmpl-create', init: 'initCreatePage' },
 		'/train': { templateId: 'tmpl-train', init: 'initTrainPage' },
 		'/predict': { templateId: 'tmpl-predict', init: 'initPredictPage' },
-		'/exercises': { templateId: 'tmpl-exercises', init: 'initExercisesPage' }
+		'/exercises': { templateId: 'tmpl-exercises', init: 'initExercisesPage' },
+		'/legal': { templateId: 'tmpl-legal', init: null },
+		'/privacy': { templateId: 'tmpl-privacy', init: null },
+		'/cookies': { templateId: 'tmpl-cookies', init: null }
 	};
 
 	function getPathFromHash() {

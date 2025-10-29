@@ -276,3 +276,50 @@ h2 {
     text-align: center;
   }
 }
+
+/* No-cookies banner */
+.no-cookies-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
+  z-index: 1100;
+}
+
+.no-cookies-banner .banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+}
+
+.no-cookies-banner .banner-text {
+  color: #333;
+}
+
+.no-cookies-banner .banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.no-cookies-banner .banner-link {
+  color: #667eea;
+  text-decoration: underline;
+}
+
+.no-cookies-banner .banner-dismiss {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .no-cookies-banner .banner-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

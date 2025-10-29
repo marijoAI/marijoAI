@@ -156,11 +156,93 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p style="color: rgba(255, 255, 255, 0.9); padding: 2em 0; text-align: center;">© 2025 MarijoAI</p>
+            <div class="footer-links" style="text-align: center; padding-bottom: 2em;">
+                <div style="color: rgba(255, 255, 255, 0.9); padding: 1.2em 0; text-align: center; display: inline-block;">© 2025 MarijoAI</div>
+                <span style="color: rgba(255, 255, 255, 0.6); padding: 0 8px;">•</span>
+                <a href="mailto:contact@marijoai.com" style="color: rgba(255, 255, 255, 0.95); text-decoration: none;">contact@marijoai.com</a>
+                <span style="color: rgba(255, 255, 255, 0.6); padding: 0 8px;">•</span>
+                <a href="#/legal" class="footer-link" style="color: rgba(255, 255, 255, 0.95); text-decoration: none;">Legal Mentions</a>
+                <span style="color: rgba(255, 255, 255, 0.6); padding: 0 8px;">•</span>
+                <a href="#/privacy" class="footer-link" style="color: rgba(255, 255, 255, 0.95); text-decoration: none;">Privacy Policy</a>
+                <span style="color: rgba(255, 255, 255, 0.6); padding: 0 8px;">•</span>
+                <a href="#/cookies" class="footer-link" style="color: rgba(255, 255, 255, 0.95); text-decoration: none;">Cookies Policy</a>
+            </div>
         </div>
     </footer>
 
+    <!-- No-cookies banner (first visit only) -->
+    <div id="no-cookies-banner" class="no-cookies-banner" style="display: none;">
+        <div class="container banner-inner">
+            <span class="banner-text">No cookies are used on this website. All processing happens in your browser.</span>
+            <div class="banner-actions">
+                <a href="#/cookies" class="banner-link">Learn more</a>
+                <button class="btn btn-small banner-dismiss" aria-label="Dismiss notification">Got it</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Page Templates (embedded to enable single-file SPA) -->
+    <!-- Legal Mentions -->
+    <template id="tmpl-legal">
+        <div class="legal">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Legal Mentions</h1>
+                    <p>Information about the website owner and legal responsibilities</p>
+                </div>
+                <div class="card">
+                    <h2>Website</h2>
+                    <p><strong>Name:</strong> MarijoAI</p>
+                    <p><strong>Owner:</strong> Vincent Spinosa</p>
+                    <p><strong>Contact:</strong> <a href="mailto:contact@marijoai.com">contact@marijoai.com</a></p>
+                </div>
+                <div class="card">
+                    <h2>Disclaimer</h2>
+                    <p>This website is provided for educational purposes. While we strive for accuracy, no warranty is provided. Use at your own discretion.</p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Privacy Policy -->
+    <template id="tmpl-privacy">
+        <div class="privacy">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Privacy Policy</h1>
+                    <p>How we handle your data</p>
+                </div>
+                <div class="card">
+                    <h2>Data Processing</h2>
+                    <p>No data is transmitted to our servers. All processing (including data cleaning, model creation, training, and prediction) happens in your browser on your device.</p>
+                </div>
+                <div class="card">
+                    <h2>Personal Data</h2>
+                    <p>We do not collect or store personal data. Files you upload are processed locally and never sent to a remote server by this application.</p>
+                </div>
+                <div class="card">
+                    <h2>Contact</h2>
+                    <p>For any questions, contact us at <a href="mailto:contact@marijoai.com">contact@marijoai.com</a>.</p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Cookies Policy -->
+    <template id="tmpl-cookies">
+        <div class="cookies">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Cookies Policy</h1>
+                    <p>Information about cookies usage</p>
+                </div>
+                <div class="card">
+                    <h2>Cookies Usage</h2>
+                    <p>No cookies are used on this website.</p>
+                </div>
+            </div>
+        </div>
+    </template>
     <!-- About -->
     <template id="tmpl-about">
         <div class="about">
