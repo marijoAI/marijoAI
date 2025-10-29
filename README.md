@@ -1,6 +1,6 @@
 # MarijoAI
 
-A browser-based, no-code tool to build, train, and use simple neural networks entirely on your device. MarijoAI lets you:
+A browser-based, no-code tool to build, train, and use custom neural networks entirely on your device. MarijoAI lets you:
 
 - Clean and prepare tabular data (CSV)
 - Define a neural network architecture
