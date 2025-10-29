@@ -388,8 +388,6 @@ class TrainModelManager {
         // Update UI
         const progressFill = document.getElementById('progress-fill');
         const progressText = document.getElementById('progress-text');
-        const currentLoss = document.getElementById('current-loss');
-        const currentAccuracy = document.getElementById('current-accuracy');
 
         if (progressFill) {
             const progress = (epochData.epoch / this.trainingConfig.epochs) * 100;
@@ -400,13 +398,7 @@ class TrainModelManager {
             progressText.textContent = `Epoch ${epochData.epoch} of ${this.trainingConfig.epochs}`;
         }
 
-        if (currentLoss) {
-            currentLoss.textContent = epochData.loss.toFixed(4);
-        }
-
-        if (currentAccuracy) {
-            currentAccuracy.textContent = (epochData.accuracy * 100).toFixed(2) + '%';
-        }
+        // removed unused current loss/accuracy labels (no matching DOM)
 
         // Add to history table
         this.addHistoryRow(epochData);
@@ -647,3 +639,8 @@ class TrainModelManager {
 document.addEventListener('DOMContentLoaded', () => {
     window.trainModelManager = new TrainModelManager();
 });
+
+// Expose for SPA router
+window.initTrainPage = function() {
+	window.trainModelManager = new TrainModelManager();
+};

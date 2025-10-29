@@ -108,7 +108,6 @@ class CleanDataManager {
         if (validationSplitInput) {
             validationSplitInput.addEventListener('change', (e) => {
                 this.validationSplit = parseFloat(e.target.value) || 0.2;
-                this.updateSplitPreview();
             });
         }
 
@@ -629,27 +628,15 @@ class CleanDataManager {
         }
     }
 
-    updateSplitPreview() {
-        if (!this.cleanedData) return;
-        
-        const trainingRows = document.getElementById('training-rows');
-        const validationRows = document.getElementById('validation-rows');
-        const trainingPercent = document.getElementById('training-percent');
-        const validationPercent = document.getElementById('validation-percent');
-        
-        if (trainingRows && validationRows && trainingPercent && validationPercent) {
-            const trainingCount = Math.floor(this.cleanedData.length * (1 - this.validationSplit));
-            const validationCount = Math.ceil(this.cleanedData.length * this.validationSplit);
-            
-            trainingRows.textContent = trainingCount;
-            validationRows.textContent = validationCount;
-            trainingPercent.textContent = ((1 - this.validationSplit) * 100).toFixed(0);
-            validationPercent.textContent = (this.validationSplit * 100).toFixed(0);
-        }
-    }
+    // removed unused updateSplitPreview (no matching DOM)
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.cleanDataManager = new CleanDataManager();
 });
+
+// Expose for SPA router
+window.initCleanDataPage = function() {
+	window.cleanDataManager = new CleanDataManager();
+};

@@ -367,3 +367,8 @@ class CreateModelManager {
 document.addEventListener('DOMContentLoaded', () => {
     window.createModelManager = new CreateModelManager();
 });
+
+// Expose for SPA router
+window.initCreatePage = function() {
+	window.createModelManager = new CreateModelManager();
+};

@@ -346,20 +346,14 @@ class PredictManager {
 	}
 
 	showEvaluationMetrics(metrics) {
-		const container = document.getElementById('evaluation-metrics');
-		const accEl = document.getElementById('metric-accuracy');
-		const precEl = document.getElementById('metric-precision');
-		const recEl = document.getElementById('metric-recall');
-		const f1El = document.getElementById('metric-f1');
-		const tnEl = document.getElementById('cm-tn');
-		const fpEl = document.getElementById('cm-fp');
-		const fnEl = document.getElementById('cm-fn');
-		const tpEl = document.getElementById('cm-tp');
+        const container = document.getElementById('evaluation-metrics');
+        const accEl = document.getElementById('metric-accuracy');
+        const tnEl = document.getElementById('cm-tn');
+        const fpEl = document.getElementById('cm-fp');
+        const fnEl = document.getElementById('cm-fn');
+        const tpEl = document.getElementById('cm-tp');
 		if (!container) return;
 		if (accEl) accEl.textContent = (metrics.accuracy * 100).toFixed(2) + '%';
-		if (precEl) precEl.textContent = (metrics.precision * 100).toFixed(2) + '%';
-		if (recEl) recEl.textContent = (metrics.recall * 100).toFixed(2) + '%';
-		if (f1El) f1El.textContent = metrics.f1.toFixed(3);
 		if (tnEl) tnEl.textContent = metrics.tn;
 		if (fpEl) fpEl.textContent = metrics.fp;
 		if (fnEl) fnEl.textContent = metrics.fn;
@@ -563,3 +557,8 @@ class PredictManager {
 document.addEventListener('DOMContentLoaded', () => {
     window.predictManager = new PredictManager();
 });
+
+// Expose for SPA router
+window.initPredictPage = function() {
+	window.predictManager = new PredictManager();
+};

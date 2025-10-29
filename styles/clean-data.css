@@ -108,26 +108,7 @@
   margin: 0;
 }
 
-.delimiter-options {
-  margin-top: 15px;
-  padding: 15px;
-  background: rgba(231, 76, 60, 0.1);
-  border-radius: 8px;
-  border: 1px solid rgba(231, 76, 60, 0.3);
-}
-
-.delimiter-options p {
-  margin-bottom: 10px;
-  color: #e74c3c;
-  font-weight: 600;
-}
-
-.delimiter-buttons {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
+/* removed unused delimiter options/buttons */
 
 .btn-small {
   padding: 6px 12px;
@@ -174,24 +155,7 @@
   font-weight: 500;
 }
 
-.split-preview {
-  background: rgba(102, 126, 234, 0.1);
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 15px;
-  border-left: 4px solid #667eea;
-}
-
-.split-preview p {
-  margin-bottom: 5px;
-  color: #555;
-}
-
-.split-preview p:first-child {
-  color: #667eea;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
+/* removed unused split preview */
 
 @media (max-width: 768px) {
   .button-group {
