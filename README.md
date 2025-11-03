@@ -1,6 +1,8 @@
 # MarijoAI
 
-A browser-based, no-code tool to build, train, and use custom neural networks entirely on your device. MarijoAI lets you:
+This repo contains the code of the website "https://marijoai.com".
+
+MarijoAI is a browser-based, no-code tool to build, train, and use custom neural networks entirely on your device. It lets you:
 
 - Clean and prepare tabular data (CSV)
 - Define a neural network architecture
@@ -20,7 +22,7 @@ All processing happens client-side in your browser. Your data never leaves your 
 - 8 exercises to familiarize yourself with Neural Networks
 - A course on Neural Networks in the About page
 
-## Quick Start
+## To use the project without an internet connection
 
 1. Clone or download this repository.
 2. Open `index.html` in a web browser. No server required.
