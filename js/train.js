@@ -14,8 +14,8 @@ class TrainModelManager {
             epochs: 100,
             batchSize: 32,
             learningRate: 0.001,
-            earlyStopping: false,
-            patience: 10
+			earlyStopping: false,
+			patience: 10
         };
         this.trainingProgress = {
             isTraining: false,
@@ -64,42 +64,7 @@ class TrainModelManager {
             });
         }
 
-        // Training configuration
-        const epochsInput = document.getElementById('epochs');
-        if (epochsInput) {
-            epochsInput.addEventListener('change', (e) => {
-                this.trainingConfig.epochs = parseInt(e.target.value) || 100;
-            });
-        }
-
-        const batchSizeInput = document.getElementById('batch-size');
-        if (batchSizeInput) {
-            batchSizeInput.addEventListener('change', (e) => {
-                this.trainingConfig.batchSize = parseInt(e.target.value) || 32;
-            });
-        }
-
-        const learningRateInput = document.getElementById('learning-rate');
-        if (learningRateInput) {
-            learningRateInput.addEventListener('change', (e) => {
-                this.trainingConfig.learningRate = parseFloat(e.target.value) || 0.001;
-            });
-        }
-
-        const earlyStoppingCheckbox = document.getElementById('early-stopping');
-        if (earlyStoppingCheckbox) {
-            earlyStoppingCheckbox.addEventListener('change', (e) => {
-                this.trainingConfig.earlyStopping = e.target.checked;
-                this.togglePatienceInput();
-            });
-        }
-
-        const patienceInput = document.getElementById('patience');
-        if (patienceInput) {
-            patienceInput.addEventListener('change', (e) => {
-                this.trainingConfig.patience = parseInt(e.target.value) || 10;
-            });
-        }
+		// Training configuration removed from UI; defaults are used
 
         // Buttons
         const startTrainingBtn = document.getElementById('start-training-btn');
@@ -124,12 +89,7 @@ class TrainModelManager {
         }
     }
 
-    togglePatienceInput() {
-        const patienceGroup = document.getElementById('patience-group');
-        if (patienceGroup) {
-            patienceGroup.style.display = this.trainingConfig.earlyStopping ? 'block' : 'none';
-        }
-    }
+	// Early stopping controls removed
 
     handleDataFileUpload(event) {
         const file = event.target.files[0];
@@ -357,16 +317,14 @@ class TrainModelManager {
 
         try {
             // Train the model (no validation split - assumes data is already split)
-            const history = await network.train(features, labels, [], [], {
-                epochs: this.trainingConfig.epochs,
-                batchSize: this.trainingConfig.batchSize,
-                learningRate: this.trainingConfig.learningRate,
-                earlyStopping: this.trainingConfig.earlyStopping,
-                patience: this.trainingConfig.patience,
-                onEpochEnd: (epochData) => {
-                    this.updateTrainingProgress(epochData);
-                }
-            });
+			const history = await network.train(features, labels, [], [], {
+				epochs: this.trainingConfig.epochs,
+				batchSize: this.trainingConfig.batchSize,
+				learningRate: this.trainingConfig.learningRate,
+				onEpochEnd: (epochData) => {
+					this.updateTrainingProgress(epochData);
+				}
+			});
 
             this.trainedModel = network;
             this.trainingProgress.isTraining = false;

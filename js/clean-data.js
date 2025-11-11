@@ -16,7 +16,7 @@ class CleanDataManager {
         this.cleaningOptions = {
             removeDuplicates: true,
             handleMissingValues: 'remove',
-            normalizeData: false
+			normalizeData: true
         };
         
         this.init();

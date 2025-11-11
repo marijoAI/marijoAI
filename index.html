@@ -9,12 +9,10 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/homepage.css">
-    <link rel="stylesheet" href="styles/about.css">
     <link rel="stylesheet" href="styles/clean-data.css">
     <link rel="stylesheet" href="styles/create.css">
     <link rel="stylesheet" href="styles/train.css">
     <link rel="stylesheet" href="styles/predict.css">
-    <link rel="stylesheet" href="styles/exercises.css">
 </head>
 <body>
     <!-- Header -->
@@ -31,13 +29,12 @@
                     <span class="hamburger-line"></span>
                 </button>
                 
-                <div class="nav-links">
-                    <a href="#/about" class="nav-link">About</a>
+				<div class="nav-links">
                     <a href="#/clean-data" class="nav-link">Clean Data</a>
                     <a href="#/create" class="nav-link">Create</a>
                     <a href="#/train" class="nav-link">Train</a>
                     <a href="#/predict" class="nav-link">Predict</a>
-                    <a href="#/exercises" class="nav-link">Exercises</a>
+					<a href="#/tutorial" class="nav-link">Tutorial</a>
                 </div>
             </nav>
         </div>
@@ -71,8 +68,8 @@
                                 <div class="feature-icon">🧹</div>
                                 <h3>Clean Data</h3>
                                 <p>
-                                    Upload your dataset and let our AI-powered tools clean and preprocess your data. 
-                                    Handle missing values, outliers, and data formatting automatically.
+                                    Upload your dataset and let our tools clean and preprocess your data. 
+                                    Handle missing values and data formatting automatically.
                                 </p>
                                 <a href="#/clean-data" class="feature-link">Try Clean Data →</a>
                             </div>
@@ -91,8 +88,7 @@
                                 <div class="feature-icon">🚀</div>
                                 <h3>Train Model</h3>
                                 <p>
-                                    Train your neural network with your cleaned data. 
-                                    Monitor training progress, implement early stopping, and download your trained model.
+                                    Train your neural network with your cleaned data, monitor training progress, and download your trained model.
                                 </p>
                                 <a href="#/train" class="feature-link">Train Model →</a>
                             </div>
@@ -134,7 +130,7 @@
                             </div>
                             <div class="benefit-item">
                                 <h4>🎨 Designed for Novices</h4>
-                                <p>Exercises to learn about Neural Networks are provided with this software</p>
+                                <p>A tutorial to get started is provided with this software</p>
                             </div>
                         </div>
                     </div>
@@ -243,373 +239,6 @@
             </div>
         </div>
     </template>
-    <!-- About -->
-    <template id="tmpl-about">
-        <div class="about">
-            <div class="container">
-                <div class="page-header">
-                    <h1>About MarijoAI</h1>
-                    <p>Learn about neural networks, activation functions, and how our platform makes AI accessible to everyone</p>
-                </div>
-
-                <!-- What is a Neural Network Section -->
-                <div class="section">
-                    <h2>What is a Neural Network?</h2>
-                    <p>A neural network is a computational model inspired by the structure and function of biological neural networks in the human brain. It consists of interconnected nodes (neurons) organized in layers that process information to make predictions or decisions.</p>
-                    <div class="neural-network-diagram">
-                        <h3>Neural Network Architecture</h3>
-                        <svg width="800" height="400" viewBox="0 0 800 400" class="neural-svg">
-                            <g class="layer input-layer">
-                                <rect x="50" y="150" width="100" height="100" rx="10" fill="#e3f2fd" stroke="#1976d2" stroke-width="2"/>
-                                <text x="100" y="200" text-anchor="middle" class="layer-label">Input Layer</text>
-                                <text x="100" y="215" text-anchor="middle" class="layer-detail">10 features</text>
-                                <circle cx="80" cy="170" r="8" fill="#1976d2"/>
-                                <circle cx="80" cy="185" r="8" fill="#1976d2"/>
-                                <circle cx="80" cy="200" r="8" fill="#1976d2"/>
-                                <circle cx="80" cy="215" r="8" fill="#1976d2"/>
-                                <circle cx="80" cy="230" r="8" fill="#1976d2"/>
-                                <circle cx="120" cy="170" r="8" fill="#1976d2"/>
-                                <circle cx="120" cy="185" r="8" fill="#1976d2"/>
-                                <circle cx="120" cy="200" r="8" fill="#1976d2"/>
-                                <circle cx="120" cy="215" r="8" fill="#1976d2"/>
-                                <circle cx="120" cy="230" r="8" fill="#1976d2"/>
-                            </g>
-                            <g class="layer hidden-layer">
-                                <rect x="250" y="120" width="100" height="160" rx="10" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
-                                <text x="300" y="200" text-anchor="middle" class="layer-label">Hidden Layer 1</text>
-                                <text x="300" y="215" text-anchor="middle" class="layer-detail">64 units</text>
-                                <text x="300" y="230" text-anchor="middle" class="layer-detail">ReLU</text>
-                                <circle cx="270" cy="140" r="6" fill="#7b1fa2"/>
-                                <circle cx="270" cy="155" r="6" fill="#7b1fa2"/>
-                                <circle cx="270" cy="170" r="6" fill="#7b1fa2"/>
-                                <circle cx="270" cy="185" r="6" fill="#7b1fa2"/>
-                                <circle cx="270" cy="200" r="6" fill="#7b1fa2"/>
-                                <circle cx="270" cy="215" r="6" fill="#7b1fa2"/>
-                                <circle cx="270" cy="230" r="6" fill="#7b1fa2"/>
-                                <circle cx="270" cy="245" r="6" fill="#7b1fa2"/>
-                                <circle cx="270" cy="260" r="6" fill="#7b1fa2"/>
-                                <circle cx="330" cy="140" r="6" fill="#7b1fa2"/>
-                                <circle cx="330" cy="155" r="6" fill="#7b1fa2"/>
-                                <circle cx="330" cy="170" r="6" fill="#7b1fa2"/>
-                                <circle cx="330" cy="185" r="6" fill="#7b1fa2"/>
-                                <circle cx="330" cy="200" r="6" fill="#7b1fa2"/>
-                                <circle cx="330" cy="215" r="6" fill="#7b1fa2"/>
-                                <circle cx="330" cy="230" r="6" fill="#7b1fa2"/>
-                                <circle cx="330" cy="245" r="6" fill="#7b1fa2"/>
-                                <circle cx="330" cy="260" r="6" fill="#7b1fa2"/>
-                            </g>
-                            <g class="layer hidden-layer">
-                                <rect x="450" y="140" width="100" height="120" rx="10" fill="#e8f5e8" stroke="#388e3c" stroke-width="2"/>
-                                <text x="500" y="200" text-anchor="middle" class="layer-label">Hidden Layer 2</text>
-                                <text x="500" y="215" text-anchor="middle" class="layer-detail">32 units</text>
-                                <text x="500" y="230" text-anchor="middle" class="layer-detail">Sigmoid</text>
-                                <circle cx="470" cy="160" r="5" fill="#388e3c"/>
-                                <circle cx="470" cy="175" r="5" fill="#388e3c"/>
-                                <circle cx="470" cy="190" r="5" fill="#388e3c"/>
-                                <circle cx="470" cy="205" r="5" fill="#388e3c"/>
-                                <circle cx="470" cy="220" r="5" fill="#388e3c"/>
-                                <circle cx="470" cy="235" r="5" fill="#388e3c"/>
-                                <circle cx="530" cy="160" r="5" fill="#388e3c"/>
-                                <circle cx="530" cy="175" r="5" fill="#388e3c"/>
-                                <circle cx="530" cy="190" r="5" fill="#388e3c"/>
-                                <circle cx="530" cy="205" r="5" fill="#388e3c"/>
-                                <circle cx="530" cy="220" r="5" fill="#388e3c"/>
-                                <circle cx="530" cy="235" r="5" fill="#388e3c"/>
-                            </g>
-                            <g class="layer output-layer">
-                                <rect x="650" y="180" width="100" height="40" rx="10" fill="#fff3e0" stroke="#f57c00" stroke-width="2"/>
-                                <text x="700" y="200" text-anchor="middle" class="layer-label">Output Layer</text>
-                                <text x="700" y="215" text-anchor="middle" class="layer-detail">1 output</text>
-                                <circle cx="700" cy="200" r="8" fill="#f57c00"/>
-                            </g>
-                            <g class="connections">
-                                <line x1="150" y1="200" x2="250" y2="200" stroke="#666" stroke-width="1" opacity="0.3"/>
-                                <line x1="350" y1="200" x2="450" y2="200" stroke="#666" stroke-width="1" opacity="0.3"/>
-                                <line x1="550" y1="200" x2="650" y2="200" stroke="#666" stroke-width="1" opacity="0.3"/>
-                            </g>
-                            <defs>
-                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                                    <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
-                                </marker>
-                            </defs>
-                            <line x1="100" y1="320" x2="300" y2="320" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
-                            <text x="200" y="315" text-anchor="middle" class="flow-label">Raw Data</text>
-                            <line x1="300" y1="320" x2="500" y2="320" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
-                            <text x="400" y="315" text-anchor="middle" class="flow-label">Feature Extraction</text>
-                            <line x1="500" y1="320" x2="700" y2="320" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
-                            <text x="600" y="315" text-anchor="middle" class="flow-label">Prediction</text>
-                        </svg>
-                    </div>
-                    <div class="network-explanation">
-                        <h3>How Neural Networks Work</h3>
-                        <div class="explanation-grid">
-                            <div class="explanation-item">
-                                <h4>1. Input Layer</h4>
-                                <p>Receives raw data (features) and passes it to the first hidden layer. Each neuron represents one feature from your dataset.</p>
-                            </div>
-                            <div class="explanation-item">
-                                <h4>2. Hidden Layers</h4>
-                                <p>Perform complex transformations on the data. Each neuron applies weights, biases, and activation functions to create new feature representations.</p>
-                            </div>
-                            <div class="explanation-item">
-                                <h4>3. Output Layer</h4>
-                                <p>Produces the final prediction or classification result. The number of neurons depends on your problem type (1 for regression, multiple for classification).</p>
-                            </div>
-                            <div class="explanation-item">
-                                <h4>4. Weights & Biases</h4>
-                                <p>Parameters that the network learns during training. Weights control the influence of each connection, biases shift the activation threshold.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="section" id="training-concepts" style="margin-top: 4em;">
-                        <h2>Key Training Concepts</h2>
-                        <div class="explanation-grid">
-                            <div class="explanation-item">
-                                <h4>Epochs</h4>
-                                <p>One epoch is a full pass through the entire training dataset. More epochs allow the model to learn more patterns, but too many can lead to overfitting (when the model learns the training data too well and performs poorly on new data). Monitor loss and accuracy to choose a reasonable number.</p>
-                            </div>
-                            <div class="explanation-item">
-                                <h4>Batch Size</h4>
-                                <p>The number of samples processed before the model updates its weights. Smaller batches can help generalization but add noise; larger batches are smoother and faster on modern hardware but require more memory.</p>
-                            </div>
-                            <div class="explanation-item">
-                                <h4>Learning Rate</h4>
-                                <p>Controls the step size of each weight update. If it is too high, training can diverge or bounce; if too low, training can be very slow. Start small and adjust based on the loss curve.</p>
-                            </div>
-                            <div class="explanation-item">
-                                <h4>Normalization</h4>
-                                <p>Rescaling input features to a similar range (e.g. 0-1). Normalized inputs make training more stable and faster. Prediction data should be normalized the same way.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="section" id="activation-functions">
-                    <h2>Activation Functions</h2>
-                    <p>Activation functions are mathematical operations applied to the output of each neuron. They introduce non-linearity into the network, allowing it to learn complex patterns. Different activation functions have different characteristics and are suited for different types of problems.</p>
-                    <div class="activation-functions">
-                        <div class="activation-function">
-                            <h3>ReLU (Rectified Linear Unit)</h3>
-                            <div class="function-visualization">
-                                <svg width="200" height="150" viewBox="0 0 200 150" class="function-svg">
-                                    <defs>
-                                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="0.5"/>
-                                        </pattern>
-                                    </defs>
-                                    <rect width="200" height="150" fill="url(#grid)"/>
-                                    <line x1="20" y1="130" x2="180" y2="130" stroke="#333" stroke-width="1"/>
-                                    <line x1="100" y1="20" x2="100" y2="130" stroke="#333" stroke-width="1"/>
-                                    <polyline points="20,130 100,130 180,20" stroke="#1976d2" stroke-width="2" fill="none"/>
-                                    <text x="100" y="145" text-anchor="middle" class="axis-label">x</text>
-                                    <text x="15" y="135" text-anchor="middle" class="axis-label">0</text>
-                                    <text x="185" y="145" text-anchor="middle" class="axis-label">f(x)</text>
-                                </svg>
-                            </div>
-                            <p><strong>Formula:</strong> f(x) = max(0, x)</p>
-                            <p><strong>Use cases:</strong> Most popular choice for hidden layers. Simple, efficient, and helps with vanishing gradient problem.</p>
-                        </div>
-                        <div class="activation-function">
-                            <h3>Sigmoid</h3>
-                            <div class="function-visualization">
-                                <svg width="200" height="150" viewBox="0 0 200 150" class="function-svg">
-                                    <rect width="200" height="150" fill="url(#grid)"/>
-                                    <line x1="20" y1="130" x2="180" y2="130" stroke="#333" stroke-width="1"/>
-                                    <line x1="100" y1="20" x2="100" y2="130" stroke="#333" stroke-width="1"/>
-                                    <path d="M 20,125 Q 60,100 100,75 Q 140,50 180,25" stroke="#7b1fa2" stroke-width="2" fill="none"/>
-                                    <text x="100" y="145" text-anchor="middle" class="axis-label">x</text>
-                                    <text x="15" y="135" text-anchor="middle" class="axis-label">0</text>
-                                    <text x="185" y="145" text-anchor="middle" class="axis-label">f(x)</text>
-                                </svg>
-                            </div>
-                            <p><strong>Formula:</strong> f(x) = 1 / (1 + e^(-x))</p>
-                            <p><strong>Use cases:</strong> Binary classification, output layer when probabilities are needed.</p>
-                        </div>
-                        <div class="activation-function">
-                            <h3>Tanh (Hyperbolic Tangent)</h3>
-                            <div class="function-visualization">
-                                <svg width="200" height="150" viewBox="0 0 200 150" class="function-svg">
-                                    <rect width="200" height="150" fill="url(#grid)"/>
-                                    <line x1="20" y1="130" x2="180" y2="130" stroke="#333" stroke-width="1"/>
-                                    <line x1="100" y1="20" x2="100" y2="130" stroke="#333" stroke-width="1"/>
-                                    <path d="M 20,125 Q 60,110 100,75 Q 140,40 180,25" stroke="#388e3c" stroke-width="2" fill="none"/>
-                                    <text x="100" y="145" text-anchor="middle" class="axis-label">x</text>
-                                    <text x="15" y="135" text-anchor="middle" class="axis-label">0</text>
-                                    <text x="185" y="145" text-anchor="middle" class="axis-label">f(x)</text>
-                                </svg>
-                            </div>
-                            <p><strong>Formula:</strong> f(x) = tanh(x)</p>
-                            <p><strong>Use cases:</strong> Hidden layers, especially in recurrent networks.</p>
-                        </div>
-                        <div class="activation-function">
-                            <h3>Softmax</h3>
-                            <div class="function-visualization">
-                                <svg width="200" height="150" viewBox="0 0 200 150" class="function-svg">
-                                    <rect width="200" height="150" fill="url(#grid)"/>
-                                    <line x1="20" y1="130" x2="180" y2="130" stroke="#333" stroke-width="1"/>
-                                    <line x1="100" y1="20" x2="100" y2="130" stroke="#333" stroke-width="1"/>
-                                    <rect x="80" y="50" width="40" height="60" fill="#f57c00" opacity="0.7"/>
-                                    <rect x="60" y="70" width="20" height="20" fill="#f57c00" opacity="0.5"/>
-                                    <rect x="120" y="70" width="20" height="20" fill="#f57c00" opacity="0.5"/>
-                                    <text x="100" y="145" text-anchor="middle" class="axis-label">Input Values</text>
-                                    <text x="15" y="135" text-anchor="middle" class="axis-label">0</text>
-                                    <text x="185" y="145" text-anchor="middle" class="axis-label">Probabilities</text>
-                                </svg>
-                            </div>
-                            <p><strong>Formula:</strong> f(x_i) = e^(x_i) / Σ(e^(x_j))</p>
-                            <p><strong>Use cases:</strong> Multi-class classification output layer. Converts outputs to probabilities that sum to 1.</p>
-                        </div>
-                        <div class="activation-function">
-                            <h3>Linear</h3>
-                            <div class="function-visualization">
-                                <svg width="200" height="150" viewBox="0 0 200 150" class="function-svg">
-                                    <rect width="200" height="150" fill="url(#grid)"/>
-                                    <line x1="20" y1="130" x2="180" y2="20" stroke="#666" stroke-width="2"/>
-                                    <line x1="100" y1="20" x2="100" y2="130" stroke="#333" stroke-width="1"/>
-                                    <text x="100" y="145" text-anchor="middle" class="axis-label">x</text>
-                                    <text x="15" y="135" text-anchor="middle" class="axis-label">0</text>
-                                    <text x="185" y="145" text-anchor="middle" class="axis-label">f(x)</text>
-                                </svg>
-                            </div>
-                            <p><strong>Formula:</strong> f(x) = x</p>
-                            <p><strong>Use cases:</strong> Regression problems, output layer for continuous values. No transformation applied.</p>
-                        </div>
-                        <div class="activation-function">
-                            <h3>Swish</h3>
-                            <div class="function-visualization">
-                                <svg width="200" height="150" viewBox="0 0 200 150" class="function-svg">
-                                    <rect width="200" height="150" fill="url(#grid)"/>
-                                    <line x1="20" y1="130" x2="180" y2="130" stroke="#333" stroke-width="1"/>
-                                    <line x1="100" y1="20" x2="100" y2="130" stroke="#333" stroke-width="1"/>
-                                    <path d="M 20,120 Q 40,100 60,80 Q 80,60 100,50 Q 120,40 140,35 Q 160,30 180,28" stroke="#9c27b0" stroke-width="2" fill="none"/>
-                                    <text x="100" y="145" text-anchor="middle" class="axis-label">x</text>
-                                    <text x="15" y="135" text-anchor="middle" class="axis-label">0</text>
-                                    <text x="185" y="145" text-anchor="middle" class="axis-label">f(x)</text>
-                                </svg>
-                            </div>
-                            <p><strong>Formula:</strong> f(x) = x × sigmoid(x)</p>
-                            <p><strong>Use cases:</strong> Modern alternative to ReLU, smooth and non-monotonic.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="section">
-                    <h2>Platform Capabilities</h2>
-                    <p>MarijoAI provides a comprehensive suite of tools for building and deploying neural networks without any coding knowledge. Here's what you can accomplish with our platform:</p>
-                    <div class="capabilities-grid">
-                        <div class="capability-category">
-                            <h3>Data Processing</h3>
-                            <ul>
-                                <li>Upload CSV files with automatic parsing</li>
-                                <li>Handle missing values with multiple strategies</li>
-                                <li>Remove duplicate entries</li>
-                                <li>Normalize numerical data</li>
-                                <li>Split data into training and validation sets</li>
-                                <li>Export cleaned datasets</li>
-                            </ul>
-                        </div>
-                        <div class="capability-category">
-                            <h3>Model Architecture</h3>
-                            <ul>
-                                <li>Design custom neural network architectures</li>
-                                <li>Add multiple hidden layers</li>
-                                <li>Choose from 8 different activation functions</li>
-                                <li>Configure input and output dimensions</li>
-                            </ul>
-                        </div>
-                        <div class="capability-category">
-                            <h3>Training & Optimization</h3>
-                            <ul>
-                                <li>Configure training parameters (epochs, batch size, learning rate)</li>
-                                <li>Implement early stopping to prevent overfitting</li>
-                                <li>Real-time training progress monitoring</li>
-                                <li>Download trained models</li>
-                            </ul>
-                        </div>
-                        <div class="capability-category">
-                            <h3>Prediction & Deployment</h3>
-                            <ul>
-                                <li>Load trained models for inference</li>
-                                <li>Make predictions on new data</li>
-                                <li>Confidence scoring for predictions</li>
-                                <li>Export prediction results</li>
-                                <li>Model performance analysis</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="section" id="use-cases">
-                    <h2>Common Use Cases</h2>
-                    <p>Neural networks can solve a wide variety of problems across different industries and domains:</p>
-                    <div class="use-cases">
-                        <div class="use-case">
-                            <h3>Classification Problems</h3>
-                            <p><strong>Examples:</strong> Email spam detection, image recognition, medical diagnosis, sentiment analysis</p>
-                            <p><strong>Output:</strong> Categorical predictions (e.g., "spam" vs "not spam")</p>
-                            <p><strong>Activation:</strong> Sigmoid for binary, Softmax for multi-class</p>
-                        </div>
-                        <div class="use-case">
-                            <h3>Regression Problems</h3>
-                            <p><strong>Examples:</strong> House price prediction, stock price forecasting, temperature prediction</p>
-                            <p><strong>Output:</strong> Continuous numerical values</p>
-                            <p><strong>Activation:</strong> Linear for the output layer</p>
-                        </div>
-                        <div class="use-case">
-                            <h3>Pattern Recognition</h3>
-                            <p><strong>Examples:</strong> Fraud detection, anomaly detection, quality control</p>
-                            <p><strong>Output:</strong> Binary or multi-class classifications</p>
-                            <p><strong>Activation:</strong> ReLU or Swish for hidden layers</p>
-                        </div>
-                        <div class="use-case">
-                            <h3>Recommendation Systems</h3>
-                            <p><strong>Examples:</strong> Product recommendations, content suggestions, personalized marketing</p>
-                            <p><strong>Output:</strong> Probability scores or rankings</p>
-                            <p><strong>Activation:</strong> Sigmoid or Softmax for output</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="section" id="getting-started">
-                    <h2>Getting Started</h2>
-                    <p>Ready to build your first neural network? Follow these simple steps:</p>
-                    <div class="steps">
-                        <div class="step">
-                            <div class="step-number">1</div>
-                            <div class="step-content">
-                                <h3>Prepare Your Data</h3>
-                                <p>Collect your dataset in CSV format and upload it to our data cleaning tool. Ensure your data has consistent formatting and includes both features (input) and targets (output).</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">2</div>
-                            <div class="step-content">
-                                <h3>Clean Your Data</h3>
-                                <p>Use our intelligent data cleaning tools to handle missing values, remove duplicates, and normalize your data. Download the cleaned dataset for training.</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">3</div>
-                            <div class="step-content">
-                                <h3>Design Your Model</h3>
-                                <p>Create your neural network architecture using our visual builder. Choose the number of layers, neurons, and activation functions based on your problem type.</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">4</div>
-                            <div class="step-content">
-                                <h3>Train Your Model</h3>
-                                <p>Upload your cleaned data and model configuration to start training. Monitor the process in real-time and adjust parameters as needed.</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">5</div>
-                            <div class="step-content">
-                                <h3>Make Predictions</h3>
-                                <p>Use your trained model to make predictions on new data. Export results and integrate them into your applications or workflows.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
 
     <!-- Clean Data -->
     <template id="tmpl-clean-data">
@@ -617,11 +246,9 @@
             <div class="container">
                 <div class="page-header">
                     <h1>Clean Data</h1>
-                    <p>Upload your dataset and let our AI-powered tools clean and preprocess your data</p>
                 </div>
                 <div class="grid grid-2">
                     <div class="card">
-                        <h2>Upload Data</h2>
                         <div class="form-group">
                             <label>Does your CSV file have a header row (column names in the first row)?</label>
                             <div class="radio-group">
@@ -634,7 +261,6 @@
                                     No
                                 </label>
                             </div>
-                            <small>Select "Yes" if your CSV file has column names in the first row, "No" if it only contains data</small>
                         </div>
                         <div class="form-group">
                             <label for="delimiter-select">Delimiter</label>
@@ -647,7 +273,6 @@
                                 <option value="custom">Custom</option>
                             </select>
                             <input type="text" id="custom-delimiter" placeholder="Enter custom delimiter" style="display: none; margin-top: 8px;" maxlength="5" />
-                            <small>Choose the delimiter used in your CSV file</small>
                         </div>
                         <div class="form-group">
                             <label for="file-upload">Choose CSV File</label>
@@ -665,35 +290,10 @@
                             <p><strong>Columns:</strong> <span id="data-columns"></span></p>
                             <p><strong>Column Names:</strong> <span id="data-column-names"></span></p>
                         </div>
-                    </div>
-                    <div class="card">
-                        <h2>Cleaning Options</h2>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="remove-duplicates" checked />
-                                Remove duplicate rows
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="missing-values">Handle missing values:</label>
-                            <select id="missing-values">
-                                <option value="remove">Remove rows with missing values</option>
-                                <option value="mean">Fill with mean</option>
-                                <option value="median">Fill with median</option>
-                                <option value="mode">Fill with mode</option>
-                                <option value="none">Keep as is</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="normalize-data" checked/>
-                                Normalize numeric data (0-1 scale)
-                            </label>
-                        </div>
-                        <div class="button-group">
-                            <button class="btn btn-primary" id="clean-data-btn">Clean Data</button>
-                            <button class="btn btn-secondary" id="reset-data-btn">Reset</button>
-                        </div>
+						<div class="button-group" style="margin-top: 1em;">
+							<button class="btn btn-primary" id="clean-data-btn">Clean Data</button>
+							<button class="btn btn-secondary" id="reset-data-btn">Reset</button>
+						</div>
                     </div>
                 </div>
                 <div id="data-preview-card" class="card" style="display: none;">
@@ -723,11 +323,7 @@
                                 Split into training and validation datasets
                             </label>
                         </div>
-                        <div class="form-group" id="validation-split-group" style="display: none;">
-                            <label for="validation-split">Validation split ratio:</label>
-                            <input type="number" id="validation-split" value="0.2" min="0.1" max="0.5" step="0.1" />
-                            <small>Percentage of data to use for validation (0.1 = 10%, 0.2 = 20%, etc.)</small>
-                        </div>
+						<p style="margin-top: 0.5em; color: #555;">When splitting, validation ratio is fixed at 0.2 (20%).</p>
                     </div>
                     <button class="btn btn-success" id="download-btn">Download Full Dataset</button>
                 </div>
@@ -741,7 +337,6 @@
             <div class="container">
                 <div class="page-header">
                     <h1>Create Neural Network</h1>
-                    <p>Design your custom neural network architecture with our visual builder</p>
                 </div>
                 <div class="grid grid-2">
                     <div class="card">
@@ -749,12 +344,8 @@
                         <div class="layer-config">
                             <h3>Input Layer</h3>
                             <div class="form-group">
-                                <label for="input-units">Number of input features:</label>
+                                <label for="input-units">Number of input features: (number of columns in your dataset, minus the ID column if present, and the one to predict)</label>
                                 <input type="number" id="input-units" value="10" min="1" />
-                            </div>
-                            <div class="form-group">
-                                <label for="input-name">Layer name:</label>
-                                <input type="text" id="input-name" value="input" />
                             </div>
                         </div>
                         <div class="layer-config">
@@ -785,10 +376,6 @@
                                             <option value="swish">Swish</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="name-1">Layer name:</label>
-                                        <input type="text" id="name-1" value="hidden_1" />
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -797,23 +384,6 @@
                             <div class="form-group">
                                 <label for="output-units">Number of outputs:</label>
                                 <input type="number" id="output-units" value="1" min="1" />
-                            </div>
-                            <div class="form-group">
-                                <label for="output-activation">Activation function:</label>
-                                <select id="output-activation">
-                                    <option value="sigmoid">Sigmoid</option>
-                                    <option value="relu">ReLU</option>
-                                    <option value="tanh">Tanh</option>
-                                    <option value="softmax">Softmax</option>
-                                    <option value="linear">Linear</option>
-                                    <option value="elu">ELU</option>
-                                    <option value="selu">SELU</option>
-                                    <option value="swish">Swish</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="output-name">Layer name:</label>
-                                <input type="text" id="output-name" value="output" />
                             </div>
                         </div>
                     </div>
@@ -829,7 +399,7 @@
                             <div id="hidden-layers-visual">
                                 <div class="layer-visual hidden-layer-visual">
                                     <div class="layer-box">
-                                        <div class="layer-name">hidden_1</div>
+										<div class="layer-name">Hidden Layer 1</div>
                                         <div class="layer-details">64 units • relu</div>
                                     </div>
                                 </div>
@@ -877,13 +447,11 @@
             <div class="container">
                 <div class="page-header">
                     <h1>Train Model</h1>
-                    <p>Upload your cleaned data and model configuration to train your neural network</p>
                 </div>
                 <div class="grid grid-2">
                     <div class="card">
-                        <h2>Upload Files</h2>
                         <div class="form-group">
-                            <label for="data-file">Cleaned Data (CSV)</label>
+                            <label for="data-file">Training Data (CSV file)</label>
                             <p style="margin-bottom: 1em;">If your dataset doesn't have a header, pass it through Clean Data first.</p>
                             <input type="file" id="data-file" accept=".csv" class="file-input" />
                         </div>
@@ -915,31 +483,6 @@
                             <p><strong>Input Units:</strong> <span id="train-input-units"></span></p>
                             <p><strong>Hidden Layers:</strong> <span id="train-hidden-layers"></span></p>
                             <p><strong>Output Units:</strong> <span id="train-output-units"></span></p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h2>Training Configuration</h2>
-                        <div class="form-group">
-                            <label for="epochs">Number of Epochs:</label>
-                            <input type="number" id="epochs" value="100" min="1" max="1000" />
-                        </div>
-                        <div class="form-group">
-                            <label for="batch-size">Batch Size:</label>
-                            <input type="number" id="batch-size" value="32" min="1" max="128" />
-                        </div>
-                        <div class="form-group">
-                            <label for="learning-rate">Learning Rate:</label>
-                            <input type="number" id="learning-rate" value="0.001" min="0.0000001" max="1" step="0.0001" />
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="early-stopping" />
-                                Enable Early Stopping
-                            </label>
-                        </div>
-                        <div class="form-group" id="patience-group" style="display: none;">
-                            <label for="patience">Patience (epochs):</label>
-                            <input type="number" id="patience" value="10" min="1" max="50" />
                         </div>
                         <div class="button-group">
                             <button class="btn btn-primary" id="start-training-btn">Start Training</button>
@@ -986,7 +529,6 @@
             <div class="container">
                 <div class="page-header">
                     <h1>Make Predictions</h1>
-                    <p>Use your trained neural network to make predictions on new data</p>
                 </div>
                 <div class="grid grid-2">
                     <div class="card">
@@ -994,10 +536,9 @@
                         <div class="form-group">
                             <label for="predict-model-file">Trained Model</label>
                             <input type="file" id="predict-model-file" accept=".json" class="file-input" />
-                            <small>Upload the trained model JSON file</small>
                         </div>
                         <div class="form-group">
-                            <label for="test-data">Test Data (CSV)</label>
+                            <label for="test-data">Validation Data (CSV file)</label>
                             <p style="margin-bottom: 1em;">If your dataset doesn't have a header, pass it through Clean Data first.</p>
                             <input type="file" id="test-data" accept=".csv" class="file-input" />
                             <small>Upload test data. If it still contains the target, check the option below.</small>
@@ -1126,259 +667,59 @@
         </div>
     </template>
 
-    <!-- Exercises -->
-    <template id="tmpl-exercises">
+	<!-- Tutorial -->
+	<template id="tmpl-tutorial">
         <div class="exercises">
             <div class="container">
                 <div class="page-header">
-                    <h1>🧪 Neural Network Exercises</h1>
-                    <p>Practice and learn neural network concepts through hands-on exercises designed for novices</p>
-                    <p style="margin-top: 1em;">We highly recommend to read the <a href="#/about">About</a> page before starting the exercises.</p>
+					<h1 style="margin-top: 1em;">🎓 Step-by-Step Tutorial</h1>
+					<p>Follow this guided walkthrough to build a breast cancer classifier!</p>
                 </div>
-                <div class="card">
-                    <h2>Before You Start</h2>
-                    <p><a href="data/wisconsin_breast_cancer_dataset.csv" download>Download the Wisconsin breast cancer dataset</a>, and clean it using the Clean Data page (select 'yes' to the question about the Header row, and keep the other Cleaning Options as default).</p>
-                    <p>Then, split it into a training and a validation sets, keeping "Validation Split" at the default value (this will be available after cleaning).</p>
-                    <p>Download the prepared datasets and use them throughout the exercises below.</p>
-                </div>
-                <div class="exercises-grid">
-                    <div class="exercise-card" data-exercise="1">
-                        <div class="exercise-header">
-                            <div class="exercise-number">1</div>
-                            <h3>Building Your First Breast Cancer Classifier</h3>
-                        </div>
-                        <div class="exercise-content">
-                            <p><strong>Objective:</strong> Build a neural network to classify breast cancer as benign or malignant</p>
-                            <div class="exercise-tasks">
-                                <h4>Tasks:</h4>
-                                <ol>
-                                    <li>Examine the datasets (30 features + 1 diagnosis column + 1 ID column)</li>
-                                    <li>Create a neural network with the following <strong>exact architecture</strong>:
-                                        <ul style="margin-top: 8px; margin-left: 20px;">
-                                            <li><strong>Input Layer:</strong> 30 neurons (one for each feature)</li>
-                                            <li><strong>Hidden Layer 1:</strong> 16 neurons with ReLU activation</li>
-                                            <li><strong>Hidden Layer 2:</strong> 8 neurons with ReLU activation</li>
-                                            <li><strong>Output Layer:</strong> 1 neuron with Sigmoid activation (for binary classification)</li>
-                                        </ul>
-                                    </li>
-                                    <li>Train the model you created in the Train page, using the default settings, passing the training dataset you downloaded after cleaning as training data, and selecting "Diagnosis" as the target.</li>
-                                </ol>
-                            </div>
-                            <div class="exercise-questions">
-                                <h4>Reflection Questions:</h4>
-                                <ul>
-                                    <li>What is a Neural Network?.</li>
-                                    <li>Why was the Sigmoid activation function used for the output layer?</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="exercise-card" data-exercise="2">
-                        <div class="exercise-header">
-                            <div class="exercise-number">2</div>
-                            <h3>Exploring Activation Functions</h3>
-                        </div>
-                        <div class="exercise-content">
-                            <p><strong>Objective:</strong> Compare different activation functions and their effects on breast cancer classification</p>
-                            <div class="exercise-tasks">
-                                <h4>Tasks:</h4>
-                                <ol>
-                                    <li>Create 3 identical neural networks with this <strong>architecture</strong>:
-                                        <ul style="margin-top: 8px; margin-left: 20px;">
-                                            <li><strong>Input:</strong> 30 neurons</li>
-                                            <li><strong>Hidden:</strong> 12 neurons (the activation function will vary)</li>
-                                            <li><strong>Output:</strong> 1 neuron with Sigmoid</li>
-                                        </ul>
-                                    </li>
-                                    <li>Model 1: Use <strong>ReLU</strong> for hidden layer</li>
-                                    <li>Model 2: Use <strong>Sigmoid</strong> for hidden layer</li>
-                                    <li>Model 3: Use <strong>Tanh</strong> for hidden layer</li>
-                                    <li>Train all three with the default settings</li>
-                                    <li>Compare their training performance and final accuracy</li>
-                                </ol>
-                            </div>
-                            <div class="exercise-questions">
-                                <h4>Reflection Questions:</h4>
-                                <ul>
-                                    <li>Which activation function performed best?</li>
-                                    <li>From what you see, what are the advantages and disadvantages of each activation function?</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="exercise-card" data-exercise="3">
-                        <div class="exercise-header">
-                            <div class="exercise-number">3</div>
-                            <h3>Learning Rate Experiment</h3>
-                        </div>
-                        <div class="exercise-content">
-                            <p><strong>Objective:</strong> Understand how learning rate affects training on breast cancer classification</p>
-                            <div class="exercise-tasks">
-                                <h4>Tasks:</h4>
-                                <ol>
-                                    <li>Create a neural network with this <strong>architecture</strong>:
-                                        <ul style="margin-top: 8px; margin-left: 20px;">
-                                            <li><strong>Input:</strong> 30 neurons</li>
-                                            <li><strong>Hidden:</strong> 10 neurons with ReLU</li>
-                                            <li><strong>Output:</strong> 1 neuron with Sigmoid</li>
-                                        </ul>
-                                    </li>
-                                    <li>Train the same model 3 times with different learning rates: 0.01, 0.001, and 0.0001</li>
-                                    <li>Continue experimenting with different learning rates</li>
-                                    <li>Keep the other hyperparameters at default for all experiments</li>
-                                    <li>Record the final training loss and accuracy for each learning rate</li>
-                                </ol>
-                            </div>
-                            <div class="exercise-questions">
-                                <h4>Reflection Questions:</h4>
-                                <ul>
-                                    <li>What happens when the learning rate is too low?</li>
-                                    <li>What happens when the learning rate is too high?</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="exercise-card" data-exercise="4">
-                        <div class="exercise-header">
-                            <div class="exercise-number">4</div>
-                            <h3>Overfitting Investigation</h3>
-                        </div>
-                        <div class="exercise-content">
-                            <p><strong>Objective:</strong> Learn to identify and prevent overfitting in breast cancer classification</p>
-                            <div class="exercise-tasks">
-                                <h4>Tasks:</h4>
-                                <ol>
-                                    <li>Create a complex neural network with this <strong>architecture</strong>:
-                                        <ul style="margin-top: 8px; margin-left: 20px;">
-                                            <li><strong>Input:</strong> 30 neurons</li>
-                                            <li><strong>Hidden Layer 1:</strong> 64 neurons with ReLU</li>
-                                            <li><strong>Hidden Layer 2:</strong> 32 neurons with ReLU</li>
-                                            <li><strong>Hidden Layer 3:</strong> 16 neurons with ReLU</li>
-                                            <li><strong>Output:</strong> 1 neuron with Sigmoid</li>
-                                        </ul>
-                                    </li>
-                                    <li>Train for 200 epochs with the other hyperparameters at default</li>
-                                    <li>Monitor both training loss AND validation loss</li>
-                                    <li>Enable early stopping with patience=10 and train the Model again</li>
-                                </ol>
-                            </div>
-                            <div class="exercise-questions">
-                                <h4>Reflection Questions:</h4>
-                                <ul>
-                                    <li>What is overfitting?</li>
-                                    <li>How does early stopping help prevent overfitting?</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="exercise-card" data-exercise="5">
-                        <div class="exercise-header">
-                            <div class="exercise-number">5</div>
-                            <h3>Data Normalization Impact</h3>
-                        </div>
-                        <div class="exercise-content">
-                            <p><strong>Objective:</strong> Learn why data normalization is important</p>
-                            <div class="exercise-tasks">
-                                <h4>Tasks:</h4>
-                                <ol>
-                                    <li>Download the dataset and do the cleaning again, but this time, don't normalize the data.</li>
-                                    <li>Train a model without normalization</li>
-                                    <li>Train an identical model with normalization</li>
-                                    <li>Compare the final accuracy</li>
-                                </ol>
-                            </div>
-                            <div class="exercise-questions">
-                                <h4>Reflection Questions:</h4>
-                                <ul>
-                                    <li>How did normalization improve training?</li>
-                                    <li>When is normalization most important?</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="exercise-card" data-exercise="6">
-                        <div class="exercise-header">
-                            <div class="exercise-number">6</div>
-                            <h3>Batch Size Experiment</h3>
-                        </div>
-                        <div class="exercise-content">
-                            <p><strong>Objective:</strong> Understand how batch size affects training</p>
-                            <div class="exercise-tasks">
-                                <h4>Tasks:</h4>
-                                <ol>
-                                    <li>Train the same model with batch sizes: 8, 16, 32, 64</li>
-                                    <li>Keep all other parameters identical</li>
-                                    <li>Record the final training loss and accuracy for each batch size</li>
-                                    <li>Analyze the trade-offs between different batch sizes</li>
-                                </ol>
-                            </div>
-                            <div class="exercise-questions">
-                                <h4>Reflection Questions:</h4>
-                                <ul>
-                                    <li>How does batch size affect training?</li>
-                                    <li>What are the advantages of smaller vs larger batch sizes?</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="exercise-card" data-exercise="7">
-                        <div class="exercise-header">
-                            <div class="exercise-number">7</div>
-                            <h3>Model Architecture Comparison</h3>
-                        </div>
-                        <div class="exercise-content">
-                            <p><strong>Objective:</strong> Compare shallow vs deep neural network architectures for breast cancer classification</p>
-                            <div class="exercise-tasks">
-                                <h4>Tasks:</h4>
-                                <ol>
-                                    <li>Create 3 different architectures (all with 30 inputs and 1 sigmoid output):
-                                        <ul style="margin-top: 8px; margin-left: 20px;">
-                                            <li><strong>Model A (Shallow):</strong> Input(30) → Hidden(24 neurons, ReLU) → Output(1)</li>
-                                            <li><strong>Model B (Medium):</strong> Input(30) → Hidden(16, ReLU) → Hidden(12, ReLU) → Output(1)</li>
-                                            <li><strong>Model C (Deep):</strong> Input(30) → Hidden(12, ReLU) → Hidden(10, ReLU) → Hidden(8, ReLU) → Hidden(6, ReLU) → Output(1)</li>
-                                        </ul>
-                                    </li>
-                                    <li>Train all models with the hyperparameters at default</li>
-                                    <li>Compare final accuracy and loss for each model</li>
-                                    <li>Determine which architecture is best for this problem</li>
-                                </ol>
-                            </div>
-                            <div class="exercise-questions">
-                                <h4>Reflection Questions:</h4>
-                                <ul>
-                                    <li>When is a deeper network better than a wider one?</li>
-                                    <li>What are the trade-offs of deeper networks?</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="exercise-card" data-exercise="8">
-                        <div class="exercise-header">
-                            <div class="exercise-number">8</div>
-                            <h3>Real-World Prediction Project</h3>
-                        </div>
-                        <div class="exercise-content">
-                            <p><strong>Objective:</strong> Apply all learned concepts to a complete breast cancer prediction project</p>
-                            <div class="exercise-tasks">
-                                <h4>Tasks:</h4>
-                                <ol>
-                                    <li>Design and train multiple neural network architectures</li>
-                                    <li>Experiment with different hyperparameters (learning rate, batch size, epochs)</li>
-                                    <li>Compare all models and select the best one based on performance metrics</li>
-                                    <li>Make predictions on validation data and evaluate performance</li>
-                                    <li>Document your findings and explain which approach worked best</li>
-                                </ol>
-                            </div>
-                            <div class="exercise-questions">
-                                <h4>Reflection Questions:</h4>
-                                <ul>
-                                    <li>What challenges did you face in creating the best Model architecture possible?</li>
-                                    <li>How could this breast cancer prediction model be used in real-world medical applications?</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+				<div class="card">
+					<h2>1) Get the Data</h2>
+					<p><a href="data/wisconsin_breast_cancer_dataset.csv" download>Download the Wisconsin breast cancer dataset</a>.</p>
+				</div>
+				<div class="card">
+					<h2>2) Clean the Data</h2>
+					<ol>
+						<li>Open <a href="#/clean-data" target="_blank">Clean Data</a> in a new tab.</li>
+						<li>Select “Yes” for header row, leave the delimiter as Auto, and upload the downloaded dataset.</li>
+						<li>Click “Clean Data”.</li>
+						<li>Choose “Split into training and validation datasets” and click download.</li>
+					</ol>
+				</div>
+				<div class="card">
+					<h2>3) Create the Model</h2>
+					<ol>
+						<li>Open <a href="#/create" target="_blank">Create</a> in a new tab.</li>
+						<li>Set input features to 30.</li>
+						<li>Leave the hidden layers and output layer as is.</li>
+						<li>Download the model JSON.</li>
+					</ol>
+				</div>
+				<div class="card">
+					<h2>4) Train</h2>
+					<ol>
+						<li>Open <a href="#/train" target="_blank">Train</a> in a new tab.</li>
+						<li>Upload the training CSV and the model JSON.</li>
+						<li>Select the “Diagnosis” column as target. Check “Dataset has an ID column”.</li>
+						<li>Start training.</li>
+                        <li>Donwload the trained model.</li>
+					</ol>
+				</div>
+				<div class="card">
+					<h2>5) Evaluate / Predict</h2>
+					<ol>
+						<li>Open <a href="#/predict" target="_blank">Predict</a> in a new tab.</li>
+						<li>Upload the trained model, and the validation CSV you downloaded in step 2.</li>
+                        <li>Check "Test data still contains the target column (exclude it)".</li>
+                        <li>Select the "Diagnosis" column as target.</li>
+                        <li>Check "Test data has an ID column (exclude from features)".</li>
+						<li>Click "Make Predictions".</li>
+						<li>Download the predictions.</li>
+					</ol>
+					<p style="margin-top: 0.5em;">That’s it! You built a breast cancer classifier end-to-end.</p>
+				</div>
             </div>
         </div>
     </template>
@@ -1391,7 +732,6 @@
     <script src="js/create.js"></script>
     <script src="js/train.js"></script>
     <script src="js/predict.js"></script>
-    <script src="js/exercises.js"></script>
     <script src="js/router.js"></script>
 </body>
 </html>

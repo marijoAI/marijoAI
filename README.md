@@ -14,13 +14,14 @@ All processing happens client-side in your browser. Your data never leaves your 
 ## Features
 
 - Clean data workflow with CSV parsing and validation
+- Automatic cleaning: remove duplicate rows, drop rows with missing values, normalize numeric features
+- Optional split into training/validation with fixed validation ratio 0.2
 - Visual, step-by-step pages: Clean Data → Create → Train → Predict
 - Custom neural network implementation with ReLU/Sigmoid/Tanh/Softmax (and more) and Adam optimizer
-- Early stopping and live training history (loss/accuracy)
+- Live training history (loss/accuracy)
 - Download trained model as JSON; reload later to predict
 - For predictions (after training), accuracy evaluation when ground truth is available
-- 8 exercises to familiarize yourself with Neural Networks
-- A course on Neural Networks in the About page
+- Step-by-step tutorial using the included Wisconsin Breast Cancer dataset
 
 ## To use the project without an internet connection
 

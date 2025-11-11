@@ -6,12 +6,11 @@
 
 	const routes = {
 		'/': { templateId: null, init: null },
-		'/about': { templateId: 'tmpl-about', init: null },
 		'/clean-data': { templateId: 'tmpl-clean-data', init: 'initCleanDataPage' },
 		'/create': { templateId: 'tmpl-create', init: 'initCreatePage' },
 		'/train': { templateId: 'tmpl-train', init: 'initTrainPage' },
 		'/predict': { templateId: 'tmpl-predict', init: 'initPredictPage' },
-		'/exercises': { templateId: 'tmpl-exercises', init: 'initExercisesPage' },
+		'/tutorial': { templateId: 'tmpl-tutorial', init: null },
 		'/legal': { templateId: 'tmpl-legal', init: null },
 		'/privacy': { templateId: 'tmpl-privacy', init: null },
 		'/cookies': { templateId: 'tmpl-cookies', init: null }
