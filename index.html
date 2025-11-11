@@ -462,14 +462,14 @@
                             </label>
                         </div>
                         <div class="form-group">
+                            <label for="model-file">Model Configuration (JSON)</label>
+                            <input type="file" id="model-file" accept=".json" class="file-input" />
+                        </div>
+                        <div class="form-group">
                             <label for="target-column">Target column to predict</label>
                             <select id="target-column">
                                 <option value="">-- Upload CSV first --</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="model-file">Model Configuration (JSON)</label>
-                            <input type="file" id="model-file" accept=".json" class="file-input" />
                         </div>
                         <div id="train-error" class="error" style="display: none;"></div>
                         <div id="train-success" class="success" style="display: none;"></div>
@@ -551,7 +551,7 @@
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="predict-has-target-column" />
-                                Data still contains the target column (exclude it)
+                                Data still contains the target column
                             </label>
                         </div>
                         <div class="form-group" id="predict-target-group" style="display: none;">
