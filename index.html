@@ -98,7 +98,7 @@
                                 <h3>Make Predictions</h3>
                                 <p>
                                     Use your trained model to make predictions on new data. 
-                                    Upload test data and get instant predictions with confidence scores.
+                                    Upload Data and get instant predictions with confidence scores.
                                 </p>
                                 <a href="#/predict" class="feature-link">Predict Now →</a>
                             </div>
@@ -538,26 +538,24 @@
                             <input type="file" id="predict-model-file" accept=".json" class="file-input" />
                         </div>
                         <div class="form-group">
-                            <label for="test-data">Validation Data (CSV file)</label>
+                            <label for="test-data">Data (CSV file)</label>
                             <p style="margin-bottom: 1em;">If your dataset doesn't have a header, pass it through Clean Data first.</p>
                             <input type="file" id="test-data" accept=".csv" class="file-input" />
-                            <small>Upload test data. If it still contains the target, check the option below.</small>
                         </div>
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="predict-has-id-column" />
-                                Test data has an ID column (exclude from features)
+                                Data has an ID column
                             </label>
-                            <small>If checked, the column named "id" (or the first column) will be ignored</small>
                         </div>
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="predict-has-target-column" />
-                                Test data still contains the target column (exclude it)
+                                Data still contains the target column (exclude it)
                             </label>
                         </div>
                         <div class="form-group" id="predict-target-group" style="display: none;">
-                            <label for="predict-target-column">Target column in test data</label>
+                            <label for="predict-target-column">Target column in Data</label>
                             <select id="predict-target-column">
                                 <option value="">-- Upload CSV first --</option>
                             </select>
@@ -575,7 +573,7 @@
                             <p><strong>Layers:</strong> <span id="predict-layers"></span></p>
                         </div>
                         <div id="predict-data-info" class="data-info" style="display: none;">
-                            <h3>Test Data Information</h3>
+                            <h3>Data Information</h3>
                             <p><strong>Samples:</strong> <span id="predict-samples"></span></p>
                             <p><strong>Features:</strong> <span id="predict-features"></span></p>
                         </div>
@@ -583,13 +581,13 @@
                     <div class="card">
                         <h2>Prediction Controls</h2>
                         <div class="prediction-info">
-                            <p>Once you've uploaded both the trained model and test data, you can make predictions.</p>
+                            <p>Once you've uploaded both the trained model and Data, you can make predictions.</p>
                             <div class="requirements">
                                 <h4>Requirements:</h4>
                                 <ul>
                                     <li>✓ Trained model file (JSON)</li>
-                                    <li>✓ Test data file (CSV)</li>
-                                    <li>✓ Test data should have same number of features as training data</li>
+                                    <li>✓ Data file (CSV)</li>
+                                    <li>✓ Data should have same number of features as training data</li>
                                 </ul>
                             </div>
                         </div>
@@ -597,23 +595,6 @@
                             <button class="btn btn-primary" id="make-predictions-btn">Make Predictions</button>
                             <button class="btn btn-secondary" id="reset-predictions-btn">Reset</button>
                             <button class="btn btn-success" id="download-predictions-btn">Download Predictions</button>
-                        </div>
-                        <div id="prediction-summary" class="prediction-summary" style="display: none;">
-                            <h3>Prediction Summary</h3>
-                            <div class="summary-stats">
-                                <div class="stat">
-                                    <span class="stat-label">Total Predictions:</span>
-                                    <span class="stat-value" id="total-predictions">0</span>
-                                </div>
-                                <div class="stat">
-                                    <span class="stat-label">High Confidence (>80%):</span>
-                                    <span class="stat-value" id="high-confidence">0</span>
-                                </div>
-                                <div class="stat">
-                                    <span class="stat-label">Average Confidence:</span>
-                                    <span class="stat-value" id="avg-confidence">0.0%</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -702,7 +683,7 @@
 					<ol>
 						<li>Open <a href="#/train" target="_blank">Train</a> in a new tab.</li>
 						<li>Upload the training CSV and the model JSON.</li>
-						<li>Select the “Diagnosis” column as target. Check “Dataset has an ID column”.</li>
+						<li>Check “Dataset has an ID column” and select the “Diagnosis” column as target.</li>
 						<li>Start training.</li>
                         <li>Donwload the trained model.</li>
 					</ol>
@@ -712,9 +693,9 @@
 					<ol>
 						<li>Open <a href="#/predict" target="_blank">Predict</a> in a new tab.</li>
 						<li>Upload the trained model, and the validation CSV you downloaded in step 2.</li>
-                        <li>Check "Test data still contains the target column (exclude it)".</li>
+                        <li>Check "Data still contains the target column (exclude it)".</li>
                         <li>Select the "Diagnosis" column as target.</li>
-                        <li>Check "Test data has an ID column (exclude from features)".</li>
+                        <li>Check "Data has an ID column (exclude from features)".</li>
 						<li>Click "Make Predictions".</li>
 						<li>Download the predictions.</li>
 					</ol>
