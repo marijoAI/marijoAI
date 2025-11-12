@@ -10,6 +10,7 @@ class TrainModelManager {
         this.trainedModel = null;
         this.hasIdColumn = false;
         this.targetColumn = '';
+		this.inputUnits = 30;
         this.trainingConfig = {
             epochs: 100,
             batchSize: 32,
@@ -40,6 +41,20 @@ class TrainModelManager {
             });
         }
 
+		// Input features count
+		const inputUnitsEl = document.getElementById('train-input-units');
+		if (inputUnitsEl) {
+			this.inputUnits = parseInt(inputUnitsEl.value) || 30;
+			inputUnitsEl.addEventListener('input', (e) => {
+				this.inputUnits = parseInt(e.target.value) || 1;
+				// Update model info preview if already built
+				if (this.modelConfig) {
+					this.modelConfig.architecture.inputLayer.units = this.inputUnits;
+					this.updateModelInfo();
+				}
+			});
+		}
+
         // Dataset options
         const hasIdCheckbox = document.getElementById('has-id-column');
         if (hasIdCheckbox) {
@@ -54,13 +69,6 @@ class TrainModelManager {
             targetSelect.addEventListener('change', (e) => {
                 this.targetColumn = e.target.value;
                 this.updateDataInfo();
-            });
-        }
-
-        const modelFileInput = document.getElementById('model-file');
-        if (modelFileInput) {
-            modelFileInput.addEventListener('change', (e) => {
-                this.handleModelFileUpload(e);
             });
         }
 
@@ -165,29 +173,9 @@ class TrainModelManager {
         }
     }
 
-    handleModelFileUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        this.hideMessages();
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const config = JSON.parse(e.target.result);
-                this.modelConfig = config;
-                this.showSuccess('Model configuration loaded successfully');
-                this.updateModelInfo();
-            } catch (err) {
-                this.showError('Error parsing model JSON: ' + err.message);
-            }
-        };
-        reader.readAsText(file);
-    }
-
     prepareData() {
 		if (!this.data || !this.modelConfig) {
-			this.showError('Please upload both data and model files');
+			this.showError('Please upload data and configure input features');
 			return null;
 		}
 
@@ -281,6 +269,29 @@ class TrainModelManager {
     }
 
     async startTraining() {
+		// Build fixed model using provided input units
+		const units = (typeof this.inputUnits === 'number' && this.inputUnits > 0) ? this.inputUnits : null;
+		if (!units) {
+			this.showError('Please enter a valid number of input features.');
+			return;
+		}
+		this.modelConfig = {
+			name: 'Fixed Neural Network',
+			version: '1.0',
+			created: new Date().toISOString(),
+			architecture: {
+				inputLayer: { type: 'dense', units: units },
+				hiddenLayers: [{ type: 'dense', units: 64, activation: 'relu' }],
+				outputLayer: { type: 'dense', units: 1, activation: 'sigmoid' }
+			},
+			trainingConfig: {
+				optimizer: 'adam',
+				loss: 'binaryCrossentropy',
+				metrics: ['accuracy']
+			}
+		};
+		this.updateModelInfo();
+
         const preparedData = this.prepareData();
         if (!preparedData) return;
 
@@ -447,9 +458,7 @@ class TrainModelManager {
         this.hideTrainingComplete();
         
         const dataFileInput = document.getElementById('data-file');
-        const modelFileInput = document.getElementById('model-file');
         if (dataFileInput) dataFileInput.value = '';
-        if (modelFileInput) modelFileInput.value = '';
     }
 
     // UI Helper methods

@@ -2,11 +2,10 @@
 
 This repo contains the code of the website "https://marijoai.com".
 
-MarijoAI is a browser-based, no-code tool to build, train, and use custom neural networks entirely on your device. It lets you:
+MarijoAI is a browser-based, no-code tool to train and use a professional-grade neural network for binary classification, entirely on your device. It lets you:
 
 - Clean and prepare tabular data (CSV)
-- Define a neural network architecture
-- Train a model in the browser with a custom JS neural network
+- Train a fixed binary-classification neural network in the browser
 - Make predictions and export results
 
 All processing happens client-side in your browser. Your data never leaves your device.
@@ -16,8 +15,11 @@ All processing happens client-side in your browser. Your data never leaves your 
 - Clean data workflow with CSV parsing and validation
 - Automatic cleaning: remove duplicate rows, drop rows with missing values, normalize numeric features
 - Optional split into training/validation with fixed validation ratio 0.2
-- Visual, step-by-step pages: Clean Data → Create → Train → Predict
-- Custom neural network implementation with ReLU/Sigmoid/Tanh/Softmax (and more) and Adam optimizer
+- Visual, step-by-step pages: Clean Data → Train → Predict (plus a Tutorial page)
+- Fixed model architecture for simplicity:
+  - Input layer: user-provided feature count
+  - Hidden layer: 64 neurons, ReLU
+  - Output layer: 1 neuron, Sigmoid
 - Live training history (loss/accuracy)
 - Download trained model as JSON; reload later to predict
 - For predictions (after training), accuracy evaluation when ground truth is available

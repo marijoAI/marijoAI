@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/homepage.css">
     <link rel="stylesheet" href="styles/clean-data.css">
-    <link rel="stylesheet" href="styles/create.css">
     <link rel="stylesheet" href="styles/train.css">
     <link rel="stylesheet" href="styles/predict.css">
 </head>
@@ -31,7 +30,6 @@
                 
 				<div class="nav-links">
                     <a href="#/clean-data" class="nav-link">Clean Data</a>
-                    <a href="#/create" class="nav-link">Create</a>
                     <a href="#/train" class="nav-link">Train</a>
                     <a href="#/predict" class="nav-link">Predict</a>
 					<a href="#/tutorial" class="nav-link">Tutorial</a>
@@ -47,17 +45,18 @@
             <div class="homepage" style="padding-top: 0;">
                 <div class="container">
                     <div class="hero-section">
-                        <h1 class="hero-title">
-                            Build Neural Networks
-                            <span class="gradient-text"> Without Coding</span>
+                        <h1 class="hero-title" style="margin: 0.5em;">
+                            Train and Use a 
+                            <span class="gradient-text">Neural Network in No-Code </span>
+                            for binary classification
                         </h1>
                         <p class="hero-subtitle">
-                            Create, train, and deploy powerful neural networks using our intuitive visual interface. 
+                            Train and deploy a powerful neural network using our intuitive visual interface. 
                             No programming knowledge required!
                         </p>
                         <div class="hero-buttons">
-                            <a href="#/create" class="btn btn-primary" style="margin-left: 1em; margin-right: 1em;">Start Building</a>
                             <a href="#/clean-data" class="btn btn-secondary" style="margin-left: 1em; margin-right: 1em;">Clean Your Data</a>
+                            <a href="#/train" class="btn btn-primary" style="margin-left: 1em; margin-right: 1em;">Start Training</a>
                         </div>
                     </div>
 
@@ -75,20 +74,10 @@
                             </div>
 
                             <div class="feature-card">
-                                <div class="feature-icon">🏗️</div>
-                                <h3>Create Model</h3>
-                                <p>
-                                    Design your neural network architecture with our visual builder. 
-                                    Choose input layers, hidden layers with various activation functions, and output layers.
-                                </p>
-                                <a href="#/create" class="feature-link">Build Model →</a>
-                            </div>
-
-                            <div class="feature-card">
                                 <div class="feature-icon">🚀</div>
                                 <h3>Train Model</h3>
                                 <p>
-                                    Train your neural network with your cleaned data, monitor training progress, and download your trained model.
+                                    Train our neural network with your cleaned data, monitor training progress, and download the trained model.
                                 </p>
                                 <a href="#/train" class="feature-link">Train Model →</a>
                             </div>
@@ -97,7 +86,7 @@
                                 <div class="feature-icon">🔮</div>
                                 <h3>Make Predictions</h3>
                                 <p>
-                                    Use your trained model to make predictions on new data. 
+                                    Use the trained model to make predictions on new data. 
                                     Upload Data and get instant predictions with confidence scores.
                                 </p>
                                 <a href="#/predict" class="feature-link">Predict Now →</a>
@@ -110,7 +99,7 @@
                         <div class="benefits-grid">
                             <div class="benefit-item">
                                 <h4>🎯 No Coding Required</h4>
-                                <p>Build complex neural networks through an intuitive visual interface</p>
+                                <p>Use a professional-grade neural network through an intuitive visual interface</p>
                             </div>
                             <div class="benefit-item">
                                 <h4>⚡ Open-Source</h4>
@@ -122,27 +111,20 @@
                             </div>
                             <div class="benefit-item">
                                 <h4>📊 Real-time Monitoring</h4>
-                                <p>Watch your model train with live loss and accuracy history</p>
+                                <p>Watch the model train with live loss and accuracy history</p>
                             </div>
                             <div class="benefit-item">
                                 <h4>💾 Export Models</h4>
-                                <p>Download your trained models as JSON for use in other applications</p>
+                                <p>Download trained models as JSON for use in other applications</p>
                             </div>
                             <div class="benefit-item">
                                 <h4>🎨 Designed for Novices</h4>
-                                <p>A tutorial to get started is provided with this software</p>
+                                <p>A <a href="#/tutorial" target="_blank">tutorial</a> to get started is provided with this software</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="cta-section">
-                        <h2>Ready to Build Your First Neural Network?</h2>
-                        <p>Start with cleaning your data or jump straight into model creation</p>
-                        <div class="cta-buttons">
-                            <a href="#/clean-data" class="btn btn-success">Clean My Data</a>
-                            <a href="#/create" class="btn btn-primary">Create Model</a>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -323,123 +305,13 @@
                                 Split into training and validation datasets
                             </label>
                         </div>
-						<p style="margin-top: 0.5em; color: #555;">When splitting, validation ratio is fixed at 0.2 (20%).</p>
-                    </div>
+					</div>
                     <button class="btn btn-success" id="download-btn">Download Full Dataset</button>
                 </div>
             </div>
         </div>
     </template>
 
-    <!-- Create -->
-    <template id="tmpl-create">
-        <div class="create">
-            <div class="container">
-                <div class="page-header">
-                    <h1>Create Neural Network</h1>
-                </div>
-                <div class="grid grid-2">
-                    <div class="card">
-                        <h2>Model Architecture</h2>
-                        <div class="layer-config">
-                            <h3>Input Layer</h3>
-                            <div class="form-group">
-                                <label for="input-units">Number of input features: (number of columns in your dataset, minus the ID column if present, and the one to predict)</label>
-                                <input type="number" id="input-units" value="10" min="1" />
-                            </div>
-                        </div>
-                        <div class="layer-config">
-                            <div class="layer-header">
-                                <h3>Hidden Layers</h3>
-                                <button class="btn btn-success btn-small" id="add-layer-btn">+ Add Layer</button>
-                            </div>
-                            <div id="hidden-layers-container">
-                                <div class="hidden-layer" data-layer-id="1">
-                                    <div class="layer-title">
-                                        <span>Hidden Layer 1</span>
-                                        <button class="btn btn-secondary btn-small remove-layer-btn">Remove</button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="units-1">Units:</label>
-                                        <input type="number" id="units-1" value="64" min="1" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="activation-1">Activation function:</label>
-                                        <select id="activation-1">
-                                            <option value="relu">ReLU</option>
-                                            <option value="sigmoid">Sigmoid</option>
-                                            <option value="tanh">Tanh</option>
-                                            <option value="softmax">Softmax</option>
-                                            <option value="linear">Linear</option>
-                                            <option value="elu">ELU</option>
-                                            <option value="selu">SELU</option>
-                                            <option value="swish">Swish</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="layer-config">
-                            <h3>Output Layer</h3>
-                            <div class="form-group">
-                                <label for="output-units">Number of outputs:</label>
-                                <input type="number" id="output-units" value="1" min="1" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h2>Model Preview</h2>
-                        <div class="model-visualization">
-                            <div class="layer-visual input-layer">
-                                <div class="layer-box">
-                                    <div class="layer-name">Input Layer</div>
-                                    <div class="layer-details" id="input-details">10 features</div>
-                                </div>
-                            </div>
-                            <div id="hidden-layers-visual">
-                                <div class="layer-visual hidden-layer-visual">
-                                    <div class="layer-box">
-										<div class="layer-name">Hidden Layer 1</div>
-                                        <div class="layer-details">64 units • relu</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="layer-visual output-layer">
-                                <div class="layer-box">
-                                    <div class="layer-name">Output Layer</div>
-                                    <div class="layer-details" id="output-details">1 outputs • sigmoid</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="model-stats">
-                            <h3>Model Statistics</h3>
-                            <div class="stat-item">
-                                <span>Total Parameters:</span>
-                                <span class="stat-value" id="total-parameters">705</span>
-                            </div>
-                            <div class="stat-item">
-                                <span>Hidden Layers:</span>
-                                <span class="stat-value" id="hidden-layers-count">1</span>
-                            </div>
-                            <div class="stat-item">
-                                <span>Total Layers:</span>
-                                <span class="stat-value" id="total-layers">3</span>
-                            </div>
-                        </div>
-                        <div class="model-actions">
-                            <button class="btn btn-primary" id="download-model-btn">Download Model JSON</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <h2>Model Configuration (JSON)</h2>
-                    <div class="json-preview">
-                        <pre id="json-preview"></pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
 
     <!-- Train -->
     <template id="tmpl-train">
@@ -452,18 +324,19 @@
                     <div class="card">
                         <div class="form-group">
                             <label for="data-file">Training Data (CSV file)</label>
-                            <p style="margin-bottom: 1em;">If your dataset doesn't have a header, pass it through Clean Data first.</p>
+                            <p style="margin-bottom: 1em;">Always pass your dataset through Clean Data first.</p>
                             <input type="file" id="data-file" accept=".csv" class="file-input" />
                         </div>
+				<div class="form-group">
+					<label for="train-input-units">Number of input features</label>
+					<p style="margin-bottom: 0.5em;">Enter number of columns in your dataset, minus the target column and the ID column if present.</p>
+					<input type="number" id="train-input-units" value="30" min="1" />
+				</div>
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="has-id-column" />
-                                Dataset has an ID column (exclude from features)
+                                Dataset has an ID column
                             </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="model-file">Model Configuration (JSON)</label>
-                            <input type="file" id="model-file" accept=".json" class="file-input" />
                         </div>
                         <div class="form-group">
                             <label for="target-column">Target column to predict</label>
@@ -539,7 +412,7 @@
                         </div>
                         <div class="form-group">
                             <label for="test-data">Data (CSV file)</label>
-                            <p style="margin-bottom: 1em;">If your dataset doesn't have a header, pass it through Clean Data first.</p>
+                            <p style="margin-bottom: 1em;">Always pass your dataset through Clean Data first.</p>
                             <input type="file" id="test-data" accept=".csv" class="file-input" />
                         </div>
                         <div class="form-group">
@@ -662,7 +535,7 @@
 				</div>
 				<div class="card">
 					<h2>2) Clean the Data</h2>
-					<ol>
+					<ol style="margin: 1em;">
 						<li>Open <a href="#/clean-data" target="_blank">Clean Data</a> in a new tab.</li>
 						<li>Select “Yes” for header row, leave the delimiter as Auto, and upload the downloaded dataset.</li>
 						<li>Click “Clean Data”.</li>
@@ -670,32 +543,23 @@
 					</ol>
 				</div>
 				<div class="card">
-					<h2>3) Create the Model</h2>
-					<ol>
-						<li>Open <a href="#/create" target="_blank">Create</a> in a new tab.</li>
-						<li>Set input features to 30.</li>
-						<li>Leave the hidden layers and output layer as is.</li>
-						<li>Download the model JSON.</li>
-					</ol>
-				</div>
-				<div class="card">
-					<h2>4) Train</h2>
-					<ol>
+					<h2>3) Train</h2>
+					<ol style="margin: 1em;">
 						<li>Open <a href="#/train" target="_blank">Train</a> in a new tab.</li>
-						<li>Upload the training CSV and the model JSON.</li>
+						<li>Upload the training CSV.</li>
+						<li>Enter 30 for the number of input features (32 columns minus ID and target).</li>
 						<li>Check “Dataset has an ID column” and select the “Diagnosis” column as target.</li>
-						<li>Start training.</li>
-                        <li>Donwload the trained model.</li>
+						<li>Start training and then download the trained model.</li>
 					</ol>
 				</div>
 				<div class="card">
-					<h2>5) Evaluate / Predict</h2>
-					<ol>
+					<h2>4) Predict</h2>
+					<ol style="margin: 1em;">
 						<li>Open <a href="#/predict" target="_blank">Predict</a> in a new tab.</li>
-						<li>Upload the trained model, and the validation CSV you downloaded in step 2.</li>
+						<li>Upload the trained model, and the validation data you downloaded in step 2.</li>
+                        <li>Check "Data has an ID column".</li>
                         <li>Check "Data still contains the target column".</li>
                         <li>Select the "Diagnosis" column as target.</li>
-                        <li>Check "Data has an ID column".</li>
 						<li>Click "Make Predictions".</li>
 						<li>Download the predictions.</li>
 					</ol>
@@ -712,7 +576,6 @@
     <script src="js/shared.js"></script>
     <script src="js/neural-network.js"></script>
     <script src="js/clean-data.js"></script>
-    <script src="js/create.js"></script>
     <script src="js/train.js"></script>
     <script src="js/predict.js"></script>
     <script src="js/router.js"></script>
