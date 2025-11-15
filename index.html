@@ -70,7 +70,7 @@
                                     Upload your dataset and let our tools clean and preprocess your data. 
                                     Handle missing values and data formatting automatically.
                                 </p>
-                                <a href="#/clean-data" class="feature-link">Try Clean Data →</a>
+                                <a href="#/clean-data" class="feature-link">Clean Data →</a>
                             </div>
 
                             <div class="feature-card">
@@ -87,9 +87,9 @@
                                 <h3>Make Predictions</h3>
                                 <p>
                                     Use the trained model to make predictions on new data. 
-                                    Upload Data and get instant predictions with confidence scores.
+                                    Upload data and get instant predictions with confidence scores.
                                 </p>
-                                <a href="#/predict" class="feature-link">Predict Now →</a>
+                                <a href="#/predict" class="feature-link">Make Predictions →</a>
                             </div>
                         </div>
                     </div>
@@ -165,18 +165,14 @@
         <div class="legal">
             <div class="container">
                 <div class="page-header">
-                    <h1>Legal Mentions</h1>
-                    <p>Information about the website owner and legal responsibilities</p>
+                    <h1 style="margin-top: 1em;">Legal Mentions</h1>
+                    <p>Information about the website</p>
                 </div>
                 <div class="card">
-                    <h2>Website</h2>
-                    <p><strong>Name:</strong> MarijoAI</p>
+                    <p><strong>Organization Name:</strong> MarijoAI</p>
                     <p><strong>Owner:</strong> Vincent Spinosa</p>
+                    <p><strong>Host:</strong> Github</p>
                     <p><strong>Contact:</strong> <a href="mailto:contact@marijoai.com">contact@marijoai.com</a></p>
-                </div>
-                <div class="card">
-                    <h2>Disclaimer</h2>
-                    <p>This website is provided for educational purposes. While we strive for accuracy, no warranty is provided. Use at your own discretion.</p>
                 </div>
             </div>
         </div>
@@ -187,12 +183,12 @@
         <div class="privacy">
             <div class="container">
                 <div class="page-header">
-                    <h1>Privacy Policy</h1>
+                    <h1 style="margin-top: 1em;">Privacy Policy</h1>
                     <p>How we handle your data</p>
                 </div>
                 <div class="card">
                     <h2>Data Processing</h2>
-                    <p>No data is transmitted to our servers. All processing (including data cleaning, model creation, training, and prediction) happens in your browser on your device.</p>
+                    <p>No data is transmitted to our servers. All processing happens in your browser on your device.</p>
                 </div>
                 <div class="card">
                     <h2>Personal Data</h2>
@@ -211,7 +207,7 @@
         <div class="cookies">
             <div class="container">
                 <div class="page-header">
-                    <h1>Cookies Policy</h1>
+                    <h1 style="margin-top: 1em;">Cookies Policy</h1>
                     <p>Information about cookies usage</p>
                 </div>
                 <div class="card">
@@ -302,7 +298,7 @@
                         <div class="form-group">
                             <label>
                                 <input type="radio" name="downloadOption" value="split" />
-                                Split into training and validation datasets
+                                Split into training and validation datasets (80% training, 20% validation)
                             </label>
                         </div>
 					</div>
@@ -557,11 +553,9 @@
 					<ol style="margin: 1em;">
 						<li>Open <a href="#/predict" target="_blank">Predict</a> in a new tab.</li>
 						<li>Upload the trained model, and the validation data you downloaded in step 2.</li>
-                        <li>Check "Data has an ID column".</li>
-                        <li>Check "Data still contains the target column".</li>
+                        <li>Check "Data has an ID column" and "Data still contains the target column".</li>
                         <li>Select the "Diagnosis" column as target.</li>
 						<li>Click "Make Predictions".</li>
-						<li>Download the predictions.</li>
 					</ol>
 				</div>
 				<div class="card">
