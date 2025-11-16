@@ -146,34 +146,6 @@
   line-height: 1.5;
 }
 
-.cta-section {
-  text-align: center;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 60px 40px;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-}
-
-.cta-section h2 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 15px;
-  color: white;
-}
-
-.cta-section p {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 40px;
-}
-
-.cta-buttons {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
 .btn-success {
   background: linear-gradient(45deg, #4facfe, #00f2fe);
   padding: 15px 30px;
@@ -201,11 +173,4 @@
     grid-template-columns: 1fr;
   }
   
-  .cta-section {
-    padding: 40px 20px;
-  }
-  
-  .cta-section h2 {
-    font-size: 1.8rem;
-  }
 }
