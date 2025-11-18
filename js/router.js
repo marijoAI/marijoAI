@@ -6,7 +6,6 @@
 
 	const routes = {
 		'/': { templateId: null, init: null },
-		'/clean-data': { templateId: 'tmpl-clean-data', init: 'initCleanDataPage' },
 		'/train': { templateId: 'tmpl-train', init: 'initTrainPage' },
 		'/predict': { templateId: 'tmpl-predict', init: 'initPredictPage' },
 		'/tutorial': { templateId: 'tmpl-tutorial', init: null },

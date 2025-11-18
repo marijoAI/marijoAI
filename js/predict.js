@@ -9,9 +9,9 @@ class PredictManager {
         this.testData = null;
         this.predictions = null;
         this.modelInfo = null;
-        this.hasIdColumn = false;
         this.hasTargetColumn = false;
         this.targetColumn = '';
+        this.csvFormat = { hasHeader: true, delimiter: ',' };
         
         this.init();
     }
@@ -29,14 +29,6 @@ class PredictManager {
         if (testDataInput) {
             testDataInput.addEventListener('change', (e) => {
                 this.handleTestDataUpload(e);
-            });
-        }
-
-        const hasIdCheckbox = document.getElementById('predict-has-id-column');
-        if (hasIdCheckbox) {
-            hasIdCheckbox.addEventListener('change', (e) => {
-                this.hasIdColumn = e.target.checked;
-                this.updateDataInfo();
             });
         }
 
@@ -116,21 +108,32 @@ class PredictManager {
 
         this.hideMessages();
 
-        Papa.parse(file, {
-            header: true,
-            complete: (results) => {
-                if (results.errors.length > 0) {
-                    this.showError('Error parsing CSV file: ' + results.errors[0].message);
-                    return;
+        this.detectCsvFormat(file).then((fmt) => {
+            this.csvFormat = fmt;
+            Papa.parse(file, {
+                header: fmt.hasHeader,
+                delimiter: fmt.delimiter,
+                skipEmptyLines: 'greedy',
+                dynamicTyping: false,
+                transformHeader: fmt.hasHeader ? (h) => (h || '').trim() : undefined,
+                transform: (v) => (v || '').toString().trim(),
+                complete: (results) => {
+                    if (results.errors.length > 0) {
+                        this.showError('Error parsing CSV file: ' + results.errors[0].message);
+                        return;
+                    }
+                    const valid = results.data.filter(row => row && typeof row === 'object' && Object.values(row).some(v => v !== '' && v !== null && v !== undefined));
+                    this.testData = valid;
+                    this.showSuccess(`Successfully loaded ${valid.length} rows of test data (delimiter "${fmt.delimiter}", header: ${fmt.hasHeader ? 'yes' : 'no'})`);
+                    this.populateTargetOptions(Object.keys(this.testData[0] || {}));
+                    this.updateDataInfo();
+                },
+                error: (error) => {
+                    this.showError('Error reading file: ' + error.message);
                 }
-                this.testData = results.data;
-                this.showSuccess(`Successfully loaded ${results.data.length} rows of test data`);
-                this.populateTargetOptions(Object.keys(this.testData[0] || {}));
-                this.updateDataInfo();
-            },
-            error: (error) => {
-                this.showError('Error reading file: ' + error.message);
-            }
+            });
+        }).catch((e) => {
+            this.showError('Failed to detect CSV format: ' + (e && e.message ? e.message : e));
         });
     }
 
@@ -173,33 +176,54 @@ class PredictManager {
         try {
             // Prepare test data: optionally exclude ID column, and ensure numeric features
             const cols = Object.keys(this.testData[0] || {});
-            let idKey = null;
-            if (this.hasIdColumn) {
-                if (cols.includes('id')) idKey = 'id'; else if (cols.length > 0) idKey = cols[0];
-            }
+            let idKey = cols.includes('id') ? 'id' : null;
             let targetKey = null;
             if (this.hasTargetColumn) {
                 if (this.targetColumn && cols.includes(this.targetColumn)) targetKey = this.targetColumn;
             }
 
-            // Determine feature keys: numeric columns only
-            const featureCandidates = cols.filter(k => k !== idKey && k !== targetKey);
-            const featureKeys = featureCandidates.filter(k => {
-                for (let i = 0; i < this.testData.length; i++) {
-                    const v = this.testData[i][k];
-                    if (v !== '' && v !== null && v !== undefined) {
-                        const n = parseFloat(v);
-                        if (!isNaN(n)) return true;
+            // Determine feature keys
+            let featureKeys = [];
+            const preprocessing = this.trainedModel && this.trainedModel.config ? this.trainedModel.config.preprocessing : null;
+            if (preprocessing && Array.isArray(preprocessing.featureKeys)) {
+                // Use the exact order from training
+                featureKeys = preprocessing.featureKeys.filter(k => k !== idKey && k !== targetKey);
+            } else {
+                const featureCandidates = cols.filter(k => k !== idKey && k !== targetKey);
+                featureKeys = featureCandidates.filter(k => {
+                    for (let i = 0; i < this.testData.length; i++) {
+                        const v = this.testData[i][k];
+                        if (v !== '' && v !== null && v !== undefined) {
+                            const n = parseFloat(v);
+                            if (!isNaN(n)) return true;
+                        }
                     }
-                }
-                return false;
-            });
+                    return false;
+                });
+            }
 
             // Build feature matrix
             let features = this.testData.map(row => featureKeys.map(k => {
                 const n = parseFloat(row[k]);
                 return isNaN(n) ? 0 : n;
             }));
+
+            // Apply training-time normalization if available
+            if (preprocessing && preprocessing.mins && preprocessing.maxs) {
+                const mins = preprocessing.mins;
+                const maxs = preprocessing.maxs;
+                features = features.map(arr => {
+                    return arr.map((val, idx) => {
+                        const key = featureKeys[idx];
+                        const min = typeof mins[key] === 'number' ? mins[key] : 0;
+                        const max = typeof maxs[key] === 'number' ? maxs[key] : 1;
+                        let scaled = (val - min) / (max - min || 1);
+                        if (scaled < 0) scaled = 0;
+                        if (scaled > 1) scaled = 1;
+                        return scaled;
+                    });
+                });
+            }
 
             // Match model input size by trimming/padding
             const expected = this.trainedModel.config.architecture.inputLayer.units;
@@ -366,6 +390,53 @@ class PredictManager {
 		if (container) container.style.display = 'none';
 	}
 
+    detectCsvFormat(file) {
+        return new Promise((resolve, reject) => {
+            try {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const text = (e.target && e.target.result) ? e.target.result.toString() : '';
+                    const sample = text.split('\n').slice(0, 5).map(l => l.replace(/\r/g, ''));
+                    const candidates = [',', ';', '\t', '|'];
+                    let best = { delimiter: ',', score: -1 };
+                    for (let d = 0; d < candidates.length; d++) {
+                        const delim = candidates[d];
+                        const counts = sample.map(line => line.split(delim).length);
+                        const avg = counts.reduce((a,b)=>a+b,0) / (counts.length || 1);
+                        if (avg > best.score) {
+                            best = { delimiter: delim, score: avg };
+                        }
+                    }
+                    // Header heuristic
+                    let hasHeader = true;
+                    if (sample.length >= 2) {
+                        const first = sample[0].split(best.delimiter);
+                        const second = sample[1].split(best.delimiter);
+                        const isNumeric = (arr) => {
+                            let numericCount = 0, total = 0;
+                            for (let i = 0; i < arr.length; i++) {
+                                const v = arr[i].trim();
+                                if (v === '') continue;
+                                total++;
+                                const n = parseFloat(v);
+                                if (!isNaN(n) && isFinite(n)) numericCount++;
+                            }
+                            return total > 0 && numericCount / total > 0.6;
+                        };
+                        const firstNumeric = isNumeric(first);
+                        const secondNumeric = isNumeric(second);
+                        hasHeader = !firstNumeric && secondNumeric;
+                    }
+                    resolve({ delimiter: best.delimiter, hasHeader });
+                };
+                const blob = file.slice(0, 2048);
+                reader.readAsText(blob);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
     getConfidenceColor(confidence) {
         if (confidence > 0.8) return '#27ae60'; // Green
         if (confidence > 0.6) return '#f39c12'; // Orange
@@ -436,10 +507,7 @@ class PredictManager {
         if (dataInfo && samples && features) {
             samples.textContent = this.testData.length;
             const cols = Object.keys(this.testData[0] || {});
-            let idKey = null;
-            if (this.hasIdColumn) {
-                if (cols.includes('id')) idKey = 'id'; else if (cols.length > 0) idKey = cols[0];
-            }
+            let idKey = cols.includes('id') ? 'id' : null;
             let targetKey = null;
             if (this.hasTargetColumn) {
                 if (this.targetColumn && cols.includes(this.targetColumn)) targetKey = this.targetColumn;

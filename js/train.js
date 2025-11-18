@@ -6,11 +6,15 @@
 class TrainModelManager {
     constructor() {
         this.data = null;
+		this.rawRows = null;
+		this.csvFormat = { hasHeader: true, delimiter: ',' };
         this.modelConfig = null;
         this.trainedModel = null;
-        this.hasIdColumn = false;
         this.targetColumn = '';
-		this.inputUnits = 30;
+		this.createValidation = false;
+		this.validationSplit = 0.2;
+		this.validationData = null;
+		this.preprocessing = null;
         this.trainingConfig = {
             epochs: 100,
             batchSize: 32,
@@ -41,28 +45,14 @@ class TrainModelManager {
             });
         }
 
-		// Input features count
-		const inputUnitsEl = document.getElementById('train-input-units');
-		if (inputUnitsEl) {
-			this.inputUnits = parseInt(inputUnitsEl.value) || 30;
-			inputUnitsEl.addEventListener('input', (e) => {
-				this.inputUnits = parseInt(e.target.value) || 1;
-				// Update model info preview if already built
-				if (this.modelConfig) {
-					this.modelConfig.architecture.inputLayer.units = this.inputUnits;
-					this.updateModelInfo();
-				}
+		// Validation generation option
+		const createValEl = document.getElementById('train-create-validation');
+		if (createValEl) {
+			this.createValidation = !!createValEl.checked;
+			createValEl.addEventListener('change', (e) => {
+				this.createValidation = e.target.checked;
 			});
 		}
-
-        // Dataset options
-        const hasIdCheckbox = document.getElementById('has-id-column');
-        if (hasIdCheckbox) {
-            hasIdCheckbox.addEventListener('change', (e) => {
-                this.hasIdColumn = e.target.checked;
-                this.updateDataInfo();
-            });
-        }
 
         const targetSelect = document.getElementById('target-column');
         if (targetSelect) {
@@ -105,43 +95,99 @@ class TrainModelManager {
 
         this.hideMessages();
 
-        Papa.parse(file, {
-            header: true,
-            skipEmptyLines: 'greedy',
-            dynamicTyping: false,
-            complete: (results) => {
-                // Filter out field count errors
-                const criticalErrors = results.errors.filter(err => 
-                    !err.message.includes('Too few fields') && 
-                    !err.message.includes('Too many fields')
-                );
-                
-                if (criticalErrors.length > 0) {
-                    this.showError('Error parsing CSV file: ' + criticalErrors[0].message);
-                    return;
+        this.detectCsvFormat(file).then((fmt) => {
+            this.csvFormat = fmt;
+            Papa.parse(file, {
+                header: fmt.hasHeader,
+                delimiter: fmt.delimiter,
+                skipEmptyLines: 'greedy',
+                dynamicTyping: false,
+                transformHeader: fmt.hasHeader ? (h) => (h || '').trim() : undefined,
+                transform: (v) => (v || '').toString().trim(),
+                complete: (results) => {
+                    // Filter out field count errors
+                    const criticalErrors = results.errors.filter(err => 
+                        !err.message.includes('Too few fields') && 
+                        !err.message.includes('Too many fields')
+                    );
+                    
+                    if (criticalErrors.length > 0) {
+                        this.showError('Error parsing CSV file: ' + criticalErrors[0].message);
+                        return;
+                    }
+                    
+                    // Filter out empty rows
+                    const validData = results.data.filter(row => {
+                        return row && typeof row === 'object' && 
+                               Object.keys(row).length > 0 &&
+                               Object.values(row).some(val => val !== '' && val !== null && val !== undefined);
+                    });
+                    
+                    if (validData.length === 0) {
+                        this.showError('No valid data found in CSV file');
+                        return;
+                    }
+                    
+                    this.data = validData;
+                    this.rawRows = validData;
+                    console.log('Loaded data:', this.data);
+                    console.log('CSV format:', this.csvFormat);
+                    this.populateTargetColumnOptions(Object.keys(this.data[0] || {}));
+                    this.showSuccess(`Successfully loaded ${validData.length} rows of training data (delimiter "${fmt.delimiter}", header: ${fmt.hasHeader ? 'yes' : 'no'})`);
+                    this.updateDataInfo();
+                },
+                error: (error) => {
+                    this.showError('Error reading file: ' + error.message);
                 }
-                
-                // Filter out empty rows
-                const validData = results.data.filter(row => {
-                    return row && typeof row === 'object' && 
-                           Object.keys(row).length > 0 &&
-                           Object.values(row).some(val => val !== '' && val !== null && val !== undefined);
-                });
-                
-                if (validData.length === 0) {
-                    this.showError('No valid data found in CSV file');
-                    return;
-                }
-                
-                this.data = validData;
-                console.log('Loaded data:', this.data);
-                console.log('First row:', this.data[0]);
-                this.populateTargetColumnOptions(Object.keys(this.data[0] || {}));
-                this.showSuccess(`Successfully loaded ${validData.length} rows of training data`);
-                this.updateDataInfo();
-            },
-            error: (error) => {
-                this.showError('Error reading file: ' + error.message);
+            });
+        }).catch((e) => {
+            this.showError('Failed to detect CSV format: ' + (e && e.message ? e.message : e));
+        });
+    }
+
+    detectCsvFormat(file) {
+        return new Promise((resolve, reject) => {
+            try {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const text = (e.target && e.target.result) ? e.target.result.toString() : '';
+                    const sample = text.split('\n').slice(0, 5).map(l => l.replace(/\r/g, ''));
+                    const candidates = [',', ';', '\t', '|'];
+                    let best = { delimiter: ',', score: -1 };
+                    for (let d = 0; d < candidates.length; d++) {
+                        const delim = candidates[d];
+                        const counts = sample.map(line => line.split(delim).length);
+                        const avg = counts.reduce((a,b)=>a+b,0) / (counts.length || 1);
+                        if (avg > best.score) {
+                            best = { delimiter: delim, score: avg };
+                        }
+                    }
+                    // Header heuristic
+                    let hasHeader = true;
+                    if (sample.length >= 2) {
+                        const first = sample[0].split(best.delimiter);
+                        const second = sample[1].split(best.delimiter);
+                        const isNumeric = (arr) => {
+                            let numericCount = 0, total = 0;
+                            for (let i = 0; i < arr.length; i++) {
+                                const v = arr[i].trim();
+                                if (v === '') continue;
+                                total++;
+                                const n = parseFloat(v);
+                                if (!isNaN(n) && isFinite(n)) numericCount++;
+                            }
+                            return total > 0 && numericCount / total > 0.6;
+                        };
+                        const firstNumeric = isNumeric(first);
+                        const secondNumeric = isNumeric(second);
+                        hasHeader = !firstNumeric && secondNumeric;
+                    }
+                    resolve({ delimiter: best.delimiter, hasHeader });
+                };
+                const blob = file.slice(0, 2048);
+                reader.readAsText(blob);
+            } catch (err) {
+                reject(err);
             }
         });
     }
@@ -174,14 +220,15 @@ class TrainModelManager {
     }
 
     prepareData() {
-		if (!this.data || !this.modelConfig) {
-			this.showError('Please upload data and configure input features');
+		// Only require uploaded data; model is built after auto-detecting feature count
+		if (!this.data) {
+			this.showError('Please upload data first');
 			return null;
 		}
 
 		try {
 			// Filter out empty rows/objects
-			const validData = this.data.filter(row => {
+			let validData = this.data.filter(row => {
 				return row && typeof row === 'object' && Object.keys(row).length > 0;
 			});
 
@@ -199,37 +246,94 @@ class TrainModelManager {
             }
 
             // Determine feature keys: exclude label and optional id, keep numeric columns
-            let idKey = null;
-            if (this.hasIdColumn) {
-                if (columns.includes('id')) idKey = 'id';
-                else if (columns[0] !== labelKey) idKey = columns[0];
-            }
-            const featureKeysPre = columns.filter(k => k !== labelKey && k !== idKey);
-			const featureKeys = featureKeysPre.filter(k => {
-				// consider numeric if at least one non-empty value parses to number
+            let idKey = columns.includes('id') ? 'id' : null;
+            const candidateKeys = columns.filter(k => k !== labelKey && k !== idKey);
+			const featureKeys = candidateKeys.filter(k => {
 				for (let i = 0; i < validData.length; i++) {
 					const v = validData[i][k];
 					if (v !== '' && v !== null && v !== undefined) {
 						const n = parseFloat(v);
-						if (!isNaN(n)) return true;
+						if (!isNaN(n) && isFinite(n)) return true;
 					}
 				}
 				return false;
 			});
 
-			// Build features matrix using selected keys
-			const features = validData.map(row => {
+			// Remove duplicates
+			const seen = new Set();
+			validData = validData.filter(row => {
+				const key = featureKeys.map(k => String(row[k])).join('|') + '|' + String(row[labelKey]);
+				if (seen.has(key)) return false;
+				seen.add(key);
+				return true;
+			});
+
+			// Impute missing numeric values with column mean
+			const means = {};
+			for (let i = 0; i < featureKeys.length; i++) {
+				const k = featureKeys[i];
+				const vals = [];
+				for (let r = 0; r < validData.length; r++) {
+					const n = parseFloat(validData[r][k]);
+					if (!isNaN(n) && isFinite(n)) vals.push(n);
+				}
+				const mean = vals.length ? (vals.reduce((a,b)=>a+b,0) / vals.length) : 0;
+				means[k] = mean;
+			}
+
+			// Optional validation split (holdout)
+			let rows = validData.slice();
+			for (let i = rows.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[rows[i], rows[j]] = [rows[j], rows[i]];
+			}
+			let trainRows = rows;
+			let valRows = [];
+			if (this.createValidation && rows.length > 4) {
+				const splitIndex = Math.floor(rows.length * (1 - this.validationSplit));
+				trainRows = rows.slice(0, splitIndex);
+				valRows = rows.slice(splitIndex);
+				this.validationData = valRows;
+			} else {
+				this.validationData = null;
+			}
+
+			// Normalization stats from training rows
+			const mins = {};
+			const maxs = {};
+			for (let i = 0; i < featureKeys.length; i++) {
+				const k = featureKeys[i];
+				let min = Infinity, max = -Infinity;
+				for (let r = 0; r < trainRows.length; r++) {
+					const v = parseFloat(trainRows[r][k]);
+					const val = isNaN(v) ? means[k] : v;
+					if (val < min) min = val;
+					if (val > max) max = val;
+				}
+				if (!isFinite(min)) min = 0;
+				if (!isFinite(max)) max = 1;
+				if (max === min) { max = min + 1; }
+				mins[k] = min;
+				maxs[k] = max;
+			}
+
+			// Build features (normalized)
+			const features = trainRows.map(row => {
 				const arr = [];
 				for (let i = 0; i < featureKeys.length; i++) {
-					const v = row[featureKeys[i]];
-					const n = parseFloat(v);
-					arr.push(isNaN(n) ? 0 : n);
+					const key = featureKeys[i];
+					const v = parseFloat(row[key]);
+					const raw = isNaN(v) ? means[key] : v;
+					let scaled = (raw - mins[key]) / (maxs[key] - mins[key]);
+					if (scaled < 0) scaled = 0;
+					if (scaled > 1) scaled = 1;
+					arr.push(scaled);
 				}
 				return arr;
 			});
 
             // Build labels vector, map common string labels to 0/1 for binary
-			const labels = validData.map(row => {
+			const labels = trainRows.map(row => {
 				const raw = row[labelKey];
 				if (typeof raw === 'string') {
 					const val = raw.trim().toLowerCase();
@@ -242,16 +346,6 @@ class TrainModelManager {
 				return isNaN(n) ? 0 : (n > 0 ? 1 : 0);
 			});
 
-			// Validate feature vector length vs model input units
-			const inputUnits = this.modelConfig.architecture && this.modelConfig.architecture.inputLayer ? this.modelConfig.architecture.inputLayer.units : null;
-			if (typeof inputUnits === 'number' && inputUnits > 0 && features.length > 0) {
-                if (features[0].length !== inputUnits) {
-                    this.showError(`Feature count (${features[0].length}) does not match model input units (${inputUnits}). Excluded columns: ${[labelKey, (this.hasIdColumn ? (columns.includes('id') ? 'id' : columns[0]) : '(none)')].join(', ')}. Using numeric columns: ${featureKeys.join(', ')}`);
-					console.error('Feature keys selected:', featureKeys);
-					return null;
-				}
-			}
-
 			// Final validation
 			if (!features.every(f => Array.isArray(f) && f.length > 0)) {
 				this.showError('Invalid feature data format');
@@ -261,6 +355,8 @@ class TrainModelManager {
             console.log('Label column:', labelKey);
             console.log('ID column:', idKey);
             console.log('Feature keys:', featureKeys);
+			// Save preprocessing metadata for Predict
+			this.preprocessing = { featureKeys: featureKeys.slice(), mins, maxs };
 			return { features, labels };
 		} catch (err) {
 			this.showError('Error preparing data: ' + err.message);
@@ -269,10 +365,16 @@ class TrainModelManager {
     }
 
     async startTraining() {
-		// Build fixed model using provided input units
-		const units = (typeof this.inputUnits === 'number' && this.inputUnits > 0) ? this.inputUnits : null;
-		if (!units) {
-			this.showError('Please enter a valid number of input features.');
+		// Prepare data first to auto-detect feature count
+		const preparedData = this.prepareData();
+        if (!preparedData) return;
+
+        const { features, labels } = preparedData;
+
+		// Build model using detected input feature length
+		const units = features && features[0] ? features[0].length : 0;
+		if (!units || units <= 0) {
+			this.showError('Could not detect input features from the CSV.');
 			return;
 		}
 		this.modelConfig = {
@@ -288,14 +390,10 @@ class TrainModelManager {
 				optimizer: 'adam',
 				loss: 'binaryCrossentropy',
 				metrics: ['accuracy']
-			}
+			},
+			preprocessing: null
 		};
 		this.updateModelInfo();
-
-        const preparedData = this.prepareData();
-        if (!preparedData) return;
-
-        const { features, labels } = preparedData;
 
         // Validate data
         console.log('Features:', features);
@@ -338,6 +436,11 @@ class TrainModelManager {
 			});
 
             this.trainedModel = network;
+			// attach preprocessing metadata
+			if (this.preprocessing) {
+				this.modelConfig.preprocessing = this.preprocessing;
+				this.trainedModel.config.preprocessing = this.preprocessing;
+			}
             this.trainingProgress.isTraining = false;
             this.showSuccess('Model training completed successfully!');
             this.showTrainingComplete();
@@ -438,10 +541,35 @@ class TrainModelManager {
         }
     }
 
+    downloadValidationData() {
+        try {
+            if (!Array.isArray(this.validationData) || this.validationData.length === 0) {
+                this.showError('No validation data to download');
+                return;
+            }
+            const csv = Papa.unparse(this.validationData);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'validation_data.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            this.showSuccess('Validation CSV downloaded successfully!');
+        } catch (err) {
+            this.showError('Error downloading validation CSV: ' + err.message);
+        }
+    }
+
     resetTraining() {
         this.data = null;
+        this.rawRows = null;
         this.modelConfig = null;
         this.trainedModel = null;
+        this.validationData = null;
+        this.preprocessing = null;
         this.trainingProgress = {
             isTraining: false,
             currentEpoch: 0,
@@ -496,11 +624,7 @@ class TrainModelManager {
             dataRows.textContent = this.data.length;
             const cols = Object.keys(this.data[0] || {});
             let labelKey = this.targetColumn && cols.includes(this.targetColumn) ? this.targetColumn : null;
-            let idKey = null;
-            if (this.hasIdColumn) {
-                if (cols.includes('id')) idKey = 'id';
-                else if (cols.length > 0 && cols[0] !== labelKey) idKey = cols[0];
-            }
+			let idKey = cols.includes('id') ? 'id' : null;
             const featureCandidates = cols.filter(k => k !== labelKey && k !== idKey);
             const numericFeatureKeys = featureCandidates.filter(k => {
                 for (let i = 0; i < this.data.length; i++) {
@@ -585,12 +709,21 @@ class TrainModelManager {
         const completeCard = document.getElementById('training-complete-card');
         const finalLoss = document.getElementById('final-loss');
         const finalAccuracy = document.getElementById('final-accuracy');
+		const downloadValBtn = document.getElementById('download-validation-data-btn');
         
         if (completeCard) {
             if (finalLoss) finalLoss.textContent = this.trainingProgress.loss.toFixed(4);
             if (finalAccuracy) finalAccuracy.textContent = (this.trainingProgress.accuracy * 100).toFixed(2) + '%';
             
             completeCard.style.display = 'block';
+			if (downloadValBtn) {
+				if (this.createValidation && Array.isArray(this.validationData) && this.validationData.length > 0) {
+					downloadValBtn.style.display = 'inline-block';
+					downloadValBtn.onclick = () => this.downloadValidationData();
+				} else {
+					downloadValBtn.style.display = 'none';
+				}
+			}
         }
     }
 
