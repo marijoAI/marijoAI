@@ -286,7 +286,7 @@
 						</div>
                         <div class="form-group">
                             <label for="target-column">Target column to predict</label>
-                            <select id="target-column">
+                            <select id="target-column" style="margin-bottom: 1em;">
                                 <option value="">-- Upload CSV first --</option>
                             </select>
                             <span>If the CSV contains an 'ID' column, it will be excluded from the training.</span>
@@ -354,8 +354,10 @@
                         </div>
                         <div class="form-group">
                             <label for="test-data">Data (CSV file)</label>
-                            <input type="file" id="test-data" accept=".csv" class="file-input" />
-                            <span>Make sure that the CSV has the same number of columns as the one used for training, with the possible exception of the target column.</span>
+                            <input type="file" id="test-data" accept=".csv" class="file-input" style="margin-bottom: 1em;"/>
+                            <span>Make sure that the CSV contains the same number of columns as the one used for training, with the possible exception of the target column.</span>
+                            <div style="height: 10px;"></div>
+                            <span>If the CSV contains an 'ID' column, it will be excluded from predictions.</span>
                         </div>
                         <div class="form-group">
                         </div>
