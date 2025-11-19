@@ -289,6 +289,7 @@
                             <select id="target-column">
                                 <option value="">-- Upload CSV first --</option>
                             </select>
+                            <span>If the CSV contains an 'ID' column, it will be excluded from the training.</span>
                         </div>
                         <div id="train-error" class="error" style="display: none;"></div>
                         <div id="train-success" class="success" style="display: none;"></div>
@@ -354,7 +355,7 @@
                         <div class="form-group">
                             <label for="test-data">Data (CSV file)</label>
                             <input type="file" id="test-data" accept=".csv" class="file-input" />
-                            <span>Make sure that the CSV has the same number of columns as the one used for training.</span>
+                            <span>Make sure that the CSV has the same number of columns as the one used for training, with the possible exception of the target column.</span>
                         </div>
                         <div class="form-group">
                         </div>
@@ -363,6 +364,7 @@
                                 <input type="checkbox" id="predict-has-target-column" />
                                 Data still contains the target column
                             </label>
+                            <span>If the CSV contains the target column, evaluation metrics will be calculated.</span>
                         </div>
                         <div class="form-group" id="predict-target-group" style="display: none;">
                             <label for="predict-target-column">Target column in Data</label>
