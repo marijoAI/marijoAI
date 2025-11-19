@@ -1,8 +1,8 @@
-# MarijoAI
+# marijoAI
 
 This repo contains the code of the website "https://marijoai.com".
 
-MarijoAI is a browser-based, no-code tool to train and use a professional-grade neural network for binary classification, entirely on your device. It lets you:
+marijoAI is a browser-based, no-code tool to train and use a professional-grade neural network for binary classification, entirely on your device. It lets you:
 
 - Upload a CSV and automatically prepare tabular data
 - Train a fixed binary-classification neural network in the browser
