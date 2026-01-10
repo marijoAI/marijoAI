@@ -320,7 +320,6 @@
                 </div>
                 <div class="grid grid-2">
                     <div class="card">
-                        <h2>Upload Files</h2>
                         <div class="form-group">
                             <label for="predict-model-file">Trained Model</label>
                             <input type="file" id="predict-model-file" accept=".json" class="file-input" />
@@ -357,20 +356,6 @@
                             <h3>Data Information</h3>
                             <p><strong>Rows:</strong> <span id="predict-samples"></span></p>
                             <p><strong>Features:</strong> <span id="predict-features"></span></p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h2>Prediction Controls</h2>
-                        <div class="prediction-info">
-                            <p>Once you've uploaded both the Trained Model and Data, you can make predictions.</p>
-                            <div class="requirements">
-                                <h4>Requirements:</h4>
-                                <ul>
-                                    <li>✓ Trained model file (JSON)</li>
-                                    <li>✓ Data file (CSV)</li>
-                                    <li>✓ Data should have same number of features as training data</li>
-                                </ul>
-                            </div>
                         </div>
                         <div class="button-group">
                             <button class="btn btn-primary" id="make-predictions-btn">Make Predictions</button>
