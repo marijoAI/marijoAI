@@ -737,10 +737,13 @@ class TrainModelManager {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.trainModelManager = new TrainModelManager();
+    // Initialization of the train page is handled by the SPA router
+    // via `initTrainPage` so do not create a manager here.
 });
 
 // Expose for SPA router
 window.initTrainPage = function() {
-	window.trainModelManager = new TrainModelManager();
+    // Always create a fresh manager for the newly-inserted train page
+    // so event listeners bind to the current DOM nodes.
+    window.trainModelManager = new TrainModelManager();
 };
