@@ -622,11 +622,12 @@ class PredictManager {
 }
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.predictManager = new PredictManager();
-});
+// Initialization is performed by the SPA router via `initPredictPage`.
+// Do not create a manager on DOMContentLoaded to avoid stale bindings.
 
 // Expose for SPA router
 window.initPredictPage = function() {
-	window.predictManager = new PredictManager();
+    // Always create a fresh manager for the newly-inserted predict page
+    // so event listeners bind to the current DOM nodes.
+    window.predictManager = new PredictManager();
 };
