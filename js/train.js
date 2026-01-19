@@ -59,6 +59,8 @@ class TrainModelManager {
             targetSelect.addEventListener('change', (e) => {
                 this.targetColumn = e.target.value;
                 this.updateDataInfo();
+                // Analyze label column to show potential mappings
+                this.analyzeLabelColumn();
             });
         }
 
@@ -333,17 +335,35 @@ class TrainModelManager {
 			});
 
             // Build labels vector, map common string labels to 0/1 for binary
+			// Track mappings for user visibility
+			const labelMappings = new Map(); // original value -> numeric value
 			const labels = trainRows.map(row => {
 				const raw = row[labelKey];
+				let mappedValue;
 				if (typeof raw === 'string') {
 					const val = raw.trim().toLowerCase();
-                    if (val === 'm' || val === 'malignant' || val === '1' || val === 'true' || val === 'yes') return 1;
-                    if (val === 'b' || val === 'benign' || val === '0' || val === 'false' || val === 'no') return 0;
+					const originalVal = raw.trim(); // Keep original case for display
+                    if (val === 'm' || val === 'malignant' || val === '1' || val === 'true' || val === 'yes') {
+						mappedValue = 1;
+					} else if (val === 'b' || val === 'benign' || val === '0' || val === 'false' || val === 'no') {
+						mappedValue = 0;
+					} else {
+						const n = parseFloat(raw);
+						mappedValue = isNaN(n) ? 0 : (n > 0 ? 1 : 0);
+					}
+					// Track mapping if not already tracked
+					if (!labelMappings.has(originalVal)) {
+						labelMappings.set(originalVal, mappedValue);
+					}
+				} else {
 					const n = parseFloat(raw);
-					return isNaN(n) ? 0 : (n > 0 ? 1 : 0);
+					mappedValue = isNaN(n) ? 0 : (n > 0 ? 1 : 0);
+					const strVal = String(raw);
+					if (!labelMappings.has(strVal)) {
+						labelMappings.set(strVal, mappedValue);
+					}
 				}
-				const n = parseFloat(raw);
-				return isNaN(n) ? 0 : (n > 0 ? 1 : 0);
+				return mappedValue;
 			});
 
 			// Final validation
@@ -355,8 +375,21 @@ class TrainModelManager {
             console.log('Label column:', labelKey);
             console.log('ID column:', idKey);
             console.log('Feature keys:', featureKeys);
-			// Save preprocessing metadata for Predict
-			this.preprocessing = { featureKeys: featureKeys.slice(), mins, maxs };
+			// Convert labelMappings Map to object for JSON serialization
+			const labelMappingsObj = {};
+			labelMappings.forEach((value, key) => {
+				labelMappingsObj[key] = value;
+			});
+			// Save preprocessing metadata for Predict (including label mappings)
+			this.preprocessing = { 
+				featureKeys: featureKeys.slice(), 
+				mins, 
+				maxs,
+				labelMappings: labelMappingsObj,
+				labelKey: labelKey
+			};
+			// Store label mappings for UI display
+			this.labelMappings = labelMappingsObj;
 			return { features, labels };
 		} catch (err) {
 			this.showError('Error preparing data: ' + err.message);
@@ -370,6 +403,9 @@ class TrainModelManager {
         if (!preparedData) return;
 
         const { features, labels } = preparedData;
+        
+        // Update data info to show label mappings after preparation
+        this.updateDataInfo();
 
 		// Build model using detected input feature length
 		const units = features && features[0] ? features[0].length : 0;
@@ -570,6 +606,7 @@ class TrainModelManager {
         this.trainedModel = null;
         this.validationData = null;
         this.preprocessing = null;
+        this.labelMappings = null;
         this.trainingProgress = {
             isTraining: false,
             currentEpoch: 0,
@@ -619,6 +656,7 @@ class TrainModelManager {
         const dataInfo = document.getElementById('train-data-info');
         const dataRows = document.getElementById('train-data-rows');
         const dataFeatures = document.getElementById('train-data-features');
+        const labelMappingsContainer = document.getElementById('train-label-mappings');
         
         if (dataInfo && dataRows && dataFeatures) {
             dataRows.textContent = this.data.length;
@@ -637,7 +675,114 @@ class TrainModelManager {
                 return false;
             });
             dataFeatures.textContent = numericFeatureKeys.length;
+            
+            // Display label mappings if available
+            if (labelMappingsContainer && this.labelMappings && Object.keys(this.labelMappings).length > 0) {
+                const mappingsHtml = this.formatLabelMappings(this.labelMappings, labelKey);
+                labelMappingsContainer.innerHTML = mappingsHtml;
+                labelMappingsContainer.style.display = 'block';
+            } else if (labelMappingsContainer) {
+                labelMappingsContainer.style.display = 'none';
+            }
+            
             dataInfo.style.display = 'block';
+        }
+    }
+    
+    formatLabelMappings(mappings, labelKey) {
+        if (!mappings || Object.keys(mappings).length === 0) return '';
+        
+        const hasNonNumeric = Object.keys(mappings).some(key => {
+            const num = parseFloat(key);
+            return isNaN(num) || String(num) !== String(key).trim();
+        });
+        
+        if (!hasNonNumeric) {
+            // All values are numeric, no need to show mappings
+            return '';
+        }
+        
+        let html = '<div style="margin-top: 1em; padding: 0.75em; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #007bff;">';
+        html += `<strong>Label Mappings (${labelKey || 'target column'}):</strong><br>`;
+        html += '<table style="margin-top: 0.5em; width: 100%; font-size: 0.9em;">';
+        html += '<thead><tr style="border-bottom: 1px solid #ddd;"><th style="text-align: left; padding: 4px;">Original Value</th><th style="text-align: left; padding: 4px;">Mapped To</th></tr></thead>';
+        html += '<tbody>';
+        
+        // Sort by mapped value, then by original value
+        const sortedEntries = Object.entries(mappings).sort((a, b) => {
+            if (a[1] !== b[1]) return a[1] - b[1];
+            return a[0].localeCompare(b[0]);
+        });
+        
+        sortedEntries.forEach(([original, mapped]) => {
+            html += `<tr><td style="padding: 4px;"><code>${this.escapeHtml(original)}</code></td><td style="padding: 4px;"><strong>${mapped}</strong></td></tr>`;
+        });
+        
+        html += '</tbody></table>';
+        html += '<p style="margin-top: 0.5em; font-size: 0.85em; color: #666;">These mappings are used during training and prediction.</p>';
+        html += '</div>';
+        
+        return html;
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    analyzeLabelColumn() {
+        // Analyze label column to show potential mappings before training
+        if (!this.data || !this.targetColumn) return;
+        
+        const labelKey = this.targetColumn;
+        const cols = Object.keys(this.data[0] || {});
+        if (!cols.includes(labelKey)) return;
+        
+        // Collect unique values and their potential mappings
+        const valueCounts = new Map();
+        for (let i = 0; i < this.data.length; i++) {
+            const raw = this.data[i][labelKey];
+            if (raw === '' || raw === null || raw === undefined) continue;
+            const strVal = String(raw).trim();
+            if (strVal === '') continue;
+            
+            if (!valueCounts.has(strVal)) {
+                valueCounts.set(strVal, 0);
+            }
+            valueCounts.set(strVal, valueCounts.get(strVal) + 1);
+        }
+        
+        // Create mappings based on the same logic as prepareData
+        const mappings = {};
+        valueCounts.forEach((count, originalVal) => {
+            if (typeof originalVal === 'string') {
+                const val = originalVal.toLowerCase();
+                if (val === 'm' || val === 'malignant' || val === '1' || val === 'true' || val === 'yes') {
+                    mappings[originalVal] = 1;
+                } else if (val === 'b' || val === 'benign' || val === '0' || val === 'false' || val === 'no') {
+                    mappings[originalVal] = 0;
+                } else {
+                    const n = parseFloat(originalVal);
+                    mappings[originalVal] = isNaN(n) ? 0 : (n > 0 ? 1 : 0);
+                }
+            } else {
+                const n = parseFloat(originalVal);
+                mappings[originalVal] = isNaN(n) ? 0 : (n > 0 ? 1 : 0);
+            }
+        });
+        
+        // Store for display
+        this.labelMappings = mappings;
+        
+        // Update display
+        const labelMappingsContainer = document.getElementById('train-label-mappings');
+        if (labelMappingsContainer && Object.keys(mappings).length > 0) {
+            const mappingsHtml = this.formatLabelMappings(mappings, labelKey);
+            labelMappingsContainer.innerHTML = mappingsHtml;
+            labelMappingsContainer.style.display = 'block';
+        } else if (labelMappingsContainer) {
+            labelMappingsContainer.style.display = 'none';
         }
     }
 

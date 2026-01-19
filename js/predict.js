@@ -12,6 +12,8 @@ class PredictManager {
         this.hasTargetColumn = false;
         this.targetColumn = '';
         this.csvFormat = { hasHeader: true, delimiter: ',' };
+        this.labelMappings = null;
+        this.labelKey = null;
         
         this.init();
     }
@@ -91,8 +93,19 @@ class PredictManager {
                     layers: modelData.config.architecture.hiddenLayers.length + 2
                 };
                 
+                // Extract label mappings from preprocessing if available
+                if (modelData.config.preprocessing && modelData.config.preprocessing.labelMappings) {
+                    this.labelMappings = modelData.config.preprocessing.labelMappings;
+                    this.labelKey = modelData.config.preprocessing.labelKey || null;
+                } else {
+                    this.labelMappings = null;
+                    this.labelKey = null;
+                }
+                
                 this.showSuccess('Trained model loaded successfully!');
                 this.updateModelInfo();
+                this.displayLabelMappings();
+                this.displayLabelMappings();
             } catch (err) {
                 this.showError('Error loading model: ' + err.message);
             } finally {
@@ -240,18 +253,32 @@ class PredictManager {
 			// Make predictions
 			const predictions = this.trainedModel.predict(features);
             
+            // Get label mappings from model preprocessing if available
+            const labelMappings = preprocessing && preprocessing.labelMappings ? preprocessing.labelMappings : null;
+            const reverseMappings = labelMappings ? this.createReverseMappings(labelMappings) : null;
+            
             // Process predictions
             const results = this.testData.map((row, index) => {
                 const rawPred = predictions[index];
                 const prediction = Array.isArray(rawPred) ? rawPred[0] : rawPred;
                 const predVal = (typeof prediction === 'number' && !isNaN(prediction)) ? prediction : 0.5;
                 const confidence = Math.abs(predVal - 0.5) * 2; // Convert to 0-1 confidence
+                const predictedNumeric = predVal > 0.5 ? 1 : 0;
+                
+                // Use label mappings to show meaningful class names
+                let predictedClass = `Class ${predictedNumeric}`;
+                if (reverseMappings && reverseMappings[predictedNumeric]) {
+                    const classNames = reverseMappings[predictedNumeric];
+                    // Show the most common original value, or first one if multiple
+                    predictedClass = classNames[0];
+                }
                 
                 return {
                     input: featureKeys.map(k => row[k]),
                     prediction: predVal,
                     confidence: confidence,
-                    predictedClass: predVal > 0.5 ? 'Class 1' : 'Class 0'
+                    predictedClass: predictedClass,
+                    predictedNumeric: predictedNumeric
                 };
             });
 
@@ -618,6 +645,78 @@ class PredictManager {
         if (resultsCard) {
             resultsCard.style.display = 'none';
         }
+    }
+    
+    createReverseMappings(labelMappings) {
+        // Create reverse mapping: numeric value -> array of original string values
+        const reverse = {};
+        Object.entries(labelMappings).forEach(([original, numeric]) => {
+            if (!reverse[numeric]) {
+                reverse[numeric] = [];
+            }
+            reverse[numeric].push(original);
+        });
+        // Sort each array to have most common/representative values first
+        Object.keys(reverse).forEach(key => {
+            reverse[key].sort();
+        });
+        return reverse;
+    }
+    
+    displayLabelMappings() {
+        const labelMappingsContainer = document.getElementById('predict-label-mappings');
+        if (!labelMappingsContainer) return;
+        
+        if (this.labelMappings && Object.keys(this.labelMappings).length > 0) {
+            const mappingsHtml = this.formatLabelMappings(this.labelMappings, this.labelKey);
+            labelMappingsContainer.innerHTML = mappingsHtml;
+            labelMappingsContainer.style.display = 'block';
+        } else {
+            labelMappingsContainer.style.display = 'none';
+        }
+    }
+    
+    formatLabelMappings(mappings, labelKey) {
+        if (!mappings || Object.keys(mappings).length === 0) return '';
+        
+        const hasNonNumeric = Object.keys(mappings).some(key => {
+            const num = parseFloat(key);
+            return isNaN(num) || String(num) !== String(key).trim();
+        });
+        
+        if (!hasNonNumeric) {
+            // All values are numeric, no need to show mappings
+            return '';
+        }
+        
+        let html = '<div style="margin-top: 1em; padding: 0.75em; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #007bff;">';
+        html += `<strong>Label Mappings${labelKey ? ` (${labelKey})` : ''}:</strong><br>`;
+        html += '<span style="font-size: 0.9em; color: #666;">These mappings show how original values were converted to numbers during training.</span><br>';
+        html += '<table style="margin-top: 0.5em; width: 100%; font-size: 0.9em;">';
+        html += '<thead><tr style="border-bottom: 1px solid #ddd;"><th style="text-align: left; padding: 4px;">Original Value</th><th style="text-align: left; padding: 4px;">Mapped To</th></tr></thead>';
+        html += '<tbody>';
+        
+        // Sort by mapped value, then by original value
+        const sortedEntries = Object.entries(mappings).sort((a, b) => {
+            if (a[1] !== b[1]) return a[1] - b[1];
+            return a[0].localeCompare(b[0]);
+        });
+        
+        sortedEntries.forEach(([original, mapped]) => {
+            html += `<tr><td style="padding: 4px;"><code>${this.escapeHtml(original)}</code></td><td style="padding: 4px;"><strong>${mapped}</strong></td></tr>`;
+        });
+        
+        html += '</tbody></table>';
+        html += '<p style="margin-top: 0.5em; font-size: 0.85em; color: #666;">Predictions will use these mappings to show meaningful class names.</p>';
+        html += '</div>';
+        
+        return html;
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 }
 
