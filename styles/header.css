@@ -3,41 +3,43 @@
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   z-index: 1000;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.06);
 }
 
 .nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
+  padding: 14px 0;
 }
 
 .logo {
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #333;
-  font-size: 24px;
-  font-weight: bold;
-  transition: transform 0.3s ease;
+  color: var(--text);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  transition: transform var(--transition);
 }
 
 .logo:hover {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .logo-icon {
-  font-size: 28px;
-  margin-right: 10px;
+  font-size: 26px;
+  margin-right: 8px;
 }
 
 .logo-text {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -45,7 +47,7 @@
 
 .nav-links {
   display: flex;
-  gap: 30px;
+  gap: 6px;
 }
 
 .nav-toggle {
@@ -55,16 +57,21 @@
   cursor: pointer;
   width: 44px;
   height: 44px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   align-items: center;
   justify-content: center;
   flex-direction: column;
   position: relative;
-  z-index: 1001; /* ensure above dropdown */
+  z-index: 1001;
+  transition: background var(--transition);
+}
+
+.nav-toggle:hover {
+  background: rgba(99, 102, 241, 0.06);
 }
 
 .nav-toggle:focus {
-  outline: 2px solid #667eea;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -72,18 +79,21 @@
   display: block;
   position: absolute;
   left: 50%;
-  width: 24px;
+  width: 22px;
   height: 2px;
-  background: #333;
+  background: var(--text);
   border-radius: 2px;
   transform: translate(-50%, -50%);
-  transition: transform 0.25s ease, opacity 0.2s ease, background-color 0.25s ease, top 0.25s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s ease,
+              background-color 0.3s ease,
+              top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center;
 }
 
-.nav-toggle .hamburger-line:nth-child(1) { top: calc(50% - 8px); }
+.nav-toggle .hamburger-line:nth-child(1) { top: calc(50% - 7px); }
 .nav-toggle .hamburger-line:nth-child(2) { top: 50%; }
-.nav-toggle .hamburger-line:nth-child(3) { top: calc(50% + 8px); }
+.nav-toggle .hamburger-line:nth-child(3) { top: calc(50% + 7px); }
 
 /* Animate to X when open */
 .header.nav-open .nav-toggle .hamburger-line:nth-child(1) {
@@ -100,22 +110,25 @@
 
 .nav-link {
   text-decoration: none;
-  color: #666;
+  color: var(--text-muted);
   font-weight: 500;
+  font-size: 14px;
   padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
   position: relative;
+  letter-spacing: -0.01em;
 }
 
 .nav-link:hover {
-  color: #667eea;
-  background: rgba(102, 126, 234, 0.1);
+  color: var(--primary);
+  background: rgba(99, 102, 241, 0.08);
 }
 
 .nav-link.active {
-  color: #667eea;
-  background: rgba(102, 126, 234, 0.15);
+  color: var(--primary);
+  background: rgba(99, 102, 241, 0.1);
+  font-weight: 600;
 }
 
 .nav-link.active::after {
@@ -124,9 +137,9 @@
   bottom: -2px;
   left: 50%;
   transform: translateX(-50%);
-  width: 20px;
+  width: 18px;
   height: 2px;
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(90deg, var(--primary), #a855f7);
   border-radius: 1px;
 }
 
@@ -142,11 +155,11 @@
   .nav-links {
     display: none;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
     width: 100%;
     padding: 10px 0 5px 0;
     position: relative;
-    z-index: 1000; /* below toggle */
+    z-index: 1000;
   }
 
   .header.nav-open .nav-links {

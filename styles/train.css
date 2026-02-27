@@ -4,22 +4,27 @@
 
 .data-info,
 .model-info {
-  background: rgba(102, 126, 234, 0.1);
-  padding: 15px;
-  border-radius: 8px;
+  background: #f5f3ff;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--primary);
   margin-top: 15px;
 }
 
 .data-info h3,
 .model-info h3 {
-  color: #667eea;
+  color: var(--primary);
   margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .data-info p,
 .model-info p {
   margin-bottom: 5px;
-  color: #555;
+  color: var(--text-muted);
+  font-size: 14px;
 }
 
 .progress-container {
@@ -29,15 +34,15 @@
 .progress-text {
   text-align: center;
   margin-top: 10px;
-  color: #666;
+  color: var(--text-muted);
   font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.01em;
 }
-
-/* removed unused training metrics styles */
 
 .button-group {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   margin-top: 20px;
 }
 

@@ -6,6 +6,9 @@
     <meta name="description" content="Use a neural network without coding">
     <title>marijoAI - No-Code Neural Network</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/homepage.css">
@@ -146,15 +149,15 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-links" style="text-align: center; padding-bottom: 2em;">
-                <div style="color: rgba(255, 255, 255, 0.9); padding: 1.2em 0; text-align: center; display: inline-block;">© 2025 marijoAI</div>
-                <span style="color: rgba(255, 255, 255, 0.6); padding: 0 8px;">•</span>
-                <a href="mailto:contact@marijoai.com" style="color: rgba(255, 255, 255, 0.95); text-decoration: none;">contact@marijoai.com</a>
-                <span style="color: rgba(255, 255, 255, 0.6); padding: 0 8px;">•</span>
-                <a href="#/legal" class="footer-link" style="color: rgba(255, 255, 255, 0.95); text-decoration: none;">Legal Mentions</a>
-                <span style="color: rgba(255, 255, 255, 0.6); padding: 0 8px;">•</span>
-                <a href="#/privacy" class="footer-link" style="color: rgba(255, 255, 255, 0.95); text-decoration: none;">Privacy Policy</a>
-                <span style="color: rgba(255, 255, 255, 0.6); padding: 0 8px;">•</span>
-                <a href="#/cookies" class="footer-link" style="color: rgba(255, 255, 255, 0.95); text-decoration: none;">Cookies Policy</a>
+                <div style="color: rgba(255, 255, 255, 0.8); padding: 1.2em 0; text-align: center; display: inline-block; font-size: 14px; font-weight: 500;">© 2025 marijoAI</div>
+                <span style="color: rgba(255, 255, 255, 0.3); padding: 0 8px;">•</span>
+                <a href="mailto:contact@marijoai.com" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;">contact@marijoai.com</a>
+                <span style="color: rgba(255, 255, 255, 0.3); padding: 0 8px;">•</span>
+                <a href="#/legal" class="footer-link" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;">Legal Mentions</a>
+                <span style="color: rgba(255, 255, 255, 0.3); padding: 0 8px;">•</span>
+                <a href="#/privacy" class="footer-link" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;">Privacy Policy</a>
+                <span style="color: rgba(255, 255, 255, 0.3); padding: 0 8px;">•</span>
+                <a href="#/cookies" class="footer-link" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;">Cookies Policy</a>
             </div>
         </div>
     </footer>
@@ -281,13 +284,13 @@
                     </div>
                     <div class="training-history" style="margin-top: 1.5rem;">
                         <h3 style="margin-bottom: 1em;">Training History</h3>
-                        <div id="history-container" style="max-height: 300px; overflow-y: auto; background: #f5f5f5; padding: 1rem; border-radius: 8px;">
-                            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <div id="history-container" style="max-height: 300px; overflow-y: auto; background: #f8fafc; padding: 1rem; border-radius: 10px; border: 1px solid #e2e8f0;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
                                 <thead>
-                                    <tr style="border-bottom: 2px solid #ddd; text-align: left;">
-                                        <th style="padding: 8px;">Epoch</th>
-                                        <th style="padding: 8px;">Loss</th>
-                                        <th style="padding: 8px;">Accuracy</th>
+                                    <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
+                                        <th style="padding: 8px 10px; font-weight: 600; color: #475569; font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase;">Epoch</th>
+                                        <th style="padding: 8px 10px; font-weight: 600; color: #475569; font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase;">Loss</th>
+                                        <th style="padding: 8px 10px; font-weight: 600; color: #475569; font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase;">Accuracy</th>
                                     </tr>
                                 </thead>
                                 <tbody id="history-table-body"></tbody>
