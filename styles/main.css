@@ -318,18 +318,90 @@ h2 {
 
 /* ── File Input ── */
 .file-input {
-  padding: 10px 14px;
+  padding: 14px 18px;
   border: 2px dashed #c7d2fe;
-  border-radius: var(--radius-sm);
-  background: #f5f3ff;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
   cursor: pointer;
   transition: all var(--transition);
   font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  position: relative;
+  display: block;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
 }
 
 .file-input:hover {
   border-color: var(--primary);
-  background: #ede9fe;
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+  transform: translateY(-1px);
+}
+
+.file-input:active {
+  transform: translateY(0);
+}
+
+.file-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15),
+              0 4px 16px rgba(99, 102, 241, 0.15);
+}
+
+/* Style the file input button text */
+.file-input::-webkit-file-upload-button {
+  padding: 8px 16px;
+  margin-right: 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+}
+
+.file-input::-webkit-file-upload-button:hover {
+  background: linear-gradient(135deg, var(--primary-dark), #4338ca);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  transform: translateY(-1px);
+}
+
+.file-input::-webkit-file-upload-button:active {
+  transform: translateY(0);
+}
+
+/* Firefox file input button */
+.file-input::file-selector-button {
+  padding: 8px 16px;
+  margin-right: 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+}
+
+.file-input::file-selector-button:hover {
+  background: linear-gradient(135deg, var(--primary-dark), #4338ca);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  transform: translateY(-1px);
+}
+
+.file-input::file-selector-button:active {
+  transform: translateY(0);
 }
 
 /* ── Data / Model Info ── */
