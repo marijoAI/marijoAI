@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "asbuild": "asc assembly/index.ts -o wasm/nn.wasm -O --runtime stub",
+    "build": "npm run asbuild"
+  },
+  "devDependencies": {
+    "assemblyscript": "^0.27.0"
+  }
+}

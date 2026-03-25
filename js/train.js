@@ -443,7 +443,12 @@ class TrainModelManager {
             return;
         }
 
-        // Create neural network
+        // Wait for WASM module to be ready (loads in <100ms for the 16KB file)
+        if (window._wasmNNReady) {
+            await window._wasmNNReady;
+        }
+
+        // Create neural network (uses WASM if available, JS fallback otherwise)
         const network = new NeuralNetwork(this.modelConfig);
         
         this.hideMessages();

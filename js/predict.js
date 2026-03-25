@@ -82,8 +82,11 @@ class PredictManager {
         this.hideMessages();
 
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             try {
+                // Ensure WASM is ready before loading the model
+                if (window._wasmNNReady) await window._wasmNNReady;
+
                 const modelData = JSON.parse(e.target.result);
                 this.trainedModel = NeuralNetwork.load(modelData);
                 
@@ -104,7 +107,6 @@ class PredictManager {
                 
                 this.showSuccess('Trained model loaded successfully!');
                 this.updateModelInfo();
-                this.displayLabelMappings();
                 this.displayLabelMappings();
             } catch (err) {
                 this.showError('Error loading model: ' + err.message);
