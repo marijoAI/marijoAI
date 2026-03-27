@@ -2,29 +2,30 @@
 
 This repo contains the code of the website "https://marijoai.com".
 
-marijoAI is a browser-based, no-code tool to train and use a professional-grade neural network for binary classification, entirely on your device. It lets you:
+marijoAI is a browser-based, no-code tool that helps SaaS and subscription businesses predict customer churn using AI — entirely on your device. It lets you:
 
-- Upload a CSV and automatically prepare tabular data
-- Train a fixed binary-classification neural network in the browser
-- Make predictions and export results
+- Upload a CSV of customer data and automatically prepare it for training
+- Train a neural network to predict which customers will churn
+- Score customers with churn risk levels and export results
 
-All processing happens client-side in your browser. Your data never leaves your device.
+All processing happens client-side in your browser. Your customer data never leaves your device — no DPA, no vendor risk review, no data compliance concerns.
 
 ## Features
 
 - Auto CSV detection (header row and delimiter)
-- Integrated cleaning in Train/Predict: remove duplicate rows, impute missing numeric values (mean), normalize numeric features to 0–1
-- Optional validation holdout in Train (~20%) with downloadable Validation CSV (excluded from training)
-- Visual, step-by-step pages: Train → Predict (plus a Tutorial page)
+- Integrated data cleaning: remove duplicate rows, impute missing values, normalize features
+- Optional validation holdout (~20%) with downloadable validation CSV
+- Visual step-by-step workflow: Train → Score (plus a Tutorial page)
 - Fixed model architecture for simplicity:
   - Input layer: auto-detected feature count from CSV
   - Hidden layer: 64 neurons, ReLU
   - Output layer: 1 neuron, Sigmoid
-- Live training history (loss/accuracy)
-- Download trained model as JSON; reload later to predict
-- Predict reuses training-time preprocessing (feature order and scaling) saved with the model
-- For predictions (after training), evaluation metrics when ground truth is available
-- Step-by-step tutorial using the included Wisconsin Breast Cancer dataset
+- Live training feedback with loss and accuracy per epoch
+- Churn risk summary: see how many customers are at risk at a glance
+- Download trained model as JSON; reload later to score new customer lists
+- Scoring reuses training-time preprocessing (feature order and scaling) saved with the model
+- Evaluation metrics and confusion matrix when ground truth is available
+- Step-by-step tutorial using the included SaaS customer churn sample dataset
 
 ## To use the project without an internet connection
 
@@ -43,4 +44,4 @@ This project is licensed under the MIT License. See ./LICENSE.
 ## Acknowledgements
 
 - PapaParse for CSV parsing.
-- The Wisconsin Breast Cancer Dataset for example data (included for educational purposes).
+- Sample SaaS customer churn dataset included for the tutorial.

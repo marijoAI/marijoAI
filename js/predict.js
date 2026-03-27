@@ -168,7 +168,7 @@ class PredictManager {
         });
         // Preselect common names
         const lower = columns.map(c => c.toLowerCase());
-        const common = ['target', 'label', 'class', 'diagnosis', 'y'];
+        const common = ['churned', 'churn', 'target', 'label', 'class', 'status', 'y'];
         for (let i = 0; i < common.length; i++) {
             const idx = lower.indexOf(common[i]);
             if (idx !== -1) {
@@ -268,11 +268,11 @@ class PredictManager {
                 const predictedNumeric = predVal > 0.5 ? 1 : 0;
                 
                 // Use label mappings to show meaningful class names
-                let predictedClass = `Class ${predictedNumeric}`;
+                let predictedClass;
                 if (reverseMappings && reverseMappings[predictedNumeric]) {
-                    const classNames = reverseMappings[predictedNumeric];
-                    // Show the most common original value, or first one if multiple
-                    predictedClass = classNames[0];
+                    predictedClass = reverseMappings[predictedNumeric][0];
+                } else {
+                    predictedClass = predictedNumeric === 1 ? 'At Risk' : 'Safe';
                 }
                 
                 return {
@@ -310,10 +310,10 @@ class PredictManager {
         }
 
         const csvData = this.predictions.map((result, index) => ({
-            'Sample': index + 1,
-            'Prediction': result.prediction.toFixed(4),
+            'Customer': index + 1,
+            'Churn Score': result.prediction.toFixed(4),
             'Confidence': result.confidence.toFixed(4),
-            'Predicted Class': result.predictedClass
+            'Risk Level': result.predictedClass
         }));
 
         const csv = Papa.unparse(csvData);
@@ -321,7 +321,7 @@ class PredictManager {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'predictions.csv';
+        a.download = 'churn_predictions.csv';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -389,8 +389,8 @@ class PredictManager {
 	toBinaryLabel(raw) {
 		if (typeof raw === 'string') {
 			const val = raw.trim().toLowerCase();
-			if (val === 'm' || val === 'malignant' || val === '1' || val === 'true' || val === 'yes') return 1;
-			if (val === 'b' || val === 'benign' || val === '0' || val === 'false' || val === 'no') return 0;
+			if (val === '1' || val === 'true' || val === 'yes' || val === 'churned' || val === 'churn' || val === 'left' || val === 'inactive') return 1;
+			if (val === '0' || val === 'false' || val === 'no' || val === 'retained' || val === 'stayed' || val === 'active') return 0;
 			const n = parseFloat(raw);
 			return isNaN(n) ? 0 : (n > 0 ? 1 : 0);
 		}
@@ -567,25 +567,25 @@ class PredictManager {
     showPredictionSummary() {
         if (!this.predictions) return;
         
-        const summary = document.getElementById('prediction-summary');
-        const totalPredictions = document.getElementById('total-predictions');
-        const highConfidence = document.getElementById('high-confidence');
-        const avgConfidence = document.getElementById('avg-confidence');
+        const atRisk = this.predictions.filter(p => p.predictedNumeric === 1);
+        const summaryEl = document.getElementById('churn-risk-summary');
+        const headlineEl = document.getElementById('churn-risk-headline');
+        const detailEl = document.getElementById('churn-risk-detail');
         
-        if (summary && totalPredictions && highConfidence && avgConfidence) {
-            const highConfCount = this.predictions.filter(p => p.confidence > 0.8).length;
-            const avgConf = this.predictions.reduce((sum, p) => sum + p.confidence, 0) / this.predictions.length;
-            
-            totalPredictions.textContent = this.predictions.length;
-            highConfidence.textContent = highConfCount;
-            avgConfidence.textContent = (avgConf * 100).toFixed(1) + '%';
-            
-            summary.style.display = 'block';
+        if (summaryEl && headlineEl && detailEl) {
+            const total = this.predictions.length;
+            const riskCount = atRisk.length;
+            const pct = ((riskCount / total) * 100).toFixed(0);
+            headlineEl.textContent = `${riskCount} of ${total} customers (${pct}%) are at risk of churning`;
+            detailEl.textContent = riskCount > 0
+                ? 'Review the table below to identify which accounts need immediate attention.'
+                : 'No customers were flagged as high churn risk by the model.';
+            summaryEl.style.display = riskCount > 0 ? 'block' : 'none';
         }
     }
 
     hidePredictionSummary() {
-        const summary = document.getElementById('prediction-summary');
+        const summary = document.getElementById('churn-risk-summary');
         if (summary) {
             summary.style.display = 'none';
         }

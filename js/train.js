@@ -6,7 +6,6 @@
 class TrainModelManager {
     constructor() {
         this.data = null;
-		this.rawRows = null;
 		this.csvFormat = { hasHeader: true, delimiter: ',' };
         this.modelConfig = null;
         this.trainedModel = null;
@@ -18,9 +17,7 @@ class TrainModelManager {
         this.trainingConfig = {
             epochs: 100,
             batchSize: 32,
-            learningRate: 0.001,
-			earlyStopping: false,
-			patience: 10
+            learningRate: 0.001
         };
         this.trainingProgress = {
             isTraining: false,
@@ -28,8 +25,6 @@ class TrainModelManager {
             totalEpochs: 0,
             loss: 0,
             accuracy: 0,
-            valLoss: 0,
-            valAccuracy: 0,
             history: []
         };
         
@@ -64,8 +59,6 @@ class TrainModelManager {
             });
         }
 
-		// Training configuration removed from UI; defaults are used
-
         // Buttons
         const startTrainingBtn = document.getElementById('start-training-btn');
         if (startTrainingBtn) {
@@ -88,8 +81,6 @@ class TrainModelManager {
             });
         }
     }
-
-	// Early stopping controls removed
 
     handleDataFileUpload(event) {
         const file = event.target.files[0];
@@ -131,7 +122,6 @@ class TrainModelManager {
                     }
                     
                     this.data = validData;
-                    this.rawRows = validData;
                     console.log('Loaded data:', this.data);
                     console.log('CSV format:', this.csvFormat);
                     this.populateTargetColumnOptions(Object.keys(this.data[0] || {}));
@@ -210,7 +200,7 @@ class TrainModelManager {
         });
         // preselect common
         const lower = columns.map(c => c.toLowerCase());
-        const common = ['target', 'label', 'class', 'diagnosis', 'y'];
+        const common = ['churned', 'churn', 'target', 'label', 'class', 'status', 'y'];
         for (let i = 0; i < common.length; i++) {
             const idx = lower.indexOf(common[i]);
             if (idx !== -1) {
@@ -343,9 +333,9 @@ class TrainModelManager {
 				if (typeof raw === 'string') {
 					const val = raw.trim().toLowerCase();
 					const originalVal = raw.trim(); // Keep original case for display
-                    if (val === 'm' || val === 'malignant' || val === '1' || val === 'true' || val === 'yes') {
+                    if (val === '1' || val === 'true' || val === 'yes' || val === 'churned' || val === 'churn' || val === 'left' || val === 'inactive') {
 						mappedValue = 1;
-					} else if (val === 'b' || val === 'benign' || val === '0' || val === 'false' || val === 'no') {
+					} else if (val === '0' || val === 'false' || val === 'no' || val === 'retained' || val === 'stayed' || val === 'active') {
 						mappedValue = 0;
 					} else {
 						const n = parseFloat(raw);
@@ -467,7 +457,7 @@ class TrainModelManager {
 
         try {
             // Train the model (no validation split - assumes data is already split)
-			const history = await network.train(features, labels, [], [], {
+			const history = await network.train(features, labels, {
 				epochs: this.trainingConfig.epochs,
 				batchSize: this.trainingConfig.batchSize,
 				learningRate: this.trainingConfig.learningRate,
@@ -570,7 +560,7 @@ class TrainModelManager {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'trained_model.json';
+            a.download = 'churn_model.json';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -606,7 +596,6 @@ class TrainModelManager {
 
     resetTraining() {
         this.data = null;
-        this.rawRows = null;
         this.modelConfig = null;
         this.trainedModel = null;
         this.validationData = null;
@@ -763,9 +752,9 @@ class TrainModelManager {
         valueCounts.forEach((count, originalVal) => {
             if (typeof originalVal === 'string') {
                 const val = originalVal.toLowerCase();
-                if (val === 'm' || val === 'malignant' || val === '1' || val === 'true' || val === 'yes') {
+                if (val === '1' || val === 'true' || val === 'yes' || val === 'churned' || val === 'churn' || val === 'left' || val === 'inactive') {
                     mappings[originalVal] = 1;
-                } else if (val === 'b' || val === 'benign' || val === '0' || val === 'false' || val === 'no') {
+                } else if (val === '0' || val === 'false' || val === 'no' || val === 'retained' || val === 'stayed' || val === 'active') {
                     mappings[originalVal] = 0;
                 } else {
                     const n = parseFloat(originalVal);

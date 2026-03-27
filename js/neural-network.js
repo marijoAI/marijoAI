@@ -1,5 +1,5 @@
 /**
- * Custom Neural Network Library
+ * Neural Network Library (ReLU + Sigmoid, Binary Cross-Entropy, Adam)
  * Uses WebAssembly for training/inference when available, with pure JS fallback.
  */
 
@@ -103,7 +103,6 @@ class NeuralNetwork {
         const hiddenSize = this.config.architecture.hiddenLayers[0].units;
         const outputSize = this.config.architecture.outputLayer.units;
 
-        // WASM was already initialized in the constructor; just copy the loaded weights
         for (let j = 0; j < hiddenSize; j++) {
             for (let k = 0; k < inputSize; k++) {
                 wasm.nn_set_weight(0, j, k, this.weights[0][j][k]);
@@ -144,24 +143,9 @@ class NeuralNetwork {
         }
     }
 
-    // ── Activation functions ────────────────────────────────────────
+    // ── Activation functions (ReLU + Sigmoid only) ──────────────────
     static relu(x) { return Math.max(0, x); }
     static sigmoid(x) { return 1 / (1 + Math.exp(-x)); }
-    static tanh(x) { return Math.tanh(x); }
-
-    static softmax(x) {
-        if (!Array.isArray(x) || x.length === 0) return x;
-        let max = x[0];
-        for (let i = 1; i < x.length; i++) { if (x[i] > max) max = x[i]; }
-        const exp = x.map(val => Math.exp(val - max));
-        const sum = exp.reduce((a, b) => a + b, 0);
-        return exp.map(val => val / sum);
-    }
-
-    static linear(x) { return x; }
-    static elu(x, alpha = 1.0) { return x > 0 ? x : alpha * (Math.exp(x) - 1); }
-    static selu(x, alpha = 1.67326, scale = 1.0507) { return scale * (x > 0 ? x : alpha * (Math.exp(x) - 1)); }
-    static swish(x) { return x * this.sigmoid(x); }
 
     static activationDerivative(activation, z) {
         if (activation === 'relu') {
@@ -173,27 +157,13 @@ class NeuralNetwork {
             const s = NeuralNetwork.sigmoid(z);
             return s * (1 - s);
         }
-        if (activation === 'tanh') {
-            if (Array.isArray(z)) { return z.map(v => { const t = Math.tanh(v); return 1 - t * t; }); }
-            const t = Math.tanh(z);
-            return 1 - t * t;
-        }
-        if (Array.isArray(z)) { return z.map(() => 1); }
         return 1;
     }
 
     applyActivation(x, activation) {
-        switch (activation) {
-            case 'relu': return Array.isArray(x) ? x.map(val => NeuralNetwork.relu(val)) : NeuralNetwork.relu(x);
-            case 'sigmoid': return Array.isArray(x) ? x.map(val => NeuralNetwork.sigmoid(val)) : NeuralNetwork.sigmoid(x);
-            case 'tanh': return Array.isArray(x) ? x.map(val => NeuralNetwork.tanh(val)) : NeuralNetwork.tanh(x);
-            case 'softmax': return NeuralNetwork.softmax(x);
-            case 'linear': return x;
-            case 'elu': return Array.isArray(x) ? x.map(val => NeuralNetwork.elu(val)) : NeuralNetwork.elu(x);
-            case 'selu': return Array.isArray(x) ? x.map(val => NeuralNetwork.selu(val)) : NeuralNetwork.selu(x);
-            case 'swish': return Array.isArray(x) ? x.map(val => NeuralNetwork.swish(val)) : NeuralNetwork.swish(x);
-            default: return x;
-        }
+        if (activation === 'relu') return Array.isArray(x) ? x.map(val => NeuralNetwork.relu(val)) : NeuralNetwork.relu(x);
+        if (activation === 'sigmoid') return Array.isArray(x) ? x.map(val => NeuralNetwork.sigmoid(val)) : NeuralNetwork.sigmoid(x);
+        return x;
     }
 
     // ── Forward pass ────────────────────────────────────────────────
@@ -310,7 +280,7 @@ class NeuralNetwork {
         }
     }
 
-    // ── Loss functions ──────────────────────────────────────────────
+    // ── Loss ────────────────────────────────────────────────────────
     static binaryCrossentropy(yTrue, yPred) {
         if (typeof yTrue !== 'number' || typeof yPred !== 'number') return NaN;
         if (isNaN(yTrue) || isNaN(yPred)) return NaN;
@@ -319,53 +289,32 @@ class NeuralNetwork {
         return -(yTrue * Math.log(clipped) + (1 - yTrue) * Math.log(1 - clipped));
     }
 
-    static categoricalCrossentropy(yTrue, yPred) {
-        const epsilon = 1e-15;
-        let loss = 0;
-        for (let i = 0; i < yTrue.length; i++) {
-            loss -= yTrue[i] * Math.log(Math.max(epsilon, Math.min(1 - epsilon, yPred[i])));
-        }
-        return loss;
-    }
-
-    static meanSquaredError(yTrue, yPred) { return Math.pow(yTrue - yPred, 2); }
-
     calculateLoss(yTrue, yPred) {
         const predValue = Array.isArray(yPred) ? yPred[0] : yPred;
         const trueValue = Array.isArray(yTrue) ? yTrue[0] : yTrue;
-        const loss = this.config.trainingConfig.loss;
-        if (loss === 'binaryCrossentropy') return NeuralNetwork.binaryCrossentropy(trueValue, predValue);
-        if (loss === 'categoricalCrossentropy') return NeuralNetwork.categoricalCrossentropy(yTrue, yPred);
-        return NeuralNetwork.meanSquaredError(trueValue, predValue);
+        return NeuralNetwork.binaryCrossentropy(trueValue, predValue);
     }
 
     calculateAccuracy(yTrue, yPred) {
         const predValue = Array.isArray(yPred) ? yPred[0] : yPred;
         const trueValue = Array.isArray(yTrue) ? yTrue[0] : yTrue;
-        if (Array.isArray(yPred) && yPred.length > 1) {
-            let maxPred = yPred[0], maxPredIdx = 0;
-            for (let i = 1; i < yPred.length; i++) { if (yPred[i] > maxPred) { maxPred = yPred[i]; maxPredIdx = i; } }
-            let maxTrue = yTrue[0], maxTrueIdx = 0;
-            for (let i = 1; i < yTrue.length; i++) { if (yTrue[i] > maxTrue) { maxTrue = yTrue[i]; maxTrueIdx = i; } }
-            return maxPredIdx === maxTrueIdx ? 1 : 0;
-        }
         return (predValue > 0.5 ? 1 : 0) === trueValue ? 1 : 0;
     }
 
     // ── Training (dispatcher) ───────────────────────────────────────
-    async train(xTrain, yTrain, xVal, yVal, config) {
+    async train(xTrain, yTrain, config) {
         if (!Array.isArray(xTrain) || !Array.isArray(yTrain)) throw new Error('Training data must be arrays');
         if (xTrain.length === 0 || yTrain.length === 0) throw new Error('Training data cannot be empty');
         if (xTrain.length !== yTrain.length) throw new Error('xTrain and yTrain must have the same length');
 
         if (this.useWasm) {
-            return this._trainWasm(xTrain, yTrain, xVal, yVal, config);
+            return this._trainWasm(xTrain, yTrain, config);
         }
-        return this._trainJS(xTrain, yTrain, xVal, yVal, config);
+        return this._trainJS(xTrain, yTrain, config);
     }
 
     // ── WASM training ───────────────────────────────────────────────
-    async _trainWasm(xTrain, yTrain, xVal, yVal, config) {
+    async _trainWasm(xTrain, yTrain, config) {
         const wasm = window._wasmNN;
         const helpers = window._wasmNNHelpers;
         const nSamples = xTrain.length;
@@ -375,103 +324,50 @@ class NeuralNetwork {
             epochs = 100,
             batchSize = 32,
             learningRate = 0.001,
-            earlyStopping = false,
-            patience = 10,
             onEpochEnd = null,
             adamBeta1 = 0.9,
             adamBeta2 = 0.999,
             adamEpsilon = 1e-8
         } = config;
 
-        // Upload training data to WASM memory (bulk transfer)
         wasm.nn_alloc_training_data(nSamples);
         helpers.uploadFeatures(wasm, xTrain, inputSize);
         helpers.uploadLabels(wasm, yTrain);
 
-        const history = { loss: [], accuracy: [], valLoss: [], valAccuracy: [] };
-        let bestLoss = Infinity;
-        let patienceCounter = 0;
+        const history = { loss: [], accuracy: [] };
 
         console.log(`[WASM] Training ${nSamples} samples, ${inputSize} features, ${epochs} epochs`);
         const t0 = performance.now();
 
         for (let epoch = 0; epoch < epochs; epoch++) {
-            // Entire epoch runs in WASM (no JS<->WASM crossing per sample)
             wasm.nn_train_epoch(batchSize, learningRate, adamBeta1, adamBeta2, adamEpsilon);
 
             const loss = wasm.nn_get_epoch_loss();
             const accuracy = wasm.nn_get_epoch_accuracy();
 
-            // Validation (WASM forward pass per validation sample)
-            let valLoss = null;
-            let valAccuracy = null;
-            const hasValidation = Array.isArray(xVal) && Array.isArray(yVal) && xVal.length > 0;
-            if (hasValidation) {
-                let vLossSum = 0;
-                let vAccSum = 0;
-                for (let i = 0; i < xVal.length; i++) {
-                    helpers.uploadPredictInput(wasm, xVal[i]);
-                    const pred = wasm.nn_predict();
-                    const trueVal = Array.isArray(yVal[i]) ? yVal[i][0] : yVal[i];
-                    const eps = 1e-15;
-                    const clipped = Math.max(eps, Math.min(1 - eps, pred));
-                    vLossSum += -(trueVal * Math.log(clipped) + (1 - trueVal) * Math.log(1 - clipped));
-                    vAccSum += ((pred > 0.5 ? 1 : 0) === trueVal) ? 1 : 0;
-                }
-                valLoss = vLossSum / xVal.length;
-                valAccuracy = vAccSum / xVal.length;
-            }
-
             history.loss.push(loss);
             history.accuracy.push(accuracy);
-            history.valLoss.push(valLoss);
-            history.valAccuracy.push(valAccuracy);
-
-            // Early stopping
-            if (earlyStopping) {
-                const metricLoss = hasValidation ? valLoss : loss;
-                if (metricLoss < bestLoss) {
-                    bestLoss = metricLoss;
-                    patienceCounter = 0;
-                } else {
-                    patienceCounter++;
-                    if (patienceCounter >= patience) {
-                        console.log(`[WASM] Early stopping at epoch ${epoch + 1}`);
-                        break;
-                    }
-                }
-            }
 
             if (onEpochEnd) {
-                await onEpochEnd({
-                    epoch: epoch + 1,
-                    loss,
-                    accuracy,
-                    valLoss,
-                    valAccuracy
-                });
+                await onEpochEnd({ epoch: epoch + 1, loss, accuracy });
             }
 
-            // Yield to UI thread every epoch
             await new Promise(resolve => setTimeout(resolve, 0));
         }
 
         const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
         console.log(`[WASM] Training complete in ${elapsed}s`);
 
-        // Sync final weights back to JS arrays for model export
         this._syncWeightsFromWasm();
         return history;
     }
 
     // ── JS training (fallback) ──────────────────────────────────────
-    async _trainJS(xTrain, yTrain, xVal, yVal, config) {
+    async _trainJS(xTrain, yTrain, config) {
         const {
             epochs = 100,
             batchSize = 32,
             learningRate = 0.001,
-            earlyStopping = false,
-            patience = 10,
             onEpochEnd = null,
             adamBeta1 = 0.9,
             adamBeta2 = 0.999,
@@ -480,9 +376,7 @@ class NeuralNetwork {
 
         console.log('[JS] Training with pure JavaScript fallback');
 
-        const history = { loss: [], accuracy: [], valLoss: [], valAccuracy: [] };
-        let bestLoss = Infinity;
-        let patienceCounter = 0;
+        const history = { loss: [], accuracy: [] };
 
         for (let epoch = 0; epoch < epochs; epoch++) {
             const indices = [];
@@ -528,20 +422,11 @@ class NeuralNetwork {
                     }
 
                     const lastIdx = numLayers - 1;
-                    const outputActivation = this.layers[this.layers.length - 1].activation;
                     const yTrueVal = Array.isArray(batchY[j]) ? batchY[j][0] : batchY[j];
                     const yPredVal = Array.isArray(prediction) ? prediction[0] : prediction;
 
-                    if (outputActivation === 'sigmoid' && this.config.trainingConfig.loss === 'binaryCrossentropy') {
-                        deltas[lastIdx][0] = yPredVal - yTrueVal;
-                    } else {
-                        const zLast = cache.layerZs[lastIdx];
-                        const actDer = NeuralNetwork.activationDerivative(outputActivation, zLast);
-                        for (let ii = 0; ii < deltas[lastIdx].length; ii++) {
-                            const dLossDa = Array.isArray(batchY[j]) ? (prediction[ii] - batchY[j][ii]) : (yPredVal - yTrueVal);
-                            deltas[lastIdx][ii] = dLossDa * actDer[ii];
-                        }
-                    }
+                    // Sigmoid + binary cross-entropy: simplified gradient
+                    deltas[lastIdx][0] = yPredVal - yTrueVal;
 
                     for (let li = lastIdx - 1; li >= 0; li--) {
                         const currentWeights = this.weights[li + 1];
@@ -579,48 +464,11 @@ class NeuralNetwork {
             const avgLoss = epochLoss / batchCount;
             const avgAccuracy = epochAccuracy / batchCount;
 
-            let valLoss = null;
-            let valAccuracy = null;
-            const hasValidation = Array.isArray(xVal) && Array.isArray(yVal) && xVal.length > 0;
-            if (hasValidation) {
-                let vLossSum = 0;
-                let vAccSum = 0;
-                for (let i = 0; i < xVal.length; i++) {
-                    const prediction = this.forward(xVal[i]);
-                    vLossSum += this.calculateLoss(yVal[i], prediction);
-                    vAccSum += this.calculateAccuracy(yVal[i], prediction);
-                }
-                valLoss = vLossSum / xVal.length;
-                valAccuracy = vAccSum / xVal.length;
-            }
-
             history.loss.push(avgLoss);
             history.accuracy.push(avgAccuracy);
-            history.valLoss.push(valLoss);
-            history.valAccuracy.push(valAccuracy);
-
-            if (earlyStopping) {
-                const metricLoss = hasValidation ? valLoss : avgLoss;
-                if (metricLoss < bestLoss) {
-                    bestLoss = metricLoss;
-                    patienceCounter = 0;
-                } else {
-                    patienceCounter++;
-                    if (patienceCounter >= patience) {
-                        console.log(`Early stopping at epoch ${epoch + 1}`);
-                        break;
-                    }
-                }
-            }
 
             if (onEpochEnd) {
-                await onEpochEnd({
-                    epoch: epoch + 1,
-                    loss: avgLoss,
-                    accuracy: avgAccuracy,
-                    valLoss,
-                    valAccuracy
-                });
+                await onEpochEnd({ epoch: epoch + 1, loss: avgLoss, accuracy: avgAccuracy });
             }
 
             await new Promise(resolve => setTimeout(resolve, 10));
