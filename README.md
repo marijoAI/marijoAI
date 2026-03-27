@@ -25,7 +25,7 @@ All processing happens client-side in your browser. Your customer data never lea
 - Download trained model as JSON; reload later to score new customer lists
 - Scoring reuses training-time preprocessing (feature order and scaling) saved with the model
 - Evaluation metrics and confusion matrix when ground truth is available
-- Step-by-step tutorial using the included SaaS customer churn sample dataset
+- Step-by-step tutorial using the included SaaS customer churn dataset
 
 ## To use the project without an internet connection
 
@@ -44,4 +44,4 @@ This project is licensed under the MIT License. See ./LICENSE.
 ## Acknowledgements
 
 - PapaParse for CSV parsing.
-- Sample SaaS customer churn dataset included for the tutorial.
+- Churn dataset for the tutorial: https://www.kaggle.com/datasets/muhammadshahidazeem/customer-churn-dataset

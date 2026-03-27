@@ -414,14 +414,14 @@
                 </div>
 				<div class="card">
 					<h2>1) Get the Sample Data</h2>
-					<p><a href="data/saas_customer_churn_dataset.csv" download>Download the sample SaaS churn dataset</a> (200 customers with subscription metrics and churn outcomes).</p>
+					<p><a href="data\customer_churn_dataset-testing-master.csv" download>Download the SaaS churn dataset</a> (64 thousand customers with subscription metrics and churn outcomes).</p>
 				</div>
 				<div class="card">
 					<h2>2) Train the Model</h2>
 					<ol style="margin: 1em;">
 						<li>Open <a href="#/train" target="_blank">Train</a> in a new tab and upload the CSV.</li>
 						<li>Check “Hold out a validation set” so you can test accuracy after training.</li>
-						<li>Select the “churned” column as the churn column.</li>
+						<li>Select the “Churn” column as the churn column.</li>
 						<li>Click "Train Churn Model" and watch the AI learn.</li>
                         <li>Download the trained model and the validation CSV.</li>
 					</ol>
@@ -432,7 +432,7 @@
 						<li>Open <a href="#/predict" target="_blank">Score Customers</a> in a new tab.</li>
 						<li>Upload the churn model and the validation CSV you just downloaded.</li>
                         <li>Check "CSV still contains the churn column".</li>
-                        <li>Select the "churned" column as the churn column.</li>
+                        <li>Select the "Churn" column as the churn column.</li>
 						<li>Click "Score Customers" to see churn risk predictions.</li>
 					</ol>
 				</div>
