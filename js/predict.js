@@ -17,6 +17,7 @@ class PredictManager {
         this.savedIdColumn = null;
         this.predictionsPage = 1;
         this.predictionsPageSize = 20;
+        this.predictionsSortMode = 'dataset-asc';
         
         this.init();
     }
@@ -92,6 +93,16 @@ class PredictManager {
             });
         }
 
+        const sortOrderSelect = document.getElementById('predictions-sort-order');
+        if (sortOrderSelect) {
+            sortOrderSelect.addEventListener('change', (e) => {
+                const v = e.target.value;
+                const allowed = ['dataset-asc', 'dataset-desc', 'score-desc', 'score-asc'];
+                this.predictionsSortMode = allowed.includes(v) ? v : 'dataset-asc';
+                this.predictionsPage = 1;
+                this.renderPredictionsTablePage();
+            });
+        }
         const pageSizeSelect = document.getElementById('predictions-page-size');
         if (pageSizeSelect) {
             pageSizeSelect.addEventListener('change', (e) => {
@@ -113,7 +124,7 @@ class PredictManager {
         }
         if (pageNext) {
             pageNext.addEventListener('click', () => {
-                const total = this.predictions ? this.predictions.length : 0;
+                const total = this.predictions ? this.getOrderedPredictions().length : 0;
                 const pages = Math.max(1, Math.ceil(total / this.predictionsPageSize));
                 if (this.predictionsPage < pages) {
                     this.predictionsPage++;
@@ -390,6 +401,7 @@ class PredictManager {
                 }
                 
                 return {
+                    datasetRow: index + 1,
                     input: featureKeys.map(k => row[k]),
                     prediction: predVal,
                     confidence: confidence,
@@ -423,8 +435,9 @@ class PredictManager {
             return;
         }
 
-        const csvData = this.predictions.map((result, index) => ({
-            'Customer': index + 1,
+        const ordered = this.getOrderedPredictions();
+        const csvData = ordered.map((result) => ({
+            'Customer': result.datasetRow,
             'Churn Score': result.prediction.toFixed(4),
             'Confidence': result.confidence.toFixed(4),
             'Risk Level': result.predictedClass
@@ -454,8 +467,11 @@ class PredictManager {
         this.savedIdColumn = null;
         this.predictionsPage = 1;
         this.predictionsPageSize = 20;
+        this.predictionsSortMode = 'dataset-asc';
         const pageSizeSelect = document.getElementById('predictions-page-size');
         if (pageSizeSelect) pageSizeSelect.value = '20';
+        const sortOrderSelect = document.getElementById('predictions-sort-order');
+        if (sortOrderSelect) sortOrderSelect.value = 'dataset-asc';
         this.hideMessages();
         this.hideModelInfo();
         this.hideDataInfo();
@@ -725,17 +741,38 @@ class PredictManager {
         }
     }
 
+    getOrderedPredictions() {
+        if (!this.predictions || !this.predictions.length) return [];
+        const mode = this.predictionsSortMode || 'dataset-asc';
+        const arr = this.predictions.slice();
+        if (mode === 'dataset-desc') {
+            arr.reverse();
+            return arr;
+        }
+        if (mode === 'score-desc') {
+            arr.sort((a, b) => b.prediction - a.prediction || a.datasetRow - b.datasetRow);
+            return arr;
+        }
+        if (mode === 'score-asc') {
+            arr.sort((a, b) => a.prediction - b.prediction || a.datasetRow - b.datasetRow);
+            return arr;
+        }
+        return arr;
+    }
+
     renderPredictionsTablePage() {
         if (!this.predictions || !this.predictions.length) return;
 
         const predictionsTable = document.getElementById('predictions-table');
         const tableNote = document.getElementById('table-note');
         const pageSizeSelect = document.getElementById('predictions-page-size');
+        const sortOrderSelect = document.getElementById('predictions-sort-order');
         const pageInfo = document.getElementById('predictions-page-info');
         const pagePrev = document.getElementById('predictions-page-prev');
         const pageNext = document.getElementById('predictions-page-next');
 
-        const total = this.predictions.length;
+        const ordered = this.getOrderedPredictions();
+        const total = ordered.length;
         const size = this.predictionsPageSize;
         const pageCount = Math.max(1, Math.ceil(total / size));
         if (this.predictionsPage > pageCount) this.predictionsPage = pageCount;
@@ -743,15 +780,16 @@ class PredictManager {
 
         const start = (this.predictionsPage - 1) * size;
         const end = Math.min(start + size, total);
-        const slice = this.predictions.slice(start, end);
+        const slice = ordered.slice(start, end);
 
         if (pageSizeSelect) pageSizeSelect.value = String(size);
+        if (sortOrderSelect) sortOrderSelect.value = this.predictionsSortMode || 'dataset-asc';
 
         if (predictionsTable) {
             const tbody = predictionsTable.querySelector('tbody');
             tbody.innerHTML = '';
-            slice.forEach((result, i) => {
-                const rowNum = start + i + 1;
+            slice.forEach((result) => {
+                const rowNum = result.datasetRow;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${rowNum}</td>
@@ -787,6 +825,9 @@ class PredictManager {
         
         if (resultsCard) {
             this.predictionsPage = 1;
+            this.predictionsSortMode = 'dataset-asc';
+            const sortSel = document.getElementById('predictions-sort-order');
+            if (sortSel) sortSel.value = 'dataset-asc';
             this.renderPredictionsTablePage();
             
             resultsCard.style.display = 'block';

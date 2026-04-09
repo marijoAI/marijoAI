@@ -415,6 +415,15 @@
                     </div>
                     <div class="predictions-table">
                         <div id="predictions-pagination-toolbar" class="predictions-pagination-toolbar">
+                            <div class="pagination-toolbar-sort">
+                                <label for="predictions-sort-order">Sort results</label>
+                                <select id="predictions-sort-order">
+                                    <option value="dataset-asc" selected>Dataset order</option>
+                                    <option value="dataset-desc">Dataset order (reverse)</option>
+                                    <option value="score-desc">Churn score (high to low)</option>
+                                    <option value="score-asc">Churn score (low to high)</option>
+                                </select>
+                            </div>
                             <div class="pagination-toolbar-size">
                                 <label for="predictions-page-size">Rows per page</label>
                                 <select id="predictions-page-size">
