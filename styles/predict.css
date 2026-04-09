@@ -80,6 +80,8 @@
   border-radius: var(--radius-sm);
   border-left: 4px solid var(--primary);
   margin: 15px 0 20px 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .evaluation-metrics .summary-stats .stat {
@@ -87,13 +89,23 @@
   border: 1px solid #e2e8f0;
 }
 
+.confusion-matrix {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .confusion-matrix table {
   width: 100%;
+  min-width: 17rem;
   border-collapse: collapse;
   background: white;
   border-radius: var(--radius-sm);
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  table-layout: auto;
 }
 
 .confusion-matrix th,
@@ -103,6 +115,9 @@
   text-align: center;
   color: var(--text);
   font-size: 14px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .confusion-matrix thead th {
@@ -157,13 +172,20 @@
   background: #f8fafc;
   border-radius: var(--radius-sm);
   border: 1px solid #e2e8f0;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .pagination-toolbar-sort,
 .pagination-toolbar-size {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+  flex: 1 1 12rem;
 }
 
 .pagination-toolbar-sort label,
@@ -172,22 +194,32 @@
   font-weight: 500;
   color: var(--text-muted);
   margin: 0;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .pagination-toolbar-sort select,
 .pagination-toolbar-size select {
-  min-width: 72px;
+  min-width: 0;
   padding: 8px 12px;
   font-size: 14px;
   border: 1px solid #e2e8f0;
   border-radius: var(--radius-sm);
   background: white;
   color: var(--text);
+  flex: 1 1 10rem;
+  max-width: 100%;
+  width: auto;
+  box-sizing: border-box;
+}
+
+.pagination-toolbar-size select {
+  flex: 0 1 5rem;
+  min-width: 4.5rem;
 }
 
 .pagination-toolbar-sort select {
-  min-width: 200px;
-  max-width: 100%;
+  flex: 1 1 min(100%, 14rem);
 }
 
 .pagination-toolbar-nav {
@@ -195,14 +227,28 @@
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+  flex: 1 1 100%;
+  justify-content: center;
+}
+
+@media (min-width: 769px) {
+  .pagination-toolbar-nav {
+    flex: 0 1 auto;
+    justify-content: flex-end;
+  }
 }
 
 .predictions-page-info {
   font-size: 14px;
   color: var(--text-muted);
   font-weight: 500;
-  min-width: 12em;
+  min-width: 0;
+  max-width: 100%;
   text-align: center;
+  flex: 1 1 12rem;
+  line-height: 1.35;
 }
 
 .predictions-pagination-toolbar .btn:disabled {
@@ -220,6 +266,9 @@
   background: #f1f5f9;
   border-radius: var(--radius-sm);
   border: 1px solid #e2e8f0;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .pagination-toolbar-filter,
@@ -238,15 +287,23 @@
   margin: 0;
 }
 
-.pagination-toolbar-filter select {
-  min-width: 200px;
+.pagination-toolbar-filter {
+  flex: 1 1 12rem;
+  min-width: 0;
   max-width: 100%;
+}
+
+.pagination-toolbar-filter select {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
   padding: 8px 12px;
   font-size: 14px;
   border: 1px solid #e2e8f0;
   border-radius: var(--radius-sm);
   background: white;
   color: var(--text);
+  box-sizing: border-box;
 }
 
 .pagination-toolbar-filter-threshold input[type="number"] {
@@ -279,6 +336,9 @@
 .predictions-table {
   overflow-x: auto;
   margin: 20px 0;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .predictions-table table {
@@ -351,6 +411,45 @@
 @media (max-width: 768px) {
   .summary-stats {
     grid-template-columns: 1fr;
+  }
+
+  .evaluation-metrics {
+    padding: 14px 12px;
+  }
+
+  .confusion-matrix th,
+  .confusion-matrix td {
+    padding: 8px 8px;
+    font-size: 12px;
+  }
+
+  .confusion-matrix thead th {
+    font-size: 11px;
+    letter-spacing: 0.01em;
+  }
+
+  .pagination-toolbar-sort,
+  .pagination-toolbar-size {
+    flex: 1 1 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pagination-toolbar-sort select,
+  .pagination-toolbar-size select {
+    width: 100%;
+    flex: none;
+  }
+
+  .pagination-toolbar-filter,
+  .pagination-toolbar-filter-threshold {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .pagination-toolbar-filter-threshold input[type="number"] {
+    width: 100%;
+    max-width: 100%;
   }
   
   .predictions-table {
