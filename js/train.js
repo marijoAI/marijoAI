@@ -53,10 +53,26 @@ class TrainModelManager {
         if (targetSelect) {
             targetSelect.addEventListener('change', (e) => {
                 this.targetColumn = e.target.value;
+                const cols = this.data ? Object.keys(this.data[0] || {}) : [];
+                if (cols.length) this.populateIdColumnOptions(cols);
                 this.updateDataInfo();
                 // Analyze label column to show potential mappings
                 this.analyzeLabelColumn();
             });
+        }
+
+        const hasIdEl = document.getElementById('train-has-id-column');
+        const idGroup = document.getElementById('train-id-column-group');
+        const idSelect = document.getElementById('train-id-column');
+        if (hasIdEl) {
+            hasIdEl.addEventListener('change', (e) => {
+                if (idGroup) idGroup.style.display = e.target.checked ? 'block' : 'none';
+                if (!e.target.checked && idSelect) idSelect.value = '';
+                this.updateDataInfo();
+            });
+        }
+        if (idSelect) {
+            idSelect.addEventListener('change', () => this.updateDataInfo());
         }
 
         // Buttons
@@ -124,7 +140,9 @@ class TrainModelManager {
                     this.data = validData;
                     console.log('Loaded data:', this.data);
                     console.log('CSV format:', this.csvFormat);
-                    this.populateTargetColumnOptions(Object.keys(this.data[0] || {}));
+                    const cols = Object.keys(this.data[0] || {});
+                    this.populateTargetColumnOptions(cols);
+                    this.populateIdColumnOptions(cols);
                     this.showSuccess(`Successfully loaded ${validData.length} rows of training data (delimiter "${fmt.delimiter}", header: ${fmt.hasHeader ? 'yes' : 'no'})`);
                     this.updateDataInfo();
                 },
@@ -211,6 +229,40 @@ class TrainModelManager {
         }
     }
 
+    populateIdColumnOptions(columns) {
+        const idSelect = document.getElementById('train-id-column');
+        if (!idSelect) return;
+        const prev = idSelect.value;
+        const label = this.targetColumn && columns.includes(this.targetColumn) ? this.targetColumn : null;
+        const opts = columns.filter(c => c !== label);
+        idSelect.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = '-- Select ID column --';
+        idSelect.appendChild(placeholder);
+        opts.forEach(col => {
+            const opt = document.createElement('option');
+            opt.value = col;
+            opt.textContent = col;
+            idSelect.appendChild(opt);
+        });
+        if (prev && opts.includes(prev)) idSelect.value = prev;
+    }
+
+    getTrainIdKey(columns, labelKey) {
+        const cb = document.getElementById('train-has-id-column');
+        if (!cb || !cb.checked) return { key: null };
+        const sel = document.getElementById('train-id-column');
+        const v = sel ? sel.value : '';
+        if (!v || !columns.includes(v)) {
+            return { key: null, error: 'Please select which column is the ID column.' };
+        }
+        if (labelKey && v === labelKey) {
+            return { key: null, error: 'The ID column cannot be the same as the churn column.' };
+        }
+        return { key: v };
+    }
+
     prepareData() {
 		// Only require uploaded data; model is built after auto-detecting feature count
 		if (!this.data) {
@@ -237,8 +289,12 @@ class TrainModelManager {
                 return null;
             }
 
-            // Determine feature keys: exclude label and optional id, keep numeric columns
-            let idKey = columns.includes('id') ? 'id' : null;
+            const idResolved = this.getTrainIdKey(columns, labelKey);
+            if (idResolved.error) {
+                this.showError(idResolved.error);
+                return null;
+            }
+            let idKey = idResolved.key;
             const candidateKeys = columns.filter(k => k !== labelKey && k !== idKey);
 			const featureKeys = candidateKeys.filter(k => {
 				for (let i = 0; i < validData.length; i++) {
@@ -378,6 +434,7 @@ class TrainModelManager {
 				labelMappings: labelMappingsObj,
 				labelKey: labelKey
 			};
+			if (idKey) this.preprocessing.idColumn = idKey;
 			// Store label mappings for UI display
 			this.labelMappings = labelMappingsObj;
 			return { features, labels };
@@ -618,6 +675,18 @@ class TrainModelManager {
         
         const dataFileInput = document.getElementById('data-file');
         if (dataFileInput) dataFileInput.value = '';
+        const hasIdEl = document.getElementById('train-has-id-column');
+        const idGroup = document.getElementById('train-id-column-group');
+        const idSelect = document.getElementById('train-id-column');
+        if (hasIdEl) hasIdEl.checked = false;
+        if (idGroup) idGroup.style.display = 'none';
+        if (idSelect) {
+            idSelect.innerHTML = '';
+            const ph = document.createElement('option');
+            ph.value = '';
+            ph.textContent = '-- Upload CSV first --';
+            idSelect.appendChild(ph);
+        }
     }
 
     // UI Helper methods
@@ -656,7 +725,8 @@ class TrainModelManager {
             dataRows.textContent = this.data.length;
             const cols = Object.keys(this.data[0] || {});
             let labelKey = this.targetColumn && cols.includes(this.targetColumn) ? this.targetColumn : null;
-			let idKey = cols.includes('id') ? 'id' : null;
+            const idResolved = this.getTrainIdKey(cols, labelKey);
+            let idKey = idResolved.key;
             const featureCandidates = cols.filter(k => k !== labelKey && k !== idKey);
             const numericFeatureKeys = featureCandidates.filter(k => {
                 for (let i = 0; i < this.data.length; i++) {

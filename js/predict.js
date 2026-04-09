@@ -14,6 +14,7 @@ class PredictManager {
         this.csvFormat = { hasHeader: true, delimiter: ',' };
         this.labelMappings = null;
         this.labelKey = null;
+        this.savedIdColumn = null;
         
         this.init();
     }
@@ -47,8 +48,24 @@ class PredictManager {
         if (targetSelect) {
             targetSelect.addEventListener('change', (e) => {
                 this.targetColumn = e.target.value;
+                const cols = this.testData ? Object.keys(this.testData[0] || {}) : [];
+                if (cols.length) this.populatePredictIdColumnOptions(cols);
                 this.updateDataInfo();
             });
+        }
+
+        const predictHasIdEl = document.getElementById('predict-has-id-column');
+        const predictIdGroup = document.getElementById('predict-id-column-group');
+        const predictIdSelect = document.getElementById('predict-id-column');
+        if (predictHasIdEl) {
+            predictHasIdEl.addEventListener('change', (e) => {
+                if (predictIdGroup) predictIdGroup.style.display = e.target.checked ? 'block' : 'none';
+                if (!e.target.checked && predictIdSelect) predictIdSelect.value = '';
+                this.updateDataInfo();
+            });
+        }
+        if (predictIdSelect) {
+            predictIdSelect.addEventListener('change', () => this.updateDataInfo());
         }
 
         // Buttons
@@ -104,10 +121,17 @@ class PredictManager {
                     this.labelMappings = null;
                     this.labelKey = null;
                 }
+                this.savedIdColumn = (modelData.config.preprocessing && modelData.config.preprocessing.idColumn) || null;
                 
                 this.showSuccess('Trained model loaded successfully!');
                 this.updateModelInfo();
                 this.displayLabelMappings();
+                if (this.testData && this.testData.length) {
+                    const cols = Object.keys(this.testData[0] || {});
+                    this.populatePredictIdColumnOptions(cols);
+                    this.applySavedIdColumnPreference(cols);
+                    this.updateDataInfo();
+                }
             } catch (err) {
                 this.showError('Error loading model: ' + err.message);
             } finally {
@@ -140,7 +164,10 @@ class PredictManager {
                     const valid = results.data.filter(row => row && typeof row === 'object' && Object.values(row).some(v => v !== '' && v !== null && v !== undefined));
                     this.testData = valid;
                     this.showSuccess(`Successfully loaded ${valid.length} rows of test data (delimiter "${fmt.delimiter}", header: ${fmt.hasHeader ? 'yes' : 'no'})`);
-                    this.populateTargetOptions(Object.keys(this.testData[0] || {}));
+                    const cols = Object.keys(this.testData[0] || {});
+                    this.populateTargetOptions(cols);
+                    this.populatePredictIdColumnOptions(cols);
+                    this.applySavedIdColumnPreference(cols);
                     this.updateDataInfo();
                 },
                 error: (error) => {
@@ -179,6 +206,56 @@ class PredictManager {
         }
     }
 
+    populatePredictIdColumnOptions(columns) {
+        const idSelect = document.getElementById('predict-id-column');
+        if (!idSelect) return;
+        const prev = idSelect.value;
+        let excludeTarget = null;
+        if (this.hasTargetColumn && this.targetColumn && columns.includes(this.targetColumn)) {
+            excludeTarget = this.targetColumn;
+        }
+        const opts = columns.filter(c => c !== excludeTarget);
+        idSelect.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = '-- Select ID column --';
+        idSelect.appendChild(placeholder);
+        opts.forEach(col => {
+            const opt = document.createElement('option');
+            opt.value = col;
+            opt.textContent = col;
+            idSelect.appendChild(opt);
+        });
+        if (prev && opts.includes(prev)) idSelect.value = prev;
+    }
+
+    applySavedIdColumnPreference(columns) {
+        if (!this.savedIdColumn || !columns.includes(this.savedIdColumn)) return;
+        const cb = document.getElementById('predict-has-id-column');
+        const idGroup = document.getElementById('predict-id-column-group');
+        const sel = document.getElementById('predict-id-column');
+        if (cb) cb.checked = true;
+        if (idGroup) idGroup.style.display = 'block';
+        if (sel) {
+            const optVals = Array.from(sel.options).map(o => o.value);
+            if (optVals.includes(this.savedIdColumn)) sel.value = this.savedIdColumn;
+        }
+    }
+
+    getPredictIdKey(columns, targetKey) {
+        const cb = document.getElementById('predict-has-id-column');
+        if (!cb || !cb.checked) return { key: null };
+        const sel = document.getElementById('predict-id-column');
+        const v = sel ? sel.value : '';
+        if (!v || !columns.includes(v)) {
+            return { key: null, error: 'Please select which column is the ID column.' };
+        }
+        if (targetKey && v === targetKey) {
+            return { key: null, error: 'The ID column cannot be the same as the churn column.' };
+        }
+        return { key: v };
+    }
+
     makePredictions() {
         if (!this.trainedModel || !this.testData) {
             this.showError('Please upload both trained model and test data');
@@ -189,20 +266,25 @@ class PredictManager {
         this.hideMessages();
 
         try {
-            // Prepare test data: optionally exclude ID column, and ensure numeric features
             const cols = Object.keys(this.testData[0] || {});
-            let idKey = cols.includes('id') ? 'id' : null;
             let targetKey = null;
             if (this.hasTargetColumn) {
                 if (this.targetColumn && cols.includes(this.targetColumn)) targetKey = this.targetColumn;
             }
 
+            const idResolved = this.getPredictIdKey(cols, targetKey);
+            if (idResolved.error) {
+                this.showError(idResolved.error);
+                return;
+            }
+            const idKey = idResolved.key;
+
             // Determine feature keys
             let featureKeys = [];
             const preprocessing = this.trainedModel && this.trainedModel.config ? this.trainedModel.config.preprocessing : null;
             if (preprocessing && Array.isArray(preprocessing.featureKeys)) {
-                // Use the exact order from training
-                featureKeys = preprocessing.featureKeys.filter(k => k !== idKey && k !== targetKey);
+                // Exact order from training (ID was already excluded at train time)
+                featureKeys = preprocessing.featureKeys.slice();
             } else {
                 const featureCandidates = cols.filter(k => k !== idKey && k !== targetKey);
                 featureKeys = featureCandidates.filter(k => {
@@ -335,6 +417,9 @@ class PredictManager {
         this.testData = null;
         this.predictions = null;
         this.modelInfo = null;
+        this.labelMappings = null;
+        this.labelKey = null;
+        this.savedIdColumn = null;
         this.hideMessages();
         this.hideModelInfo();
         this.hideDataInfo();
@@ -346,6 +431,18 @@ class PredictManager {
         const testDataInput = document.getElementById('test-data');
         if (modelFileInput) modelFileInput.value = '';
         if (testDataInput) testDataInput.value = '';
+        const predictHasIdEl = document.getElementById('predict-has-id-column');
+        const predictIdGroup = document.getElementById('predict-id-column-group');
+        const predictIdSelect = document.getElementById('predict-id-column');
+        if (predictHasIdEl) predictHasIdEl.checked = false;
+        if (predictIdGroup) predictIdGroup.style.display = 'none';
+        if (predictIdSelect) {
+            predictIdSelect.innerHTML = '';
+            const ph = document.createElement('option');
+            ph.value = '';
+            ph.textContent = '-- Upload CSV first --';
+            predictIdSelect.appendChild(ph);
+        }
     }
 
 	// Metrics computation and display
@@ -536,11 +633,12 @@ class PredictManager {
         if (dataInfo && samples && features) {
             samples.textContent = this.testData.length;
             const cols = Object.keys(this.testData[0] || {});
-            let idKey = cols.includes('id') ? 'id' : null;
             let targetKey = null;
             if (this.hasTargetColumn) {
                 if (this.targetColumn && cols.includes(this.targetColumn)) targetKey = this.targetColumn;
             }
+            const idResolved = this.getPredictIdKey(cols, targetKey);
+            const idKey = idResolved.key;
             const featureCandidates = cols.filter(k => k !== idKey && k !== targetKey);
             const numericFeatureKeys = featureCandidates.filter(k => {
                 for (let i = 0; i < this.testData.length; i++) {

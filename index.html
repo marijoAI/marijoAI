@@ -246,11 +246,25 @@
 							<span>Check this to create a separate CSV for validating model accuracy with predictions.</span>
 						</div>
                         <div class="form-group">
+							<label>
+								<input type="checkbox" id="train-has-id-column" />
+								Dataset contains an ID column
+							</label>
+							<span>Check this if a column holds customer or row identifiers. That column will be excluded from training (not used as a feature).</span>
+						</div>
+                        <div class="form-group" id="train-id-column-group" style="display: none;">
+                            <label for="train-id-column">ID column</label>
+                            <select id="train-id-column" style="margin-bottom: 1em;">
+                                <option value="">-- Upload CSV first --</option>
+                            </select>
+                            <span>Choose which column is the identifier. It must not be the churn column.</span>
+                        </div>
+                        <div class="form-group">
                             <label for="target-column">Churn column (the outcome to predict)</label>
                             <select id="target-column" style="margin-bottom: 1em;">
                                 <option value="">-- Upload CSV first --</option>
                             </select>
-                            <span>Select the column that indicates whether a customer churned. If the CSV contains an 'ID' column, it will be excluded automatically.</span>
+                            <span>Select the column that indicates whether a customer churned.</span>
                         </div>
                         <div id="train-error" class="error" style="display: none;"></div>
                         <div id="train-success" class="success" style="display: none;"></div>
@@ -316,7 +330,21 @@
                         <div class="form-group">
                             <label for="test-data">Customer List (CSV file)</label>
                             <input type="file" id="test-data" accept=".csv" class="file-input" style="margin-bottom: 1em;"/>
-                            <span>Upload a CSV with the same columns as your training data. If the CSV contains an 'ID' column, it will be excluded automatically.</span>
+                            <span>Upload a CSV with the same columns as your training data.</span>
+                        </div>
+                        <div class="form-group">
+							<label>
+								<input type="checkbox" id="predict-has-id-column" />
+								Dataset contains an ID column
+							</label>
+							<span>Check this to exclude a customer or row ID column from scoring (same column as in training, if you used one).</span>
+						</div>
+                        <div class="form-group" id="predict-id-column-group" style="display: none;">
+                            <label for="predict-id-column">ID column</label>
+                            <select id="predict-id-column" style="margin-bottom: 1em;">
+                                <option value="">-- Upload CSV first --</option>
+                            </select>
+                            <span>Choose which column is the identifier. It is not fed into the model.</span>
                         </div>
                         <div class="form-group">
                             <label>
@@ -420,6 +448,8 @@
 					<h2>2) Train the Model</h2>
 					<ol style="margin: 1em;">
 						<li>Open <a href="#/train" target="_blank">Train</a> in a new tab and upload the CSV.</li>
+						<li>As the dataset has a customer ID column, check “Dataset contains an ID column”.
+                        <li>Pick the "CustomerID" column so it is not used as a feature.</li>
 						<li>Check “Hold out a validation set” so you can test accuracy after training.</li>
 						<li>Select the “Churn” column as the churn column.</li>
 						<li>Click "Train Churn Model" and watch the AI learn.</li>
@@ -431,6 +461,7 @@
 					<ol style="margin: 1em;">
 						<li>Open <a href="#/predict" target="_blank">Score Customers</a> in a new tab.</li>
 						<li>Upload the churn model and the validation CSV you just downloaded.</li>
+                        <li>Check “Dataset contains an ID column” and select the "CustomerID" column.</li>
                         <li>Check "CSV still contains the churn column".</li>
                         <li>Select the "Churn" column as the churn column.</li>
 						<li>Click "Score Customers" to see churn risk predictions.</li>
