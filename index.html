@@ -414,6 +414,20 @@
                         </div>
                     </div>
                     <div class="predictions-table">
+                        <div id="predictions-pagination-toolbar" class="predictions-pagination-toolbar">
+                            <div class="pagination-toolbar-size">
+                                <label for="predictions-page-size">Rows per page</label>
+                                <select id="predictions-page-size">
+                                    <option value="20" selected>20</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+                            <div class="pagination-toolbar-nav">
+                                <button type="button" class="btn btn-secondary btn-small" id="predictions-page-prev">Previous</button>
+                                <span id="predictions-page-info" class="predictions-page-info"></span>
+                                <button type="button" class="btn btn-secondary btn-small" id="predictions-page-next">Next</button>
+                            </div>
+                        </div>
                         <table id="predictions-table">
                             <thead>
                                 <tr>

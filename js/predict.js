@@ -15,6 +15,8 @@ class PredictManager {
         this.labelMappings = null;
         this.labelKey = null;
         this.savedIdColumn = null;
+        this.predictionsPage = 1;
+        this.predictionsPageSize = 20;
         
         this.init();
     }
@@ -87,6 +89,36 @@ class PredictManager {
         if (downloadPredictionsBtn) {
             downloadPredictionsBtn.addEventListener('click', () => {
                 this.downloadPredictions();
+            });
+        }
+
+        const pageSizeSelect = document.getElementById('predictions-page-size');
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener('change', (e) => {
+                const n = parseInt(e.target.value, 10);
+                this.predictionsPageSize = n === 50 ? 50 : 20;
+                this.predictionsPage = 1;
+                this.renderPredictionsTablePage();
+            });
+        }
+        const pagePrev = document.getElementById('predictions-page-prev');
+        const pageNext = document.getElementById('predictions-page-next');
+        if (pagePrev) {
+            pagePrev.addEventListener('click', () => {
+                if (this.predictionsPage > 1) {
+                    this.predictionsPage--;
+                    this.renderPredictionsTablePage();
+                }
+            });
+        }
+        if (pageNext) {
+            pageNext.addEventListener('click', () => {
+                const total = this.predictions ? this.predictions.length : 0;
+                const pages = Math.max(1, Math.ceil(total / this.predictionsPageSize));
+                if (this.predictionsPage < pages) {
+                    this.predictionsPage++;
+                    this.renderPredictionsTablePage();
+                }
             });
         }
     }
@@ -420,6 +452,10 @@ class PredictManager {
         this.labelMappings = null;
         this.labelKey = null;
         this.savedIdColumn = null;
+        this.predictionsPage = 1;
+        this.predictionsPageSize = 20;
+        const pageSizeSelect = document.getElementById('predictions-page-size');
+        if (pageSizeSelect) pageSizeSelect.value = '20';
         this.hideMessages();
         this.hideModelInfo();
         this.hideDataInfo();
@@ -689,51 +725,80 @@ class PredictManager {
         }
     }
 
-    showPredictionResults() {
-        if (!this.predictions) return;
-        
-        const resultsCard = document.getElementById('predictions-results-card');
+    renderPredictionsTablePage() {
+        if (!this.predictions || !this.predictions.length) return;
+
         const predictionsTable = document.getElementById('predictions-table');
         const tableNote = document.getElementById('table-note');
-        
-        if (resultsCard && predictionsTable && tableNote) {
+        const pageSizeSelect = document.getElementById('predictions-page-size');
+        const pageInfo = document.getElementById('predictions-page-info');
+        const pagePrev = document.getElementById('predictions-page-prev');
+        const pageNext = document.getElementById('predictions-page-next');
+
+        const total = this.predictions.length;
+        const size = this.predictionsPageSize;
+        const pageCount = Math.max(1, Math.ceil(total / size));
+        if (this.predictionsPage > pageCount) this.predictionsPage = pageCount;
+        if (this.predictionsPage < 1) this.predictionsPage = 1;
+
+        const start = (this.predictionsPage - 1) * size;
+        const end = Math.min(start + size, total);
+        const slice = this.predictions.slice(start, end);
+
+        if (pageSizeSelect) pageSizeSelect.value = String(size);
+
+        if (predictionsTable) {
             const tbody = predictionsTable.querySelector('tbody');
             tbody.innerHTML = '';
-            
-            // Show first 20 predictions
-            const displayPredictions = this.predictions.slice(0, 20);
-            
-            displayPredictions.forEach((result, index) => {
+            slice.forEach((result, i) => {
+                const rowNum = start + i + 1;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${index + 1}</td>
+                    <td>${rowNum}</td>
                     <td>${result.prediction.toFixed(4)}</td>
                     <td>
                         <span class="confidence-badge" style="background-color: ${this.getConfidenceColor(result.confidence)}">
                             ${(result.confidence * 100).toFixed(1)}%
                         </span>
                     </td>
-                    <td>${result.predictedClass}</td>
+                    <td>${this.escapeHtml(String(result.predictedClass))}</td>
                 `;
                 tbody.appendChild(tr);
             });
-            
-            tableNote.textContent = this.predictions.length > 20 ? 
-                'Showing first 20 predictions. Download full results above.' : 
-                '';
+        }
+
+        if (pageInfo) {
+            pageInfo.textContent = `Page ${this.predictionsPage} of ${pageCount} (${start + 1}–${end} of ${total})`;
+        }
+        if (pagePrev) pagePrev.disabled = this.predictionsPage <= 1;
+        if (pageNext) pageNext.disabled = this.predictionsPage >= pageCount;
+
+        if (tableNote) {
+            tableNote.textContent = total > size
+                ? 'Use Previous / Next to browse all rows. Download Results exports every row.'
+                : '';
+        }
+    }
+
+    showPredictionResults() {
+        if (!this.predictions) return;
+        
+        const resultsCard = document.getElementById('predictions-results-card');
+        
+        if (resultsCard) {
+            this.predictionsPage = 1;
+            this.renderPredictionsTablePage();
             
             resultsCard.style.display = 'block';
 
-            // Smoothly scroll to the results card after it becomes visible, with header offset
             setTimeout(() => {
-                const headerOffset = 100; // leave space for fixed header and section title
+                const headerOffset = 100;
                 const rect = resultsCard.getBoundingClientRect();
                 const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 const targetY = rect.top + scrollTop - headerOffset;
                 try {
                     window.scrollTo({ top: targetY, behavior: 'smooth' });
                 } catch (e) {
-                    // Fallback for older browsers
                     window.scrollTo(0, targetY);
                 }
             }, 80);
