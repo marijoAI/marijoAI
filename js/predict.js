@@ -132,6 +132,53 @@ class PredictManager {
                 }
             });
         }
+
+        const filterModeEl = document.getElementById('predictions-filter-mode');
+        const filterThresholdEl = document.getElementById('predictions-filter-threshold');
+        const onScoreFilterChange = () => {
+            this.updateScoreFilterThresholdDisabled();
+            if (!this.predictions || !this.predictions.length) return;
+            this.predictionsPage = 1;
+            this.renderPredictionsTablePage();
+        };
+        if (filterModeEl) {
+            filterModeEl.addEventListener('change', onScoreFilterChange);
+        }
+        if (filterThresholdEl) {
+            filterThresholdEl.addEventListener('change', onScoreFilterChange);
+            filterThresholdEl.addEventListener('input', onScoreFilterChange);
+        }
+        this.updateScoreFilterThresholdDisabled();
+    }
+
+    updateScoreFilterThresholdDisabled() {
+        const modeEl = document.getElementById('predictions-filter-mode');
+        const thEl = document.getElementById('predictions-filter-threshold');
+        if (!thEl) return;
+        const on = modeEl && (modeEl.value === 'gt' || modeEl.value === 'lt');
+        thEl.disabled = !on;
+    }
+
+    parseScoreFilterThreshold() {
+        const thEl = document.getElementById('predictions-filter-threshold');
+        let x = thEl ? parseFloat(String(thEl.value).replace(',', '.')) : NaN;
+        if (Number.isNaN(x)) x = 0.5;
+        return Math.max(0, Math.min(1, x));
+    }
+
+    isScoreFilterActive() {
+        const modeEl = document.getElementById('predictions-filter-mode');
+        return modeEl && (modeEl.value === 'gt' || modeEl.value === 'lt');
+    }
+
+    getFilteredPredictions() {
+        if (!this.predictions || !this.predictions.length) return [];
+        const modeEl = document.getElementById('predictions-filter-mode');
+        const mode = modeEl ? modeEl.value : 'none';
+        if (mode !== 'gt' && mode !== 'lt') return this.predictions.slice();
+        const x = this.parseScoreFilterThreshold();
+        if (mode === 'gt') return this.predictions.filter(r => r.prediction > x);
+        return this.predictions.filter(r => r.prediction < x);
     }
 
     handleModelFileUpload(event) {
@@ -436,6 +483,11 @@ class PredictManager {
         }
 
         const ordered = this.getOrderedPredictions();
+        if (!ordered.length) {
+            this.showError('No rows match the current churn score filter. Adjust the threshold or choose Show all customers.');
+            return;
+        }
+
         const csvData = ordered.map((result) => ({
             'Customer': result.datasetRow,
             'Churn Score': result.prediction.toFixed(4),
@@ -454,7 +506,7 @@ class PredictManager {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        this.showSuccess('Predictions downloaded successfully!');
+        this.showSuccess(`Downloaded ${ordered.length} row${ordered.length === 1 ? '' : 's'} (current sort and filter).`);
     }
 
     resetPredictions() {
@@ -472,6 +524,13 @@ class PredictManager {
         if (pageSizeSelect) pageSizeSelect.value = '20';
         const sortOrderSelect = document.getElementById('predictions-sort-order');
         if (sortOrderSelect) sortOrderSelect.value = 'dataset-asc';
+        const filterModeEl = document.getElementById('predictions-filter-mode');
+        const filterThEl = document.getElementById('predictions-filter-threshold');
+        if (filterModeEl) filterModeEl.value = 'none';
+        if (filterThEl) {
+            filterThEl.value = '0.5';
+            filterThEl.disabled = true;
+        }
         this.hideMessages();
         this.hideModelInfo();
         this.hideDataInfo();
@@ -495,6 +554,7 @@ class PredictManager {
             ph.textContent = '-- Upload CSV first --';
             predictIdSelect.appendChild(ph);
         }
+        this.updateScoreFilterThresholdDisabled();
     }
 
 	// Metrics computation and display
@@ -742,9 +802,10 @@ class PredictManager {
     }
 
     getOrderedPredictions() {
-        if (!this.predictions || !this.predictions.length) return [];
+        const base = this.getFilteredPredictions();
+        if (!base.length) return [];
         const mode = this.predictionsSortMode || 'dataset-asc';
-        const arr = this.predictions.slice();
+        const arr = base.slice();
         if (mode === 'dataset-desc') {
             arr.reverse();
             return arr;
@@ -771,6 +832,7 @@ class PredictManager {
         const pagePrev = document.getElementById('predictions-page-prev');
         const pageNext = document.getElementById('predictions-page-next');
 
+        const allCount = this.predictions.length;
         const ordered = this.getOrderedPredictions();
         const total = ordered.length;
         const size = this.predictionsPageSize;
@@ -788,10 +850,15 @@ class PredictManager {
         if (predictionsTable) {
             const tbody = predictionsTable.querySelector('tbody');
             tbody.innerHTML = '';
-            slice.forEach((result) => {
-                const rowNum = result.datasetRow;
+            if (total === 0) {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
+                tr.innerHTML = `<td colspan="4" class="predictions-table-empty">No rows match the current churn score filter. Try another threshold or choose Show all customers.</td>`;
+                tbody.appendChild(tr);
+            } else {
+                slice.forEach((result) => {
+                    const rowNum = result.datasetRow;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
                     <td>${rowNum}</td>
                     <td>${result.prediction.toFixed(4)}</td>
                     <td>
@@ -801,20 +868,35 @@ class PredictManager {
                     </td>
                     <td>${this.escapeHtml(String(result.predictedClass))}</td>
                 `;
-                tbody.appendChild(tr);
-            });
+                    tbody.appendChild(tr);
+                });
+            }
         }
 
         if (pageInfo) {
-            pageInfo.textContent = `Page ${this.predictionsPage} of ${pageCount} (${start + 1}–${end} of ${total})`;
+            if (total === 0) {
+                pageInfo.textContent = `No matches (${allCount} scored)`;
+            } else {
+                pageInfo.textContent = `Page ${this.predictionsPage} of ${pageCount} (${start + 1}–${end} of ${total})`;
+            }
         }
-        if (pagePrev) pagePrev.disabled = this.predictionsPage <= 1;
-        if (pageNext) pageNext.disabled = this.predictionsPage >= pageCount;
+        if (pagePrev) pagePrev.disabled = this.predictionsPage <= 1 || total === 0;
+        if (pageNext) pageNext.disabled = this.predictionsPage >= pageCount || total === 0;
 
         if (tableNote) {
-            tableNote.textContent = total > size
-                ? 'Use Previous / Next to browse all rows. Download Results exports every row.'
-                : '';
+            const parts = [];
+            if (this.isScoreFilterActive() && total < allCount) {
+                parts.push(`Showing ${total} of ${allCount} customers after the score filter.`);
+            }
+            if (total > size) {
+                parts.push('Use Previous / Next to browse.');
+            }
+            if (total === 0 && allCount > 0) {
+                parts.push('Adjust or clear the filter to export rows.');
+            } else {
+                parts.push('Download Results exports only the rows in the table (after filter and sort).');
+            }
+            tableNote.textContent = parts.join(' ');
         }
     }
 
@@ -828,6 +910,14 @@ class PredictManager {
             this.predictionsSortMode = 'dataset-asc';
             const sortSel = document.getElementById('predictions-sort-order');
             if (sortSel) sortSel.value = 'dataset-asc';
+            const filterModeEl = document.getElementById('predictions-filter-mode');
+            const filterThEl = document.getElementById('predictions-filter-threshold');
+            if (filterModeEl) filterModeEl.value = 'none';
+            if (filterThEl) {
+                filterThEl.value = '0.5';
+                filterThEl.disabled = true;
+            }
+            this.updateScoreFilterThresholdDisabled();
             this.renderPredictionsTablePage();
             
             resultsCard.style.display = 'block';

@@ -437,6 +437,20 @@
                                 <button type="button" class="btn btn-secondary btn-small" id="predictions-page-next">Next</button>
                             </div>
                         </div>
+                        <div class="predictions-filter-toolbar">
+                            <div class="pagination-toolbar-filter">
+                                <label for="predictions-filter-mode">Churn score filter</label>
+                                <select id="predictions-filter-mode">
+                                    <option value="none" selected>Show all customers</option>
+                                    <option value="gt">Score greater than</option>
+                                    <option value="lt">Score less than</option>
+                                </select>
+                            </div>
+                            <div class="pagination-toolbar-filter-threshold">
+                                <label for="predictions-filter-threshold">Threshold <span class="filter-threshold-hint">(0–1)</span></label>
+                                <input type="number" id="predictions-filter-threshold" min="0" max="1" step="0.0001" value="0.5" disabled />
+                            </div>
+                        </div>
                         <table id="predictions-table">
                             <thead>
                                 <tr>
