@@ -894,7 +894,7 @@ class PredictManager {
             if (total === 0 && allCount > 0) {
                 parts.push('Adjust or clear the filter to export rows.');
             } else {
-                parts.push('Download Results exports only the rows in the table (after filter and sort).');
+                parts.push('Download Results exports only the rows selected by the applied filters, and in the sorting order selected.');
             }
             tableNote.textContent = parts.join(' ');
         }
