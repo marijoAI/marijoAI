@@ -163,9 +163,8 @@
 
 .predictions-pagination-toolbar {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: row;
+  align-items: stretch;
   gap: 16px;
   margin-bottom: 16px;
   padding: 12px 14px;
@@ -177,15 +176,27 @@
   box-sizing: border-box;
 }
 
+.predictions-pagination-controls-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  overflow-x: auto;
+}
+
 .pagination-toolbar-sort,
 .pagination-toolbar-size {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 10px;
   min-width: 0;
-  max-width: 100%;
-  flex: 1 1 12rem;
+  max-width: none;
+  flex: 0 0 auto;
 }
 
 .pagination-toolbar-sort label,
@@ -194,7 +205,8 @@
   font-weight: 500;
   color: var(--text-muted);
   margin: 0;
-  flex: 0 1 auto;
+  flex: 0 0 auto;
+  white-space: nowrap;
   min-width: 0;
 }
 
@@ -207,48 +219,70 @@
   border-radius: var(--radius-sm);
   background: white;
   color: var(--text);
-  flex: 1 1 10rem;
-  max-width: 100%;
-  width: auto;
+  flex: 0 0 auto;
+  max-width: none;
+  width: 15rem;
   box-sizing: border-box;
 }
 
 .pagination-toolbar-size select {
-  flex: 0 1 5rem;
+  flex: 0 0 auto;
   min-width: 4.5rem;
+  width: 6rem;
 }
 
 .pagination-toolbar-sort select {
-  flex: 1 1 min(100%, 14rem);
+  width: 16rem;
 }
 
 .pagination-toolbar-nav {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   min-width: 0;
-  max-width: 100%;
-  flex: 1 1 100%;
+  max-width: none;
+  flex: 0 0 auto;
   justify-content: center;
 }
 
-@media (min-width: 769px) {
-  .pagination-toolbar-nav {
-    flex: 0 1 auto;
-    justify-content: flex-end;
-  }
+.predictions-pagination-nav-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e2e8f0;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.predictions-pagination-nav-section .pagination-toolbar-nav {
+  justify-content: flex-start;
+}
+
+#predictions-page-prev,
+#predictions-page-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .predictions-page-info {
   font-size: 14px;
   color: var(--text-muted);
   font-weight: 500;
-  min-width: 0;
-  max-width: 100%;
+  min-width: 8rem;
+  max-width: none;
   text-align: center;
-  flex: 1 1 12rem;
+  flex: 0 0 auto;
   line-height: 1.35;
+  white-space: nowrap;
 }
 
 .predictions-pagination-toolbar .btn:disabled {
@@ -274,9 +308,10 @@
 .pagination-toolbar-filter,
 .pagination-toolbar-filter-threshold {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
 }
 
 .pagination-toolbar-filter label,
@@ -285,18 +320,19 @@
   font-weight: 500;
   color: var(--text-muted);
   margin: 0;
+  white-space: nowrap;
 }
 
 .pagination-toolbar-filter {
-  flex: 1 1 12rem;
+  flex: 0 0 auto;
   min-width: 0;
-  max-width: 100%;
+  max-width: none;
 }
 
 .pagination-toolbar-filter select {
   min-width: 0;
-  max-width: 100%;
-  width: 100%;
+  max-width: none;
+  width: 16rem;
   padding: 8px 12px;
   font-size: 14px;
   border: 1px solid #e2e8f0;
@@ -428,27 +464,46 @@
     letter-spacing: 0.01em;
   }
 
-  .pagination-toolbar-sort,
-  .pagination-toolbar-size {
-    flex: 1 1 100%;
+  .predictions-pagination-nav-section {
+    overflow-x: hidden;
+  }
+
+  .predictions-pagination-nav-section .pagination-toolbar-nav {
+    width: 100%;
+    max-width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .predictions-page-info {
+    min-width: 0;
+    flex: 1 1 auto;
+    white-space: normal;
+  }
+
+  .predictions-pagination-controls-section,
+  .predictions-filter-toolbar {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
+  }
+
+  .pagination-toolbar-sort,
+  .pagination-toolbar-size,
+  .pagination-toolbar-filter,
+  .pagination-toolbar-filter-threshold {
+    width: 100%;
+    max-width: 100%;
+    justify-content: space-between;
   }
 
   .pagination-toolbar-sort select,
-  .pagination-toolbar-size select {
-    width: 100%;
-    flex: none;
-  }
-
-  .pagination-toolbar-filter,
-  .pagination-toolbar-filter-threshold {
-    flex: 1 1 100%;
-    max-width: 100%;
-  }
-
+  .pagination-toolbar-size select,
+  .pagination-toolbar-filter select,
   .pagination-toolbar-filter-threshold input[type="number"] {
-    width: 100%;
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
     max-width: 100%;
   }
   
