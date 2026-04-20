@@ -346,7 +346,7 @@ class PredictManager {
         return { key: v };
     }
 
-    makePredictions() {
+    async makePredictions() {
         if (!this.trainedModel || !this.testData) {
             this.showError('Please upload both trained model and test data');
             return;
@@ -472,7 +472,11 @@ class PredictManager {
 			} else {
 				this.hideEvaluationMetrics();
 			}
-            
+
+            // Compute "Top Churn Drivers" via permutation importance.
+            // We await here so the predict-loading spinner stays visible while we compute.
+            await this.computeAndShowTopChurnDrivers(features, predictions, featureKeys, expected);
+
         } catch (err) {
             this.showError('Prediction error: ' + err.message);
         } finally {
@@ -542,6 +546,7 @@ class PredictManager {
         this.hidePredictionSummary();
         this.hidePredictionResults();
 		this.hideEvaluationMetrics();
+        this.hideChurnDriversCard();
         
         const modelFileInput = document.getElementById('predict-model-file');
         const testDataInput = document.getElementById('test-data');
@@ -701,6 +706,162 @@ class PredictManager {
             return { key: 'atrisk', label: 'At risk', range: '0.50 – 0.80' };
         }
         return { key: 'critical', label: 'Critical', range: '0.80 – 1.00' };
+    }
+
+    // Deterministic RNG (mulberry32) used for the permutation step so that
+    // the "Top Churn Drivers" result is reproducible within a single run.
+    createSeededRng(seed) {
+        let s = (seed >>> 0) || 1;
+        return function () {
+            s = (s + 0x6D2B79F5) >>> 0;
+            let t = s;
+            t = Math.imul(t ^ (t >>> 15), t | 1);
+            t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+    }
+
+    // Compute global feature importance via permutation and render a bar chart.
+    // For each feature column, we shuffle that column across all customers,
+    // re-score, and measure the mean absolute change in churn score vs. baseline.
+    // The larger the change, the more the model depends on that feature.
+    async computeAndShowTopChurnDrivers(features, baselinePredictions, featureKeys, expected) {
+        const card = document.getElementById('churn-drivers-card');
+        if (!card) return;
+        const skeletonEl = document.getElementById('churn-drivers-skeleton');
+        const contentEl = document.getElementById('churn-drivers-content');
+        const loadingSpan = document.querySelector('#predict-loading span');
+
+        const originalLoadingText = loadingSpan ? loadingSpan.textContent : null;
+        if (loadingSpan) loadingSpan.textContent = 'Analyzing top churn drivers…';
+
+        card.style.display = 'block';
+        if (skeletonEl) skeletonEl.style.display = 'flex';
+        if (contentEl) contentEl.style.display = 'none';
+
+        try {
+            const N = features.length;
+            const firstRow = features[0] || [];
+            const rowLen = firstRow.length;
+            const nCols = Math.min(
+                Array.isArray(featureKeys) ? featureKeys.length : 0,
+                typeof expected === 'number' ? expected : rowLen,
+                rowLen
+            );
+
+            if (N === 0 || nCols === 0 || !this.trainedModel) {
+                card.style.display = 'none';
+                return;
+            }
+
+            const baseline = new Array(N);
+            for (let i = 0; i < N; i++) {
+                const p = baselinePredictions[i];
+                const v = Array.isArray(p) ? p[0] : p;
+                baseline[i] = (typeof v === 'number' && !isNaN(v)) ? v : 0.5;
+            }
+
+            // Scratch matrix we mutate one column at a time (and restore after
+            // each feature) to avoid reallocating per iteration.
+            const scratch = new Array(N);
+            for (let i = 0; i < N; i++) scratch[i] = features[i].slice();
+
+            const rng = this.createSeededRng((N * 2654435761 + nCols) >>> 0);
+            const importances = new Array(nCols);
+
+            for (let c = 0; c < nCols; c++) {
+                const original = new Array(N);
+                for (let i = 0; i < N; i++) original[i] = scratch[i][c];
+
+                // Fisher-Yates shuffle of this feature's values across customers.
+                const shuffled = original.slice();
+                for (let i = N - 1; i > 0; i--) {
+                    const j = Math.floor(rng() * (i + 1));
+                    const t = shuffled[i];
+                    shuffled[i] = shuffled[j];
+                    shuffled[j] = t;
+                }
+                for (let i = 0; i < N; i++) scratch[i][c] = shuffled[i];
+
+                const perturbed = this.trainedModel.predict(scratch);
+
+                let sumAbs = 0;
+                for (let i = 0; i < N; i++) {
+                    const p = perturbed[i];
+                    const v = Array.isArray(p) ? p[0] : p;
+                    const num = (typeof v === 'number' && !isNaN(v)) ? v : 0.5;
+                    sumAbs += Math.abs(num - baseline[i]);
+                }
+
+                importances[c] = {
+                    key: featureKeys[c],
+                    importance: sumAbs / N
+                };
+
+                // Restore this column before moving to the next feature.
+                for (let i = 0; i < N; i++) scratch[i][c] = original[i];
+
+                // Yield to the browser so the UI stays responsive on large datasets.
+                await new Promise((r) => setTimeout(r, 0));
+            }
+
+            importances.sort((a, b) => b.importance - a.importance);
+            const topN = importances.slice(0, 10);
+            this.renderTopChurnDrivers(topN);
+        } catch (e) {
+            console.error('Error computing churn drivers:', e);
+            card.style.display = 'none';
+        } finally {
+            if (skeletonEl) skeletonEl.style.display = 'none';
+            if (contentEl) contentEl.style.display = 'block';
+            if (loadingSpan && originalLoadingText !== null) {
+                loadingSpan.textContent = originalLoadingText;
+            }
+        }
+    }
+
+    renderTopChurnDrivers(topN) {
+        const summaryEl = document.getElementById('churn-drivers-summary');
+        const barsEl = document.getElementById('churn-drivers-bars');
+        if (!barsEl) return;
+        barsEl.innerHTML = '';
+
+        if (!topN || !topN.length) {
+            if (summaryEl) summaryEl.textContent = 'Not enough information to identify churn drivers in this dataset.';
+            return;
+        }
+
+        const max = topN[0].importance || 0;
+        if (summaryEl) {
+            if (max > 0) {
+                summaryEl.textContent = `Across all customers, changes in ${topN[0].key} move churn score the most.`;
+            } else {
+                summaryEl.textContent = 'All parameters look equally (un)important for this model. The score barely changes when any single parameter is scrambled.';
+            }
+        }
+
+        topN.forEach((item) => {
+            const pct = max > 0 ? Math.max(2, (item.importance / max) * 100) : 0;
+            const row = document.createElement('div');
+            row.className = 'churn-drivers-row';
+            row.innerHTML = `
+                <div class="churn-drivers-name" title="${this.escapeHtml(String(item.key))}">${this.escapeHtml(String(item.key))}</div>
+                <div class="churn-drivers-bar-track">
+                    <div class="churn-drivers-bar-fill" style="width: ${pct}%;"></div>
+                </div>
+                <div class="churn-drivers-value">${item.importance.toFixed(4)}</div>
+            `;
+            barsEl.appendChild(row);
+        });
+    }
+
+    hideChurnDriversCard() {
+        const card = document.getElementById('churn-drivers-card');
+        if (card) card.style.display = 'none';
+        const barsEl = document.getElementById('churn-drivers-bars');
+        if (barsEl) barsEl.innerHTML = '';
+        const summaryEl = document.getElementById('churn-drivers-summary');
+        if (summaryEl) summaryEl.textContent = '';
     }
 
     // UI Helper methods

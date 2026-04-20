@@ -414,6 +414,19 @@
                             </div>
                         </div>
                     </div>
+                    <div id="churn-drivers-card" class="churn-drivers-card" style="display: none;">
+                        <h3 class="churn-drivers-title">Top Churn Drivers</h3>
+                        <p class="churn-drivers-intro">Across the whole customer list, these are the parameters that influence the churn score the most.</p>
+                        <div id="churn-drivers-skeleton" class="churn-drivers-skeleton" style="display: none;">
+                            <div class="churn-drivers-spinner"></div>
+                            <span>Analyzing what drives churn in your dataset…</span>
+                        </div>
+                        <div id="churn-drivers-content" class="churn-drivers-content" style="display: none;">
+                            <p id="churn-drivers-summary" class="churn-drivers-summary"></p>
+                            <div id="churn-drivers-bars" class="churn-drivers-bars"></div>
+                            <p class="churn-drivers-footnote">The value on the right is how much the churn score moves, on average, when that parameter is scrambled across customers. Bigger = more important.</p>
+                        </div>
+                    </div>
                     <div id="evaluation-metrics" class="evaluation-metrics" style="display: none;">
                         <h3>Model Accuracy (vs. known outcomes)</h3>
                         <div class="summary-stats">

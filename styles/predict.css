@@ -534,6 +534,117 @@
   font-weight: 500;
 }
 
+/* Top Churn Drivers card: horizontal bar chart of permutation importances */
+.churn-drivers-card {
+  margin-bottom: 20px;
+  padding: 18px;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.churn-drivers-title {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px 0;
+  font-size: 1.05rem;
+}
+
+.churn-drivers-intro {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0 0 14px 0;
+}
+
+.churn-drivers-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px dashed #e2e8f0;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.churn-drivers-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e2e8f0;
+  border-top: 2px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  flex: 0 0 auto;
+}
+
+.churn-drivers-summary {
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+.churn-drivers-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.churn-drivers-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1.2fr) minmax(0, 3fr) 80px;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.churn-drivers-row:nth-child(odd) {
+  background: #fafbfd;
+}
+
+.churn-drivers-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.churn-drivers-bar-track {
+  height: 12px;
+  background: #f1f5f9;
+  border-radius: 999px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.churn-drivers-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #7c3aed);
+  border-radius: 999px;
+  transition: width var(--transition);
+}
+
+.churn-drivers-value {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.churn-drivers-footnote {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-style: italic;
+  margin: 14px 0 0 0;
+}
+
 .table-note {
   text-align: center;
   color: var(--text-muted);
@@ -560,6 +671,19 @@
 
   .risk-tier-count {
     font-size: 20px;
+  }
+
+  .churn-drivers-row {
+    grid-template-columns: minmax(90px, 1fr) minmax(0, 2fr) 64px;
+    gap: 8px;
+  }
+
+  .churn-drivers-name {
+    font-size: 12px;
+  }
+
+  .churn-drivers-value {
+    font-size: 12px;
   }
 
   .evaluation-metrics {
