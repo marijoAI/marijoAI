@@ -384,6 +384,36 @@
                         <p style="font-size: 1.1rem; font-weight: 700; color: #991b1b; margin-bottom: 4px;" id="churn-risk-headline"></p>
                         <p style="font-size: 0.9rem; color: #78350f;" id="churn-risk-detail"></p>
                     </div>
+                    <div id="risk-tiers-summary" class="risk-tiers-summary" style="display: none;">
+                        <h3 class="risk-tiers-title">Risk Tier Breakdown</h3>
+                        <p class="risk-tiers-subtitle">Customers are grouped into tiers based on their churn score (0 = will stay, 1 = will churn).</p>
+                        <div class="risk-tiers-grid">
+                            <div class="risk-tier-card risk-tier-safe">
+                                <span class="risk-tier-badge risk-tier-badge-safe">Safe</span>
+                                <span class="risk-tier-range">Score 0.00 – 0.20</span>
+                                <span class="risk-tier-count" id="risk-tier-count-safe">0</span>
+                                <span class="risk-tier-pct" id="risk-tier-pct-safe">0%</span>
+                            </div>
+                            <div class="risk-tier-card risk-tier-watch">
+                                <span class="risk-tier-badge risk-tier-badge-watch">Watch</span>
+                                <span class="risk-tier-range">Score 0.20 – 0.50</span>
+                                <span class="risk-tier-count" id="risk-tier-count-watch">0</span>
+                                <span class="risk-tier-pct" id="risk-tier-pct-watch">0%</span>
+                            </div>
+                            <div class="risk-tier-card risk-tier-atrisk">
+                                <span class="risk-tier-badge risk-tier-badge-atrisk">At risk</span>
+                                <span class="risk-tier-range">Score 0.50 – 0.80</span>
+                                <span class="risk-tier-count" id="risk-tier-count-atrisk">0</span>
+                                <span class="risk-tier-pct" id="risk-tier-pct-atrisk">0%</span>
+                            </div>
+                            <div class="risk-tier-card risk-tier-critical">
+                                <span class="risk-tier-badge risk-tier-badge-critical">Critical</span>
+                                <span class="risk-tier-range">Score 0.80 – 1.00</span>
+                                <span class="risk-tier-count" id="risk-tier-count-critical">0</span>
+                                <span class="risk-tier-pct" id="risk-tier-pct-critical">0%</span>
+                            </div>
+                        </div>
+                    </div>
                     <div id="evaluation-metrics" class="evaluation-metrics" style="display: none;">
                         <h3>Model Accuracy (vs. known outcomes)</h3>
                         <div class="summary-stats">
@@ -462,6 +492,7 @@
                                     <th>Churn Score</th>
                                     <th>Confidence</th>
                                     <th>Risk Level</th>
+                                    <th>Risk Tier</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

@@ -429,6 +429,111 @@
   letter-spacing: 0.01em;
 }
 
+/* Risk tier badges (used inside the predictions table and the breakdown card) */
+.risk-tier-badge {
+  display: inline-block;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.risk-tier-badge-safe {
+  background-color: #10b981;
+}
+
+.risk-tier-badge-watch {
+  background-color: #f59e0b;
+}
+
+.risk-tier-badge-atrisk {
+  background-color: #f97316;
+}
+
+.risk-tier-badge-critical {
+  background-color: #ef4444;
+}
+
+/* Risk tier breakdown card (shown above the predictions table) */
+.risk-tiers-summary {
+  margin-bottom: 20px;
+  padding: 18px;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.risk-tiers-title {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px 0;
+  font-size: 1.05rem;
+}
+
+.risk-tiers-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0 0 14px 0;
+}
+
+.risk-tiers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.risk-tier-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e2e8f0;
+  border-left-width: 4px;
+}
+
+.risk-tier-card.risk-tier-safe {
+  border-left-color: #10b981;
+}
+
+.risk-tier-card.risk-tier-watch {
+  border-left-color: #f59e0b;
+}
+
+.risk-tier-card.risk-tier-atrisk {
+  border-left-color: #f97316;
+}
+
+.risk-tier-card.risk-tier-critical {
+  border-left-color: #ef4444;
+}
+
+.risk-tier-range {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
+}
+
+.risk-tier-count {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.risk-tier-pct {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
 .table-note {
   text-align: center;
   color: var(--text-muted);
@@ -447,6 +552,14 @@
 @media (max-width: 768px) {
   .summary-stats {
     grid-template-columns: 1fr;
+  }
+
+  .risk-tiers-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .risk-tier-count {
+    font-size: 20px;
   }
 
   .evaluation-metrics {

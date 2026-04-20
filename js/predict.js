@@ -447,13 +447,17 @@ class PredictManager {
                     predictedClass = predictedNumeric === 1 ? 'At Risk' : 'Safe';
                 }
                 
+                const riskTier = this.getRiskTier(predVal);
+
                 return {
                     datasetRow: index + 1,
                     input: featureKeys.map(k => row[k]),
                     prediction: predVal,
                     confidence: confidence,
                     predictedClass: predictedClass,
-                    predictedNumeric: predictedNumeric
+                    predictedNumeric: predictedNumeric,
+                    riskTierKey: riskTier.key,
+                    riskTierLabel: riskTier.label
                 };
             });
 
@@ -492,7 +496,8 @@ class PredictManager {
             'Customer': result.datasetRow,
             'Churn Score': result.prediction.toFixed(4),
             'Confidence': result.confidence.toFixed(4),
-            'Risk Level': result.predictedClass
+            'Risk Level': result.predictedClass,
+            'Risk Tier': result.riskTierLabel || this.getRiskTier(result.prediction).label
         }));
 
         const csv = Papa.unparse(csvData);
@@ -681,6 +686,23 @@ class PredictManager {
         return '#e74c3c'; // Red
     }
 
+    // Risk tier bucketing based on churn score (0 = will stay, 1 = will churn).
+    // Tiers are inclusive of the lower bound and exclusive of the upper bound,
+    // except for the top tier which includes 1.0.
+    getRiskTier(score) {
+        const s = (typeof score === 'number' && !isNaN(score)) ? score : 0;
+        if (s < 0.20) {
+            return { key: 'safe', label: 'Safe', range: '0.00 – 0.20' };
+        }
+        if (s < 0.50) {
+            return { key: 'watch', label: 'Watch', range: '0.20 – 0.50' };
+        }
+        if (s < 0.80) {
+            return { key: 'atrisk', label: 'At risk', range: '0.50 – 0.80' };
+        }
+        return { key: 'critical', label: 'Critical', range: '0.80 – 1.00' };
+    }
+
     // UI Helper methods
     showLoading(show) {
         const loadingContainer = document.getElementById('predict-loading');
@@ -792,12 +814,46 @@ class PredictManager {
                 : 'No customers were flagged as high churn risk by the model.';
             summaryEl.style.display = riskCount > 0 ? 'block' : 'none';
         }
+
+        this.renderRiskTiersSummary();
+    }
+
+    renderRiskTiersSummary() {
+        const container = document.getElementById('risk-tiers-summary');
+        if (!container) return;
+        if (!this.predictions || !this.predictions.length) {
+            container.style.display = 'none';
+            return;
+        }
+
+        const counts = { safe: 0, watch: 0, atrisk: 0, critical: 0 };
+        for (let i = 0; i < this.predictions.length; i++) {
+            const key = this.predictions[i].riskTierKey || this.getRiskTier(this.predictions[i].prediction).key;
+            if (counts[key] !== undefined) counts[key]++;
+        }
+
+        const total = this.predictions.length;
+        const formatPct = (n) => total > 0 ? `${((n / total) * 100).toFixed(0)}%` : '0%';
+
+        const tierKeys = ['safe', 'watch', 'atrisk', 'critical'];
+        tierKeys.forEach((key) => {
+            const countEl = document.getElementById(`risk-tier-count-${key}`);
+            const pctEl = document.getElementById(`risk-tier-pct-${key}`);
+            if (countEl) countEl.textContent = String(counts[key]);
+            if (pctEl) pctEl.textContent = formatPct(counts[key]);
+        });
+
+        container.style.display = 'block';
     }
 
     hidePredictionSummary() {
         const summary = document.getElementById('churn-risk-summary');
         if (summary) {
             summary.style.display = 'none';
+        }
+        const tiers = document.getElementById('risk-tiers-summary');
+        if (tiers) {
+            tiers.style.display = 'none';
         }
     }
 
@@ -852,11 +908,13 @@ class PredictManager {
             tbody.innerHTML = '';
             if (total === 0) {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td colspan="4" class="predictions-table-empty">No rows match the current churn score filter. Try another threshold or choose Show all customers.</td>`;
+                tr.innerHTML = `<td colspan="5" class="predictions-table-empty">No rows match the current churn score filter. Try another threshold or choose Show all customers.</td>`;
                 tbody.appendChild(tr);
             } else {
                 slice.forEach((result) => {
                     const rowNum = result.datasetRow;
+                    const tierKey = result.riskTierKey || this.getRiskTier(result.prediction).key;
+                    const tierLabel = result.riskTierLabel || this.getRiskTier(result.prediction).label;
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                     <td>${rowNum}</td>
@@ -867,6 +925,11 @@ class PredictManager {
                         </span>
                     </td>
                     <td>${this.escapeHtml(String(result.predictedClass))}</td>
+                    <td>
+                        <span class="risk-tier-badge risk-tier-badge-${tierKey}">
+                            ${this.escapeHtml(tierLabel)}
+                        </span>
+                    </td>
                 `;
                     tbody.appendChild(tr);
                 });
