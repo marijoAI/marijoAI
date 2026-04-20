@@ -34,6 +34,7 @@
                     <a href="#/train" class="nav-link">Train</a>
                     <a href="#/predict" class="nav-link">Score</a>
 					<a href="#/tutorial" class="nav-link">Tutorial</a>
+					<a href="#/documentation" class="nav-link">Documentation</a>
                 </div>
             </nav>
         </div>
@@ -555,6 +556,183 @@
 				<div class="card">
 					<p><b>That’s it! You’ve built a customer churn predictor end-to-end.</b></p>
 				</div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Documentation -->
+    <template id="tmpl-documentation">
+        <div class="documentation">
+            <div class="container">
+                <div class="page-header">
+                    <h1 style="margin-top: 1em;">Documentation</h1>
+                    <p>What marijoAI is, and what powers it under the hood.</p>
+                </div>
+
+                <div class="card">
+                    <h2>What is marijoAI?</h2>
+                    <p style="margin-bottom: 1em;">
+                        marijoAI is a browser-based, no-code application that helps SaaS and subscription businesses predict <b>customer churn</b> using a neural network — entirely on your device.
+                    </p>
+                    <p style="margin-bottom: 1em;">
+                        You upload a CSV exported from your CRM, billing tool, or analytics platform. The app detects the format, cleans the data, trains a binary classifier, and lets you score new customer lists. Every step runs locally in your browser: no accounts, no servers, no data leaving your machine.
+                    </p>
+                    <p>
+                        It is designed for customer success, revenue, and product teams that need actionable churn predictions without a data science team, a vendor review, or a data processing agreement.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h2>The Workflow</h2>
+                    <p style="margin-bottom: 1em;">marijoAI is structured around three simple pages:</p>
+                    <ol style="margin-left: 1.5em; line-height: 1.9;">
+                        <li><b><a href="#/train">Train</a></b> — upload a CSV, pick the churn column, and train a neural network. The model learns from historical customers you already know churned or stayed.</li>
+                        <li><b><a href="#/predict">Score</a></b> — load a trained model and a new customer list to get a churn score, a risk tier, and the top drivers of churn across the dataset.</li>
+                        <li><b><a href="#/tutorial">Tutorial</a></b> — a step-by-step walk-through using an included public SaaS churn dataset so you can get a working model in under five minutes.</li>
+                    </ol>
+                </div>
+
+                <div class="card">
+                    <h2>Browser-First, Privacy-First Architecture</h2>
+                    <p style="margin-bottom: 1em;">
+                        marijoAI is a single-page static web application. The entire stack — data parsing, model training, scoring, and visualization — executes in your browser tab. There is no backend, no database, and no telemetry.
+                    </p>
+                    <p style="margin-bottom: 1em;">
+                        Concretely, this means:
+                    </p>
+                    <ul style="margin-left: 1.5em; line-height: 1.9;">
+                        <li>Your CSV files are read with the browser's <code>File</code> API and parsed in memory.</li>
+                        <li>Training runs on your CPU, in the same tab, using WebAssembly when available.</li>
+                        <li>Trained models are downloaded as plain JSON files to your local disk.</li>
+                        <li>Closing the tab clears all in-memory data.</li>
+                        <li>No cookies, no tracking scripts, no analytics.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2>Technology Stack</h2>
+                    <p style="margin-bottom: 1em;">The entire application is built with a deliberately minimal, dependency-light stack:</p>
+                    <div class="grid grid-2">
+                        <div class="data-info">
+                            <h3>Front-end</h3>
+                            <p><b>Vanilla HTML, CSS, and JavaScript (ES6+).</b> No React, Vue, Svelte, or build step for the UI. The app is a single <code>index.html</code> with page templates rendered by a small hash-based SPA router.</p>
+                        </div>
+                        <div class="data-info">
+                            <h3>Styling</h3>
+                            <p><b>Hand-written CSS with custom properties</b> for the design system (primary indigo, accent pink, glassmorphic cards). Typography uses <b>Inter</b> from Google Fonts.</p>
+                        </div>
+                        <div class="data-info">
+                            <h3>CSV parsing</h3>
+                            <p><b><a href="https://www.papaparse.com/" target="_blank" rel="noopener">PapaParse 5.4</a></b> handles CSV reading, tolerant of messy real-world exports. Delimiter and header presence are auto-detected from the first few lines.</p>
+                        </div>
+                        <div class="data-info">
+                            <h3>Neural network core</h3>
+                            <p><b><a href="https://www.assemblyscript.org/" target="_blank" rel="noopener">AssemblyScript</a></b> compiled to <b>WebAssembly</b> (<code>wasm/nn.wasm</code>) for fast training, with a pure-JavaScript fallback when WebAssembly is unavailable.</p>
+                        </div>
+                        <div class="data-info">
+                            <h3>Routing</h3>
+                            <p>A ~80-line <b>hash-based SPA router</b> (<code>js/router.js</code>) that swaps <code>&lt;template&gt;</code> contents into the DOM and invokes page initialization hooks.</p>
+                        </div>
+                        <div class="data-info">
+                            <h3>Hosting</h3>
+                            <p>Fully static. The app can be served from any static host, or opened directly from disk as a local <code>index.html</code> file — no server required.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>The Neural Network</h2>
+                    <p style="margin-bottom: 1em;">
+                        marijoAI uses a small, fixed <b>feed-forward neural network</b> for binary classification. The architecture is intentionally simple so it trains quickly on a laptop and generalizes well on typical tabular customer data:
+                    </p>
+                    <ul style="margin-left: 1.5em; line-height: 1.9; margin-bottom: 1em;">
+                        <li><b>Input layer</b> — one neuron per numeric feature detected in your CSV (the churn column and any ID column are excluded automatically).</li>
+                        <li><b>Hidden layer</b> — 64 neurons with <b>ReLU</b> activation.</li>
+                        <li><b>Output layer</b> — 1 neuron with <b>sigmoid</b> activation, producing a churn probability in <code>[0, 1]</code>.</li>
+                    </ul>
+                    <p style="margin-bottom: 1em;">
+                        Weights are initialized with <b>Xavier / Glorot uniform</b> initialization. The loss function is <b>binary cross-entropy</b>, which is the standard choice for sigmoid-output classifiers.
+                    </p>
+                    <p>
+                        Optimization uses <b>Adam</b> (adaptive moment estimation) with default hyper-parameters <code>β₁ = 0.9</code>, <code>β₂ = 0.999</code>, <code>ε = 1e-8</code>, a learning rate of <code>0.001</code>, a batch size of <code>32</code>, and <code>100</code> epochs. These values are tuned to work well out-of-the-box on typical subscription-business datasets.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h2>WebAssembly Training Engine</h2>
+                    <p style="margin-bottom: 1em;">
+                        The performance-critical inner loop — forward pass, back-propagation, Adam updates, epoch-level training — is implemented in <b>AssemblyScript</b> and compiled ahead of time to a compact <code>wasm/nn.wasm</code> module. The source lives in <code>assembly/index.ts</code>.
+                    </p>
+                    <p style="margin-bottom: 1em;">
+                        The WebAssembly module manages its own linear memory: weights, biases, Adam first- and second-moment estimates, gradient accumulators, and the training dataset are all stored as flat <code>f64</code> arrays at fixed pointer offsets. JavaScript uploads features and labels once, then drives training one epoch at a time, reading back loss and accuracy after each epoch to power the live progress UI.
+                    </p>
+                    <p>
+                        When WebAssembly is unavailable — for example on very old browsers or certain locked-down environments — the same network is trained by an equivalent <b>pure-JavaScript implementation</b> in <code>js/neural-network.js</code>. The model produced by either path is numerically compatible: weights can be exported from one and loaded into the other.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h2>Data Pipeline</h2>
+                    <p style="margin-bottom: 1em;">Before any neuron sees your data, marijoAI performs an automatic, deterministic preprocessing pipeline:</p>
+                    <ol style="margin-left: 1.5em; line-height: 1.9;">
+                        <li><b>Format auto-detection.</b> A sample of the first few lines is scanned to pick the most likely delimiter (<code>,</code>, <code>;</code>, tab, or <code>|</code>) and to decide whether the first row is a header, using a numeric-ratio heuristic.</li>
+                        <li><b>Row validation.</b> Empty rows and rows with no usable values are dropped.</li>
+                        <li><b>Column selection.</b> The churn column and optional ID column are excluded. Among the remaining columns, only those that contain at least one parseable number are kept as features.</li>
+                        <li><b>Deduplication.</b> Exact duplicate feature + label combinations are removed so they do not bias training.</li>
+                        <li><b>Missing-value imputation.</b> Non-numeric or empty cells in a feature column are replaced by the <b>column mean</b> computed from the valid values.</li>
+                        <li><b>Validation holdout.</b> If requested, a random <b>20%</b> of the data is held out as a validation set and exported as a separate CSV so you can measure real-world accuracy later.</li>
+                        <li><b>Min–max normalization.</b> Each feature is rescaled to <code>[0, 1]</code> using the min and max from the training rows only (to avoid leakage). These stats are saved with the model so scoring uses the exact same scaling.</li>
+                        <li><b>Label mapping.</b> Common textual churn labels — <code>yes</code>/<code>no</code>, <code>true</code>/<code>false</code>, <code>churned</code>/<code>retained</code>, <code>left</code>/<code>stayed</code>, <code>inactive</code>/<code>active</code> — are automatically mapped to <code>1</code>/<code>0</code>. The mapping is surfaced in the UI so you can verify it before training.</li>
+                    </ol>
+                </div>
+
+                <div class="card">
+                    <h2>Scoring and Interpretation</h2>
+                    <p style="margin-bottom: 1em;">
+                        On the Score page, the trained model outputs a <b>churn score</b> between <code>0</code> (will stay) and <code>1</code> (will churn) for each customer. marijoAI turns that raw probability into actionable views:
+                    </p>
+                    <ul style="margin-left: 1.5em; line-height: 1.9; margin-bottom: 1em;">
+                        <li><b>Risk tiers.</b> Scores are bucketed into <b>Safe</b> (0.00–0.20), <b>Watch</b> (0.20–0.50), <b>At risk</b> (0.50–0.80), and <b>Critical</b> (0.80–1.00).</li>
+                        <li><b>Confidence.</b> How far the score is from the 0.5 decision boundary, so you can distinguish strong predictions from uncertain ones.</li>
+                        <li><b>Accuracy evaluation.</b> If the scored CSV still contains the true churn column, the app computes overall accuracy and a full <b>confusion matrix</b> (predicted vs. actual).</li>
+                        <li><b>Top churn drivers.</b> Global feature importance is estimated via <b>permutation importance</b>: for each feature, its values are shuffled across customers and the average change in the churn score is measured. Features whose shuffling changes predictions the most are the strongest drivers.</li>
+                    </ul>
+                    <p>
+                        Results can be sorted, filtered by score threshold, paginated, and exported to CSV for follow-up in your CRM or customer success tool.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h2>Model Persistence</h2>
+                    <p style="margin-bottom: 1em;">
+                        A trained model is saved as a single, human-readable <b>JSON file</b>. It contains:
+                    </p>
+                    <ul style="margin-left: 1.5em; line-height: 1.9; margin-bottom: 1em;">
+                        <li>The network <b>architecture</b> (layer sizes and activations).</li>
+                        <li>All <b>weights and biases</b>.</li>
+                        <li>The <b>preprocessing metadata</b>: the ordered list of feature column names, per-column min/max for normalization, the churn column name, the ID column (if any), and the label-to-number mapping.</li>
+                    </ul>
+                    <p>
+                        Because preprocessing travels with the model, you can close the tab, come back a month later, re-upload the JSON with any CSV that has the same columns, and get perfectly consistent scoring. The model file is also small enough to check into version control or attach to an email.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h2>Requirements and Compatibility</h2>
+                    <ul style="margin-left: 1.5em; line-height: 1.9;">
+                        <li><b>Any modern browser</b> — recent Chrome, Edge, Firefox, or Safari. WebAssembly is used automatically when present.</li>
+                        <li><b>No internet connection required</b> after the page is loaded. The app also runs from a local file for fully offline use.</li>
+                        <li><b>Any CSV</b> with at least one numeric feature column and a binary churn column. Datasets with tens of thousands of rows train in seconds on a typical laptop.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2>Open Source</h2>
+                    <p>
+                        marijoAI is released under the <b>MIT license</b>. The source code lives on <a href="https://github.com/marijoai/marijoai" target="_blank">GitHub</a>.
+                    </p>
+                </div>
+
             </div>
         </div>
     </template>

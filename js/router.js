@@ -9,6 +9,7 @@
 		'/train': { templateId: 'tmpl-train', init: 'initTrainPage' },
 		'/predict': { templateId: 'tmpl-predict', init: 'initPredictPage' },
 		'/tutorial': { templateId: 'tmpl-tutorial', init: null },
+		'/documentation': { templateId: 'tmpl-documentation', init: null },
 		'/legal': { templateId: 'tmpl-legal', init: null },
 		'/privacy': { templateId: 'tmpl-privacy', init: null },
 		'/cookies': { templateId: 'tmpl-cookies', init: null }
