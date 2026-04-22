@@ -195,14 +195,18 @@
 
   .nav {
     gap: 0;
+    flex-wrap: wrap;
   }
 
   .nav-links {
     display: none;
     flex-direction: column;
+    align-items: stretch;
     gap: 0.25em;
     width: 100%;
+    margin-top: 0.5em;
     padding: 0.625em 0 0.3125em 0;
+    border-top: 0.0625em solid rgba(99, 102, 241, 0.12);
     position: relative;
     z-index: 1000;
   }
@@ -212,8 +216,12 @@
   }
 
   .nav-link {
-    padding: 0.625em 0.75em;
+    padding: 0.75em 0.75em;
     font-size: 0.875em;
+  }
+
+  .nav-link.active::after {
+    display: none;
   }
 
   .language-switcher {
