@@ -3,6 +3,11 @@
  * Handles neural network training with custom implementation
  */
 
+function _t(key, params) {
+    if (window.i18n && typeof window.i18n.t === 'function') return window.i18n.t(key, params);
+    return key;
+}
+
 class TrainModelManager {
     constructor() {
         this.data = null;
@@ -121,7 +126,7 @@ class TrainModelManager {
                     );
                     
                     if (criticalErrors.length > 0) {
-                        this.showError('Error parsing CSV file: ' + criticalErrors[0].message);
+                        this.showError(_t('train.msg.err_parse', { error: criticalErrors[0].message }));
                         return;
                     }
                     
@@ -133,7 +138,7 @@ class TrainModelManager {
                     });
                     
                     if (validData.length === 0) {
-                        this.showError('No valid data found in CSV file');
+                        this.showError(_t('train.msg.err_no_valid'));
                         return;
                     }
                     
@@ -143,15 +148,19 @@ class TrainModelManager {
                     const cols = Object.keys(this.data[0] || {});
                     this.populateTargetColumnOptions(cols);
                     this.populateIdColumnOptions(cols);
-                    this.showSuccess(`Successfully loaded ${validData.length} rows of training data (delimiter "${fmt.delimiter}", header: ${fmt.hasHeader ? 'yes' : 'no'})`);
+                    this.showSuccess(_t('train.msg.loaded', {
+                        rows: validData.length,
+                        delimiter: fmt.delimiter,
+                        header: fmt.hasHeader ? _t('train.msg.yes') : _t('train.msg.no')
+                    }));
                     this.updateDataInfo();
                 },
                 error: (error) => {
-                    this.showError('Error reading file: ' + error.message);
+                    this.showError(_t('train.msg.err_read', { error: error.message }));
                 }
             });
         }).catch((e) => {
-            this.showError('Failed to detect CSV format: ' + (e && e.message ? e.message : e));
+            this.showError(_t('train.msg.err_detect', { error: e && e.message ? e.message : e }));
         });
     }
 
@@ -208,7 +217,7 @@ class TrainModelManager {
         targetSelect.innerHTML = '';
         const placeholder = document.createElement('option');
         placeholder.value = '';
-        placeholder.textContent = '-- Select target column --';
+        placeholder.textContent = _t('select.pick_target');
         targetSelect.appendChild(placeholder);
         columns.forEach(col => {
             const opt = document.createElement('option');
@@ -238,7 +247,7 @@ class TrainModelManager {
         idSelect.innerHTML = '';
         const placeholder = document.createElement('option');
         placeholder.value = '';
-        placeholder.textContent = '-- Select ID column --';
+        placeholder.textContent = _t('select.pick_id');
         idSelect.appendChild(placeholder);
         opts.forEach(col => {
             const opt = document.createElement('option');
@@ -255,10 +264,10 @@ class TrainModelManager {
         const sel = document.getElementById('train-id-column');
         const v = sel ? sel.value : '';
         if (!v || !columns.includes(v)) {
-            return { key: null, error: 'Please select which column is the ID column.' };
+            return { key: null, error: _t('train.msg.err_pick_id') };
         }
         if (labelKey && v === labelKey) {
-            return { key: null, error: 'The ID column cannot be the same as the churn column.' };
+            return { key: null, error: _t('train.msg.err_id_equals_target') };
         }
         return { key: v };
     }
@@ -266,7 +275,7 @@ class TrainModelManager {
     prepareData() {
 		// Only require uploaded data; model is built after auto-detecting feature count
 		if (!this.data) {
-			this.showError('Please upload data first');
+			this.showError(_t('train.msg.err_upload_first'));
 			return null;
 		}
 
@@ -277,7 +286,7 @@ class TrainModelManager {
 			});
 
 			if (validData.length === 0) {
-				this.showError('No valid data found in the CSV file');
+				this.showError(_t('train.msg.err_no_valid'));
 				return null;
 			}
 
@@ -285,7 +294,7 @@ class TrainModelManager {
             const columns = Object.keys(validData[0]);
             let labelKey = this.targetColumn && columns.includes(this.targetColumn) ? this.targetColumn : null;
             if (!labelKey) {
-                this.showError('Please select the target column to predict.');
+                this.showError(_t('train.msg.err_pick_target'));
                 return null;
             }
 
@@ -414,7 +423,7 @@ class TrainModelManager {
 
 			// Final validation
 			if (!features.every(f => Array.isArray(f) && f.length > 0)) {
-				this.showError('Invalid feature data format');
+				this.showError(_t('train.msg.err_invalid_feature'));
 				return null;
 			}
 
@@ -439,7 +448,7 @@ class TrainModelManager {
 			this.labelMappings = labelMappingsObj;
 			return { features, labels };
 		} catch (err) {
-			this.showError('Error preparing data: ' + err.message);
+			this.showError(_t('train.msg.err_prepare', { error: err.message }));
 			return null;
 		}
     }
@@ -457,7 +466,7 @@ class TrainModelManager {
 		// Build model using detected input feature length
 		const units = features && features[0] ? features[0].length : 0;
 		if (!units || units <= 0) {
-			this.showError('Could not detect input features from the CSV.');
+			this.showError(_t('train.msg.err_detect_features'));
 			return;
 		}
 		this.modelConfig = {
@@ -486,7 +495,7 @@ class TrainModelManager {
         console.log('Labels length:', labels.length);
 
         if (!features || !labels || features.length === 0 || labels.length === 0) {
-            this.showError('Invalid training data: features or labels are empty');
+            this.showError(_t('train.msg.err_empty_training'));
             return;
         }
 
@@ -499,7 +508,7 @@ class TrainModelManager {
         const network = new NeuralNetwork(this.modelConfig);
         
         this.hideMessages();
-        this.showSuccess('Starting the Neural Network...');
+        this.showSuccess(_t('train.msg.starting'));
         this.showTrainingProgress();
         this.clearHistoryTable();
         
@@ -530,11 +539,11 @@ class TrainModelManager {
 				this.trainedModel.config.preprocessing = this.preprocessing;
 			}
             this.trainingProgress.isTraining = false;
-            this.showSuccess('Model training completed successfully!');
+            this.showSuccess(_t('train.msg.training_complete'));
             this.showTrainingComplete();
             
         } catch (err) {
-            this.showError('Training error: ' + err.message);
+            this.showError(_t('train.msg.err_training', { error: err.message }));
             this.trainingProgress.isTraining = false;
         }
     }
@@ -555,7 +564,10 @@ class TrainModelManager {
         }
 
         if (progressText) {
-            progressText.textContent = `Epoch ${epochData.epoch} of ${this.trainingConfig.epochs}`;
+            progressText.textContent = _t('train.progress.epoch_of', {
+                current: epochData.epoch,
+                total: this.trainingConfig.epochs
+            });
         }
 
         // removed unused current loss/accuracy labels (no matching DOM)
@@ -606,7 +618,7 @@ class TrainModelManager {
 
     downloadTrainedModel() {
         if (!this.trainedModel) {
-            this.showError('No trained model to download');
+            this.showError(_t('train.msg.err_no_model'));
             return;
         }
 
@@ -623,16 +635,16 @@ class TrainModelManager {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            this.showSuccess('Trained model downloaded successfully!');
+            this.showSuccess(_t('train.msg.model_downloaded'));
         } catch (err) {
-            this.showError('Error downloading model: ' + err.message);
+            this.showError(_t('train.msg.err_download_model', { error: err.message }));
         }
     }
 
     downloadValidationData() {
         try {
             if (!Array.isArray(this.validationData) || this.validationData.length === 0) {
-                this.showError('No validation data to download');
+                this.showError(_t('train.msg.err_no_validation'));
                 return;
             }
             const csv = Papa.unparse(this.validationData);
@@ -645,9 +657,9 @@ class TrainModelManager {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            this.showSuccess('Validation CSV downloaded successfully!');
+            this.showSuccess(_t('train.msg.validation_downloaded'));
         } catch (err) {
-            this.showError('Error downloading validation CSV: ' + err.message);
+            this.showError(_t('train.msg.err_download_validation', { error: err.message }));
         }
     }
 
@@ -684,7 +696,7 @@ class TrainModelManager {
             idSelect.innerHTML = '';
             const ph = document.createElement('option');
             ph.value = '';
-            ph.textContent = '-- Upload CSV first --';
+            ph.textContent = _t('select.upload_first');
             idSelect.appendChild(ph);
         }
     }
@@ -766,10 +778,12 @@ class TrainModelManager {
             return '';
         }
         
+        const labelTitle = _t('labels.mappings_title');
+        const labelSuffix = labelKey ? ` (${labelKey})` : '';
         let html = '<div style="margin-top: 1em; padding: 0.75em; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #007bff;">';
-        html += `<strong>Label Mappings (${labelKey || 'target column'}):</strong><br>`;
+        html += `<strong>${this.escapeHtml(labelTitle)}${this.escapeHtml(labelSuffix)}:</strong><br>`;
         html += '<table style="margin-top: 0.5em; width: 100%; font-size: 0.9em;">';
-        html += '<thead><tr style="border-bottom: 1px solid #ddd;"><th style="text-align: left; padding: 4px;">Original Value</th><th style="text-align: left; padding: 4px;">Mapped To</th></tr></thead>';
+        html += `<thead><tr style="border-bottom: 1px solid #ddd;"><th style="text-align: left; padding: 4px;">${this.escapeHtml(_t('labels.col_original'))}</th><th style="text-align: left; padding: 4px;">${this.escapeHtml(_t('labels.col_mapped'))}</th></tr></thead>`;
         html += '<tbody>';
         
         // Sort by mapped value, then by original value
@@ -783,7 +797,7 @@ class TrainModelManager {
         });
         
         html += '</tbody></table>';
-        html += '<p style="margin-top: 0.5em; font-size: 0.85em; color: #666;">These mappings are used during training and prediction.</p>';
+        html += `<p style="margin-top: 0.5em; font-size: 0.85em; color: #666;">${this.escapeHtml(_t('labels.mappings_train_note'))}</p>`;
         html += '</div>';
         
         return html;

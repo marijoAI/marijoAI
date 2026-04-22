@@ -24,17 +24,22 @@
                     <span class="logo-icon">🧠</span>
                     <span class="logo-text">marijoAI</span>
                 </a>
-                <button class="nav-toggle" style="margin-left: 2em;" aria-label="Toggle navigation" aria-expanded="false">
+                <button class="nav-toggle" style="margin-left: 2em;" aria-label="Toggle navigation" data-i18n-aria-label="nav.toggle_aria" aria-expanded="false">
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
                 </button>
                 
 				<div class="nav-links">
-                    <a href="#/train" class="nav-link">Train</a>
-                    <a href="#/predict" class="nav-link">Score</a>
-					<a href="#/tutorial" class="nav-link">Tutorial</a>
-					<a href="#/documentation" class="nav-link">Documentation</a>
+                    <a href="#/train" class="nav-link" data-i18n="nav.train">Train</a>
+                    <a href="#/predict" class="nav-link" data-i18n="nav.score">Score</a>
+					<a href="#/tutorial" class="nav-link" data-i18n="nav.tutorial">Tutorial</a>
+					<a href="#/documentation" class="nav-link" data-i18n="nav.documentation">Documentation</a>
+                    <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="nav.language_label">
+                        <button type="button" class="lang-btn" data-lang-option="en" aria-pressed="true">EN</button>
+                        <button type="button" class="lang-btn" data-lang-option="fr" aria-pressed="false">FR</button>
+                        <button type="button" class="lang-btn" data-lang-option="es" aria-pressed="false">ES</button>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -48,95 +53,94 @@
                 <div class="container">
                     <div class="hero-section">
                         <h1 class="hero-title" style="margin: 0.5em;">
-                            Predict Customer Churn 
-                            <span class="gradient-text">Before It Happens</span>
+                            <span data-i18n="home.hero.title_line1">Predict Customer Churn</span>
+                            <span class="gradient-text" data-i18n="home.hero.title_line2">Before It Happens</span>
                         </h1>
-                        <p class="hero-subtitle" style="padding: 1em;">
+                        <p class="hero-subtitle" style="padding: 1em;" data-i18n="home.hero.subtitle">
                             Upload your customer data, train an AI model, and identify who’s about to leave — no coding required, no data team needed, and your data never leaves your browser.
                         </p>
                         <div class="hero-buttons">
-                            <a href="#/train" class="btn btn-secondary" style="margin-left: 1em; margin-right: 1em;">Train a Churn Model</a>
-                            <a href="#/predict" class="btn btn-primary" style="margin-left: 1em; margin-right: 1em;">Score Customers</a>
+                            <a href="#/train" class="btn btn-secondary" style="margin-left: 1em; margin-right: 1em;" data-i18n="home.hero.btn_train">Train a Churn Model</a>
+                            <a href="#/predict" class="btn btn-primary" style="margin-left: 1em; margin-right: 1em;" data-i18n="home.hero.btn_score">Score Customers</a>
                         </div>
                     </div>
 
                     <div class="features-section">
-                        <h2 class="section-title">How It Works</h2>
+                        <h2 class="section-title" data-i18n="home.features.title">How It Works</h2>
                         <div class="features-grid">
 
                             <div class="feature-card">
                                 <div class="feature-icon">🚀</div>
-                                <h3>Train a Churn Model</h3>
-                                <p>
+                                <h3 data-i18n="home.features.train.title">Train a Churn Model</h3>
+                                <p data-i18n="home.features.train.body">
                                     Export a CSV from your CRM or billing tool, upload it here, select the churn column, and train an AI model with live progress — all in your browser.
                                 </p>
-                                <a href="#/train" class="feature-link">Train Model →</a>
+                                <a href="#/train" class="feature-link" data-i18n="home.features.train.cta">Train Model →</a>
                             </div>
 
                             <div class="feature-card">
                                 <div class="feature-icon">🔮</div>
-                                <h3>Score Your Customers</h3>
-                                <p>
-                                    Load your trained model and a customer list to get instant churn risk scores, confidence levels, and see exactly who needs attention now.</p>
-                                <a href="#/predict" class="feature-link">Score Customers →</a>
+                                <h3 data-i18n="home.features.score.title">Score Your Customers</h3>
+                                <p data-i18n="home.features.score.body">Load your trained model and a customer list to get instant churn risk scores, confidence levels, and see exactly who needs attention now.</p>
+                                <a href="#/predict" class="feature-link" data-i18n="home.features.score.cta">Score Customers →</a>
                             </div>
                         </div>
                     </div>
 
                     <div class="benefits-section">
-                        <h2 class="section-title">Why Customer Success Teams Use marijoAI</h2>
+                        <h2 class="section-title" data-i18n="home.benefits.title">Why Customer Success Teams Use marijoAI</h2>
                         <div class="benefits-grid">
                             <div class="benefit-item">
-                                <h4>🎯 No Data Team Required</h4>
-                                <p>Train a professional-grade churn model through a visual interface — no Python, no SQL, no data scientists</p>
+                                <h4 data-i18n="home.benefits.noteam.title">🎯 No Data Team Required</h4>
+                                <p data-i18n="home.benefits.noteam.body">Train a professional-grade churn model through a visual interface — no Python, no SQL, no data scientists</p>
                             </div>
                             <div class="benefit-item">
-                                <h4>🔒 Your Data Stays on Your Device</h4>
-                                <p>All processing runs in your browser. Customer data never touches a server — no DPA, no vendor risk review</p>
+                                <h4 data-i18n="home.benefits.privacy.title">🔒 Your Data Stays on Your Device</h4>
+                                <p data-i18n="home.benefits.privacy.body">All processing runs in your browser. Customer data never touches a server — no DPA, no vendor risk review</p>
                             </div>
                             <div class="benefit-item">
-                                <h4>📊 Live Training Feedback</h4>
-                                <p>Watch the model learn in real time with loss and accuracy metrics updated every epoch</p>
+                                <h4 data-i18n="home.benefits.live.title">📊 Live Training Feedback</h4>
+                                <p data-i18n="home.benefits.live.body">Watch the model learn in real time with loss and accuracy metrics updated every epoch</p>
                             </div>
                             <div class="benefit-item">
-                                <h4>⚡ Works with Any CSV</h4>
-                                <p>Export from Stripe, HubSpot, Intercom, or any tool — if it’s a CSV with customer metrics, it works</p>
+                                <h4 data-i18n="home.benefits.csv.title">⚡ Works with Any CSV</h4>
+                                <p data-i18n="home.benefits.csv.body">Export from Stripe, HubSpot, Intercom, or any tool — if it’s a CSV with customer metrics, it works</p>
                             </div>
                             <div class="benefit-item">
-                                <h4>💾 Save and Reuse Models</h4>
-                                <p>Download your trained model as JSON and reload it anytime to score new customer lists</p>
+                                <h4 data-i18n="home.benefits.save.title">💾 Save and Reuse Models</h4>
+                                <p data-i18n="home.benefits.save.body">Download your trained model as JSON and reload it anytime to score new customer lists</p>
                             </div>
                             <div class="benefit-item">
-                                <h4>🎨 Get Started in 2 Minutes</h4>
-                                <p>Follow the <a href="#/tutorial">step-by-step tutorial</a> — you’ll have a working model almost instantly</p>
+                                <h4 data-i18n="home.benefits.quick.title">🎨 Get Started in 2 Minutes</h4>
+                                <p data-i18n="home.benefits.quick.body">Follow the <a href="#/tutorial">step-by-step tutorial</a> — you’ll have a working model almost instantly</p>
                             </div>
                         </div>
                     </div>
 
                     <div id="use-cases" class="use-cases-section" style="margin-bottom: 80px;">
-                        <h2 class="section-title">What You Can Predict</h2>
+                        <h2 class="section-title" data-i18n="home.usecases.title">What You Can Predict</h2>
                         <div class="card">
-                            <p style="margin-top: 1em; margin-bottom: 1em; text-align: center;"><b>marijoAI uses AI-powered binary classification to score each customer as "will churn" or "will stay." Feed it any numeric customer metrics:</b></p>
+                            <p style="margin-top: 1em; margin-bottom: 1em; text-align: center;" data-i18n="home.usecases.intro"><b>marijoAI uses AI-powered binary classification to score each customer as "will churn" or "will stay." Feed it any numeric customer metrics:</b></p>
                             <ul class="use-cases-list" style="columns: 1; -webkit-columns: 1; -moz-columns: 1; gap: 30px; padding-left: 20px; line-height: 1.7;">
-                                <li><b>Subscription churn</b> — which customers will cancel this month?</li>
-                                <li><b>Revenue churn</b> — which accounts are likely to downgrade?</li>
-                                <li><b>Trial conversion</b> — which free users will convert to paid?</li>
-                                <li><b>Engagement drop-off</b> — which users are going inactive?</li>
-                                <li><b>Renewal risk</b> — which annual contracts won’t renew?</li>
-                                <li><b>Expansion likelihood</b> — which customers are ready to upgrade?</li>
+                                <li data-i18n="home.usecases.subscription"><b>Subscription churn</b> — which customers will cancel this month?</li>
+                                <li data-i18n="home.usecases.revenue"><b>Revenue churn</b> — which accounts are likely to downgrade?</li>
+                                <li data-i18n="home.usecases.trial"><b>Trial conversion</b> — which free users will convert to paid?</li>
+                                <li data-i18n="home.usecases.engagement"><b>Engagement drop-off</b> — which users are going inactive?</li>
+                                <li data-i18n="home.usecases.renewal"><b>Renewal risk</b> — which annual contracts won’t renew?</li>
+                                <li data-i18n="home.usecases.expansion"><b>Expansion likelihood</b> — which customers are ready to upgrade?</li>
                             </ul>
-                            <p style="margin-top: 1em; text-align: center;"><b>Any yes/no customer outcome you can export as a CSV with numeric data.</b></p>
+                            <p style="margin-top: 1em; text-align: center;" data-i18n="home.usecases.outro"><b>Any yes/no customer outcome you can export as a CSV with numeric data.</b></p>
                         </div>
                     </div>
 
                     <div id="open-source" class="open-source-section" style="margin-bottom: 80px;">
                         <div class="open-source-card">
                             <div class="open-source-icon">💻</div>
-                            <h2 class="open-source-title">We are open-source!</h2>
-                            <p class="open-source-subtitle">
+                            <h2 class="open-source-title" data-i18n="home.opensource.title">We are open-source!</h2>
+                            <p class="open-source-subtitle" data-i18n="home.opensource.body">
                                 marijoAI is released under the MIT license. Read the code, fork it, self-host it, or contribute — every line that runs in your browser is public.
                             </p>
-                            <a href="https://github.com/marijoai/marijoai" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: 1em;">
+                            <a href="https://github.com/marijoai/marijoai" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: 1em;" data-i18n="home.opensource.cta">
                                 View on GitHub →
                             </a>
                         </div>
@@ -152,15 +156,15 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-links" style="text-align: center; padding-bottom: 2em;">
-                <div style="color: rgba(255, 255, 255, 0.8); padding: 1.2em 0; text-align: center; display: inline-block; font-size: 14px; font-weight: 500;">© 2025 - 2026 marijoAI</div>
+                <div style="color: rgba(255, 255, 255, 0.8); padding: 1.2em 0; text-align: center; display: inline-block; font-size: 14px; font-weight: 500;" data-i18n="footer.copyright">© 2025 - 2026 marijoAI</div>
                 <span style="color: rgba(255, 255, 255, 0.3); padding: 0 8px;">•</span>
-                <a href="https://www.linkedin.com/company/marijoai" target="_blank" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;">Our LinkedIn</a>
+                <a href="https://www.linkedin.com/company/marijoai" target="_blank" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;" data-i18n="footer.linkedin">Our LinkedIn</a>
                 <span style="color: rgba(255, 255, 255, 0.3); padding: 0 8px;">•</span>
-                <a href="#/legal" class="footer-link" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;">Legal Mentions</a>
+                <a href="#/legal" class="footer-link" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;" data-i18n="footer.legal">Legal Mentions</a>
                 <span style="color: rgba(255, 255, 255, 0.3); padding: 0 8px;">•</span>
-                <a href="#/privacy" class="footer-link" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;">Privacy Policy</a>
+                <a href="#/privacy" class="footer-link" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;" data-i18n="footer.privacy">Privacy Policy</a>
                 <span style="color: rgba(255, 255, 255, 0.3); padding: 0 8px;">•</span>
-                <a href="#/cookies" class="footer-link" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;">Cookies Policy</a>
+                <a href="#/cookies" class="footer-link" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 14px; font-weight: 500;" data-i18n="footer.cookies">Cookies Policy</a>
             </div>
         </div>
     </footer>
@@ -171,11 +175,11 @@
             <div class="banner-content">
                 <div class="banner-icon">🍪</div>
                 <div class="banner-text-wrapper">
-                    <span class="banner-text">No cookies are used on this website.</span>
-                    <a href="#/cookies" class="banner-link">Learn more</a>
+                    <span class="banner-text" data-i18n="banner.text">No cookies are used on this website.</span>
+                    <a href="#/cookies" class="banner-link" data-i18n="banner.learn_more">Learn more</a>
                 </div>
             </div>
-            <button class="btn btn-small banner-dismiss" aria-label="Dismiss notification">Got it</button>
+            <button class="btn btn-small banner-dismiss" aria-label="Dismiss notification" data-i18n-aria-label="banner.dismiss_aria" data-i18n="banner.dismiss">Got it</button>
         </div>
     </div>
 
@@ -185,14 +189,14 @@
         <div class="legal">
             <div class="container">
                 <div class="page-header">
-                    <h1 style="margin-top: 1em;">Legal Mentions</h1>
-                    <p>Information about the website</p>
+                    <h1 style="margin-top: 1em;" data-i18n="legal.title">Legal Mentions</h1>
+                    <p data-i18n="legal.subtitle">Information about the website</p>
                 </div>
                 <div class="card">
-                    <p><strong>Organization Name:</strong> marijoAI</p>
-                    <p><strong>Owner:</strong> Vincent Spinosa</p>
-                    <p><strong>Host:</strong> Github</p>
-                    <p><strong>Contact:</strong> <a href="https://www.linkedin.com/company/marijoai">Linkedin</a></p>
+                    <p><strong data-i18n="legal.org_name">Organization Name:</strong> marijoAI</p>
+                    <p><strong data-i18n="legal.owner">Owner:</strong> Vincent Spinosa</p>
+                    <p><strong data-i18n="legal.host">Host:</strong> Github</p>
+                    <p><strong data-i18n="legal.contact">Contact:</strong> <a href="https://www.linkedin.com/company/marijoai" data-i18n="legal.linkedin_text">Linkedin</a></p>
                 </div>
             </div>
         </div>
@@ -203,20 +207,20 @@
         <div class="privacy">
             <div class="container">
                 <div class="page-header">
-                    <h1 style="margin-top: 1em;">Privacy Policy</h1>
-                    <p>How we handle your data</p>
+                    <h1 style="margin-top: 1em;" data-i18n="privacy.title">Privacy Policy</h1>
+                    <p data-i18n="privacy.subtitle">How we handle your data</p>
                 </div>
                 <div class="card">
-                    <h2>Data Processing</h2>
-                    <p>No data is transmitted to our servers. All processing happens in your browser on your device.</p>
+                    <h2 data-i18n="privacy.processing.title">Data Processing</h2>
+                    <p data-i18n="privacy.processing.body">No data is transmitted to our servers. All processing happens in your browser on your device.</p>
                 </div>
                 <div class="card">
-                    <h2>Personal Data</h2>
-                    <p>We do not collect or store personal data. Files you upload are processed locally and never sent to a remote server by this application.</p>
+                    <h2 data-i18n="privacy.personal.title">Personal Data</h2>
+                    <p data-i18n="privacy.personal.body">We do not collect or store personal data. Files you upload are processed locally and never sent to a remote server by this application.</p>
                 </div>
                 <div class="card">
-                    <h2>Contact</h2>
-                    <p>For any questions, contact us on <a href="https://www.linkedin.com/company/marijoai">our LinkedIn page</a>.</p>
+                    <h2 data-i18n="privacy.contact.title">Contact</h2>
+                    <p data-i18n="privacy.contact.body">For any questions, contact us on <a href="https://www.linkedin.com/company/marijoai">our LinkedIn page</a>.</p>
                 </div>
             </div>
         </div>
@@ -227,12 +231,12 @@
         <div class="cookies">
             <div class="container">
                 <div class="page-header">
-                    <h1 style="margin-top: 1em;">Cookies Policy</h1>
-                    <p>Information about cookies usage</p>
+                    <h1 style="margin-top: 1em;" data-i18n="cookies.title">Cookies Policy</h1>
+                    <p data-i18n="cookies.subtitle">Information about cookies usage</p>
                 </div>
                 <div class="card">
-                    <h2>Cookies Usage</h2>
-                    <p>No cookies are used on this website.</p>
+                    <h2 data-i18n="cookies.usage.title">Cookies Usage</h2>
+                    <p data-i18n="cookies.usage.body">No cookies are used on this website.</p>
                 </div>
             </div>
         </div>
@@ -244,58 +248,58 @@
         <div class="train">
             <div class="container">
                 <div class="page-header">
-                    <h1>Train Churn Model</h1>
+                    <h1 data-i18n="train.title">Train Churn Model</h1>
                 </div>
                 <div class="grid grid-2">
                     <div class="card">
                         <div class="form-group">
-                            <label for="data-file">Customer Data (CSV file)</label>
+                            <label for="data-file" data-i18n="train.data_file">Customer Data (CSV file)</label>
                             <input type="file" id="data-file" accept=".csv" class="file-input" />
                         </div>
                         <div class="form-group">
 							<label>
 								<input type="checkbox" id="train-create-validation" />
-								Hold out a validation set (excluded from training)
+								<span data-i18n="train.create_validation">Hold out a validation set (excluded from training)</span>
 							</label>
-							<span>Check this to create a separate CSV for validating model accuracy with predictions.</span>
+							<span data-i18n="train.create_validation_hint">Check this to create a separate CSV for validating model accuracy with predictions.</span>
 						</div>
                         <div class="form-group">
 							<label>
 								<input type="checkbox" id="train-has-id-column" />
-								Dataset contains an ID column
+								<span data-i18n="train.has_id">Dataset contains an ID column</span>
 							</label>
-							<span>Check this if a column holds customer or row identifiers. That column will be excluded from training (not used as a feature).</span>
+							<span data-i18n="train.has_id_hint">Check this if a column holds customer or row identifiers. That column will be excluded from training (not used as a feature).</span>
 						</div>
                         <div class="form-group" id="train-id-column-group" style="display: none;">
-                            <label for="train-id-column">ID column</label>
+                            <label for="train-id-column" data-i18n="train.id_column">ID column</label>
                             <select id="train-id-column" style="margin-bottom: 1em;">
-                                <option value="">-- Upload CSV first --</option>
+                                <option value="" data-i18n="select.upload_first">-- Upload CSV first --</option>
                             </select>
-                            <span>Choose which column is the identifier. It must not be the churn column.</span>
+                            <span data-i18n="train.id_column_hint">Choose which column is the identifier. It must not be the churn column.</span>
                         </div>
                         <div class="form-group">
-                            <label for="target-column">Churn column (the outcome to predict)</label>
+                            <label for="target-column" data-i18n="train.target_column">Churn column (the outcome to predict)</label>
                             <select id="target-column" style="margin-bottom: 1em;">
-                                <option value="">-- Upload CSV first --</option>
+                                <option value="" data-i18n="select.upload_first">-- Upload CSV first --</option>
                             </select>
-                            <span>Select the column that indicates whether a customer churned.</span>
+                            <span data-i18n="train.target_column_hint">Select the column that indicates whether a customer churned.</span>
                         </div>
                         <div id="train-error" class="error" style="display: none;"></div>
                         <div id="train-success" class="success" style="display: none;"></div>
                         <div id="train-data-info" class="data-info" style="display: none;">
-                            <h3>Dataset Summary</h3>
-                            <p><strong>Customers:</strong> <span id="train-data-rows"></span></p>
-                            <p><strong>Features:</strong> <span id="train-data-features"></span></p>
+                            <h3 data-i18n="train.dataset_summary">Dataset Summary</h3>
+                            <p><strong data-i18n="train.customers">Customers:</strong> <span id="train-data-rows"></span></p>
+                            <p><strong data-i18n="train.features">Features:</strong> <span id="train-data-features"></span></p>
                             <div id="train-label-mappings" style="display: none;"></div>
                         </div>
                         <div class="button-group">
-                            <button class="btn btn-primary" id="start-training-btn">Train Churn Model</button>
-                            <button class="btn btn-secondary" id="reset-training-btn">Reset</button>
+                            <button class="btn btn-primary" id="start-training-btn" data-i18n="train.btn_start">Train Churn Model</button>
+                            <button class="btn btn-secondary" id="reset-training-btn" data-i18n="train.btn_reset">Reset</button>
                         </div>
                     </div>
                 </div>
                 <div id="training-progress-card" class="card" style="display: none;">
-                    <h2>Training Progress</h2>
+                    <h2 data-i18n="train.progress.title">Training Progress</h2>
                     <div class="progress-container">
                         <div class="progress-bar">
                             <div class="progress-fill" id="progress-fill"></div>
@@ -303,14 +307,14 @@
                         <p class="progress-text" id="progress-text">Epoch 0 of 100</p>
                     </div>
                     <div class="training-history" style="margin-top: 1.5rem;">
-                        <h3 style="margin-bottom: 1em;">Training History</h3>
+                        <h3 style="margin-bottom: 1em;" data-i18n="train.progress.history_title">Training History</h3>
                         <div id="history-container" style="max-height: 300px; overflow-y: auto; background: #f8fafc; padding: 1rem; border-radius: 10px; border: 1px solid #e2e8f0;">
                             <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
                                 <thead>
                                     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-                                        <th style="padding: 8px 10px; font-weight: 600; color: #475569; font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase;">Epoch</th>
-                                        <th style="padding: 8px 10px; font-weight: 600; color: #475569; font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase;">Loss</th>
-                                        <th style="padding: 8px 10px; font-weight: 600; color: #475569; font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase;">Accuracy</th>
+                                        <th style="padding: 8px 10px; font-weight: 600; color: #475569; font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase;" data-i18n="train.progress.col_epoch">Epoch</th>
+                                        <th style="padding: 8px 10px; font-weight: 600; color: #475569; font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase;" data-i18n="train.progress.col_loss">Loss</th>
+                                        <th style="padding: 8px 10px; font-weight: 600; color: #475569; font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase;" data-i18n="train.progress.col_accuracy">Accuracy</th>
                                     </tr>
                                 </thead>
                                 <tbody id="history-table-body"></tbody>
@@ -319,10 +323,10 @@
                     </div>
                 </div>
                 <div id="training-complete-card" class="card" style="display: none;">
-                    <h2>Training Complete</h2>
-                    <p>Your churn model is ready! Download it and head to Score Customers to identify at-risk accounts.</p>
-                    <button class="btn btn-success" id="download-trained-model-btn" style="margin-top: 2em;">Download Churn Model</button>
-                    <button class="btn btn-secondary" id="download-validation-data-btn" style="margin-top: 1em; display: none;">Download Validation CSV</button>
+                    <h2 data-i18n="train.complete.title">Training Complete</h2>
+                    <p data-i18n="train.complete.body">Your churn model is ready! Download it and head to Score Customers to identify at-risk accounts.</p>
+                    <button class="btn btn-success" id="download-trained-model-btn" style="margin-top: 2em;" data-i18n="train.complete.download_model">Download Churn Model</button>
+                    <button class="btn btn-secondary" id="download-validation-data-btn" style="margin-top: 1em; display: none;" data-i18n="train.complete.download_validation">Download Validation CSV</button>
                 </div>
             </div>
         </div>
@@ -333,136 +337,136 @@
         <div class="predict">
             <div class="container">
                 <div class="page-header">
-                    <h1>Score Customers</h1>
+                    <h1 data-i18n="predict.title">Score Customers</h1>
                 </div>
                 <div class="grid grid-2">
                     <div class="card">
                         <div class="form-group">
-                            <label for="predict-model-file">Churn Model (JSON)</label>
+                            <label for="predict-model-file" data-i18n="predict.model_file">Churn Model (JSON)</label>
                             <input type="file" id="predict-model-file" accept=".json" class="file-input" />
                         </div>
                         <div class="form-group">
-                            <label for="test-data">Customer List (CSV file)</label>
+                            <label for="test-data" data-i18n="predict.customer_list">Customer List (CSV file)</label>
                             <input type="file" id="test-data" accept=".csv" class="file-input" style="margin-bottom: 1em;"/>
-                            <span>Upload a CSV with the same columns as your training data.</span>
+                            <span data-i18n="predict.customer_list_hint">Upload a CSV with the same columns as your training data.</span>
                         </div>
                         <div class="form-group">
 							<label>
 								<input type="checkbox" id="predict-has-id-column" />
-								Dataset contains an ID column
+								<span data-i18n="predict.has_id">Dataset contains an ID column</span>
 							</label>
-							<span>Check this to exclude a customer or row ID column from scoring (same column as in training, if you used one).</span>
+							<span data-i18n="predict.has_id_hint">Check this to exclude a customer or row ID column from scoring (same column as in training, if you used one).</span>
 						</div>
                         <div class="form-group" id="predict-id-column-group" style="display: none;">
-                            <label for="predict-id-column">ID column</label>
+                            <label for="predict-id-column" data-i18n="predict.id_column">ID column</label>
                             <select id="predict-id-column" style="margin-bottom: 1em;">
-                                <option value="">-- Upload CSV first --</option>
+                                <option value="" data-i18n="select.upload_first">-- Upload CSV first --</option>
                             </select>
-                            <span>Choose which column is the identifier. It is not fed into the model.</span>
+                            <span data-i18n="predict.id_column_hint">Choose which column is the identifier. It is not fed into the model.</span>
                         </div>
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="predict-has-target-column" />
-                                CSV still contains the churn column
+                                <span data-i18n="predict.has_target">CSV still contains the churn column</span>
                             </label>
-                            <span>Check this to calculate accuracy against known outcomes.</span>
+                            <span data-i18n="predict.has_target_hint">Check this to calculate accuracy against known outcomes.</span>
                         </div>
                         <div class="form-group" id="predict-target-group" style="display: none;">
-                            <label for="predict-target-column">Churn column</label>
+                            <label for="predict-target-column" data-i18n="predict.target_column">Churn column</label>
                             <select id="predict-target-column">
-                                <option value="">-- Upload CSV first --</option>
+                                <option value="" data-i18n="select.upload_first">-- Upload CSV first --</option>
                             </select>
                         </div>
                         <div id="predict-loading" class="loading-container" style="display: none;">
                             <div class="loading"></div>
-                            <span>Loading model...</span>
+                            <span data-i18n="predict.loading_model">Loading model...</span>
                         </div>
                         <div id="predict-error" class="error" style="display: none;"></div>
                         <div id="predict-success" class="success" style="display: none;"></div>
                         <div id="predict-data-info" class="data-info" style="display: none;">
-                            <h3>Dataset Summary</h3>
-                            <p><strong>Customers:</strong> <span id="predict-samples"></span></p>
-                            <p><strong>Features:</strong> <span id="predict-features"></span></p>
+                            <h3 data-i18n="train.dataset_summary">Dataset Summary</h3>
+                            <p><strong data-i18n="train.customers">Customers:</strong> <span id="predict-samples"></span></p>
+                            <p><strong data-i18n="train.features">Features:</strong> <span id="predict-features"></span></p>
                             <div id="predict-label-mappings" style="display: none;"></div>
                         </div>
                         <div class="button-group">
-                            <button class="btn btn-primary" id="make-predictions-btn">Score Customers</button>
-                            <button class="btn btn-secondary" id="reset-predictions-btn">Reset</button>
-                            <button class="btn btn-success" id="download-predictions-btn">Download Results</button>
+                            <button class="btn btn-primary" id="make-predictions-btn" data-i18n="predict.btn_score">Score Customers</button>
+                            <button class="btn btn-secondary" id="reset-predictions-btn" data-i18n="predict.btn_reset">Reset</button>
+                            <button class="btn btn-success" id="download-predictions-btn" data-i18n="predict.btn_download">Download Results</button>
                         </div>
                     </div>
                 </div>
                 <div id="predictions-results-card" class="card" style="display: none;">
-                    <h2>Churn Risk Results</h2>
+                    <h2 data-i18n="predict.results.title">Churn Risk Results</h2>
                     <div id="churn-risk-summary" style="display: none; margin-bottom: 20px; padding: 18px; background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%); border-radius: 10px; border-left: 4px solid #ef4444;">
                         <p style="font-size: 1.1rem; font-weight: 700; color: #991b1b; margin-bottom: 4px;" id="churn-risk-headline"></p>
                         <p style="font-size: 0.9rem; color: #78350f;" id="churn-risk-detail"></p>
                     </div>
                     <div id="risk-tiers-summary" class="risk-tiers-summary" style="display: none;">
-                        <h3 class="risk-tiers-title">Risk Tier Breakdown</h3>
-                        <p class="risk-tiers-subtitle">Customers are grouped into tiers based on their churn score (0 = will stay, 1 = will churn).</p>
+                        <h3 class="risk-tiers-title" data-i18n="predict.risk_tiers.title">Risk Tier Breakdown</h3>
+                        <p class="risk-tiers-subtitle" data-i18n="predict.risk_tiers.subtitle">Customers are grouped into tiers based on their churn score (0 = will stay, 1 = will churn).</p>
                         <div class="risk-tiers-grid">
                             <div class="risk-tier-card risk-tier-safe">
-                                <span class="risk-tier-badge risk-tier-badge-safe">Safe</span>
-                                <span class="risk-tier-range">Score 0.00 – 0.20</span>
+                                <span class="risk-tier-badge risk-tier-badge-safe" data-i18n="predict.risk_tiers.safe">Safe</span>
+                                <span class="risk-tier-range" data-i18n="predict.risk_tiers.range_safe">Score 0.00 – 0.20</span>
                                 <span class="risk-tier-count" id="risk-tier-count-safe">0</span>
                                 <span class="risk-tier-pct" id="risk-tier-pct-safe">0%</span>
                             </div>
                             <div class="risk-tier-card risk-tier-watch">
-                                <span class="risk-tier-badge risk-tier-badge-watch">Watch</span>
-                                <span class="risk-tier-range">Score 0.20 – 0.50</span>
+                                <span class="risk-tier-badge risk-tier-badge-watch" data-i18n="predict.risk_tiers.watch">Watch</span>
+                                <span class="risk-tier-range" data-i18n="predict.risk_tiers.range_watch">Score 0.20 – 0.50</span>
                                 <span class="risk-tier-count" id="risk-tier-count-watch">0</span>
                                 <span class="risk-tier-pct" id="risk-tier-pct-watch">0%</span>
                             </div>
                             <div class="risk-tier-card risk-tier-atrisk">
-                                <span class="risk-tier-badge risk-tier-badge-atrisk">At risk</span>
-                                <span class="risk-tier-range">Score 0.50 – 0.80</span>
+                                <span class="risk-tier-badge risk-tier-badge-atrisk" data-i18n="predict.risk_tiers.atrisk">At risk</span>
+                                <span class="risk-tier-range" data-i18n="predict.risk_tiers.range_atrisk">Score 0.50 – 0.80</span>
                                 <span class="risk-tier-count" id="risk-tier-count-atrisk">0</span>
                                 <span class="risk-tier-pct" id="risk-tier-pct-atrisk">0%</span>
                             </div>
                             <div class="risk-tier-card risk-tier-critical">
-                                <span class="risk-tier-badge risk-tier-badge-critical">Critical</span>
-                                <span class="risk-tier-range">Score 0.80 – 1.00</span>
+                                <span class="risk-tier-badge risk-tier-badge-critical" data-i18n="predict.risk_tiers.critical">Critical</span>
+                                <span class="risk-tier-range" data-i18n="predict.risk_tiers.range_critical">Score 0.80 – 1.00</span>
                                 <span class="risk-tier-count" id="risk-tier-count-critical">0</span>
                                 <span class="risk-tier-pct" id="risk-tier-pct-critical">0%</span>
                             </div>
                         </div>
                     </div>
                     <div id="churn-drivers-card" class="churn-drivers-card" style="display: none;">
-                        <h3 class="churn-drivers-title">Top Churn Drivers</h3>
-                        <p class="churn-drivers-intro">Across the whole customer list, these are the parameters that influence the churn score the most.</p>
+                        <h3 class="churn-drivers-title" data-i18n="predict.drivers.title">Top Churn Drivers</h3>
+                        <p class="churn-drivers-intro" data-i18n="predict.drivers.intro">Across the whole customer list, these are the parameters that influence the churn score the most.</p>
                         <div id="churn-drivers-skeleton" class="churn-drivers-skeleton" style="display: none;">
                             <div class="churn-drivers-spinner"></div>
-                            <span>Analyzing what drives churn in your dataset…</span>
+                            <span data-i18n="predict.drivers.analyzing">Analyzing what drives churn in your dataset…</span>
                         </div>
                         <div id="churn-drivers-content" class="churn-drivers-content" style="display: none;">
                             <p id="churn-drivers-summary" class="churn-drivers-summary"></p>
                             <div id="churn-drivers-bars" class="churn-drivers-bars"></div>
-                            <p class="churn-drivers-footnote">The value on the right is how much the churn score moves, on average, when that parameter is scrambled across customers. Bigger = more important.</p>
+                            <p class="churn-drivers-footnote" data-i18n="predict.drivers.footnote">The value on the right is how much the churn score moves, on average, when that parameter is scrambled across customers. Bigger = more important.</p>
                         </div>
                     </div>
                     <div id="evaluation-metrics" class="evaluation-metrics" style="display: none;">
-                        <h3>Model Accuracy (vs. known outcomes)</h3>
+                        <h3 data-i18n="predict.metrics.title">Model Accuracy (vs. known outcomes)</h3>
                         <div class="summary-stats">
-                            <div class="stat"><span class="stat-label">Accuracy:</span> <span class="stat-value" id="metric-accuracy">-</span></div>
+                            <div class="stat"><span class="stat-label" data-i18n="predict.metrics.accuracy">Accuracy:</span> <span class="stat-value" id="metric-accuracy">-</span></div>
                         </div>
                         <div class="confusion-matrix">
                             <table id="confusion-matrix-table">
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th>Predicted Stayed</th>
-                                        <th>Predicted Churned</th>
+                                        <th data-i18n="predict.metrics.predicted_stayed">Predicted Stayed</th>
+                                        <th data-i18n="predict.metrics.predicted_churned">Predicted Churned</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th>Actually Stayed</th>
+                                        <th data-i18n="predict.metrics.actual_stayed">Actually Stayed</th>
                                         <td id="cm-tn">0</td>
                                         <td id="cm-fp">0</td>
                                     </tr>
                                     <tr>
-                                        <th>Actually Churned</th>
+                                        <th data-i18n="predict.metrics.actual_churned">Actually Churned</th>
                                         <td id="cm-fn">0</td>
                                         <td id="cm-tp">0</td>
                                     </tr>
@@ -472,15 +476,15 @@
                     </div>
                     <div class="predictions-filter-toolbar">
                         <div class="pagination-toolbar-filter">
-                            <label for="predictions-filter-mode">Churn score filter</label>
+                            <label for="predictions-filter-mode" data-i18n="predict.filter.label">Churn score filter</label>
                             <select id="predictions-filter-mode">
-                                <option value="none" selected>Show all customers</option>
-                                <option value="gt">Score greater than</option>
-                                <option value="lt">Score less than</option>
+                                <option value="none" selected data-i18n="predict.filter.all">Show all customers</option>
+                                <option value="gt" data-i18n="predict.filter.gt">Score greater than</option>
+                                <option value="lt" data-i18n="predict.filter.lt">Score less than</option>
                             </select>
                         </div>
                         <div class="pagination-toolbar-filter-threshold">
-                            <label for="predictions-filter-threshold">Threshold <span class="filter-threshold-hint">(0–1)</span></label>
+                            <label for="predictions-filter-threshold"><span data-i18n="predict.filter.threshold">Threshold</span> <span class="filter-threshold-hint" data-i18n="predict.filter.threshold_hint">(0–1)</span></label>
                             <input type="number" id="predictions-filter-threshold" min="0" max="1" step="0.0001" value="0.5" disabled />
                         </div>
                     </div>
@@ -488,16 +492,16 @@
                         <div id="predictions-pagination-toolbar" class="predictions-pagination-toolbar">
                             <div class="predictions-pagination-controls-section">
                                 <div class="pagination-toolbar-sort">
-                                    <label for="predictions-sort-order">Sort results</label>
+                                    <label for="predictions-sort-order" data-i18n="predict.sort.label">Sort results</label>
                                     <select id="predictions-sort-order">
-                                        <option value="dataset-asc" selected>Dataset order</option>
-                                        <option value="dataset-desc">Dataset order (reverse)</option>
-                                        <option value="score-desc">Churn score (high to low)</option>
-                                        <option value="score-asc">Churn score (low to high)</option>
+                                        <option value="dataset-asc" selected data-i18n="predict.sort.dataset_asc">Dataset order</option>
+                                        <option value="dataset-desc" data-i18n="predict.sort.dataset_desc">Dataset order (reverse)</option>
+                                        <option value="score-desc" data-i18n="predict.sort.score_desc">Churn score (high to low)</option>
+                                        <option value="score-asc" data-i18n="predict.sort.score_asc">Churn score (low to high)</option>
                                     </select>
                                 </div>
                                 <div class="pagination-toolbar-size">
-                                    <label for="predictions-page-size">Rows per page</label>
+                                    <label for="predictions-page-size" data-i18n="predict.page_size.label">Rows per page</label>
                                     <select id="predictions-page-size">
                                         <option value="20" selected>20</option>
                                         <option value="50">50</option>
@@ -507,19 +511,19 @@
                         </div>
                         <div class="predictions-pagination-nav-section">
                             <div class="pagination-toolbar-nav">
-                                <button type="button" class="btn btn-secondary btn-small" id="predictions-page-prev">Previous</button>
+                                <button type="button" class="btn btn-secondary btn-small" id="predictions-page-prev" data-i18n="predict.page.prev">Previous</button>
                                 <span id="predictions-page-info" class="predictions-page-info"></span>
-                                <button type="button" class="btn btn-secondary btn-small" id="predictions-page-next">Next</button>
+                                <button type="button" class="btn btn-secondary btn-small" id="predictions-page-next" data-i18n="predict.page.next">Next</button>
                             </div>
                         </div>
                         <table id="predictions-table">
                             <thead>
                                 <tr>
-                                    <th>Customer</th>
-                                    <th>Churn Score</th>
-                                    <th>Confidence</th>
-                                    <th>Risk Level</th>
-                                    <th>Risk Tier</th>
+                                    <th data-i18n="predict.col.customer">Customer</th>
+                                    <th data-i18n="predict.col.score">Churn Score</th>
+                                    <th data-i18n="predict.col.confidence">Confidence</th>
+                                    <th data-i18n="predict.col.risk_level">Risk Level</th>
+                                    <th data-i18n="predict.col.risk_tier">Risk Tier</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -536,38 +540,38 @@
         <div class="exercises">
             <div class="container">
                 <div class="page-header">
-					<h1 style="margin-top: 1em;">Step-by-Step Tutorial</h1>
-					<p>Build a working churn prediction model in under 5 minutes.</p>
+					<h1 style="margin-top: 1em;" data-i18n="tutorial.title">Step-by-Step Tutorial</h1>
+					<p data-i18n="tutorial.subtitle">Build a working churn prediction model in under 5 minutes.</p>
                 </div>
 				<div class="card">
-					<h2>1) Get the Data</h2>
-					<p><a href="data\customer_churn_dataset-testing-master.csv" download>Download the SaaS churn dataset</a> (64 thousand customers with subscription metrics and churn outcomes).</p>
+					<h2 data-i18n="tutorial.step1.title">1) Get the Data</h2>
+					<p data-i18n="tutorial.step1.body"><a href="data\customer_churn_dataset-testing-master.csv" download>Download the SaaS churn dataset</a> (64 thousand customers with subscription metrics and churn outcomes).</p>
 				</div>
 				<div class="card">
-					<h2>2) Train the Model</h2>
+					<h2 data-i18n="tutorial.step2.title">2) Train the Model</h2>
 					<ol style="margin: 1em;">
-						<li>Open <a href="#/train" target="_blank">Train</a> in a new tab and upload the CSV.</li>
-						<li>As the dataset has a customer ID column, check “Dataset contains an ID column”.
-                        <li>Pick the "CustomerID" column so it is not used as a feature.</li>
-						<li>Check “Hold out a validation set” so you can test accuracy after training.</li>
-						<li>Select the “Churn” column as the churn column.</li>
-						<li>Click "Train Churn Model" and watch the AI learn.</li>
-                        <li>Download the trained model and the validation CSV.</li>
+						<li data-i18n="tutorial.step2.li1">Open <a href="#/train" target="_blank">Train</a> in a new tab and upload the CSV.</li>
+						<li data-i18n="tutorial.step2.li2">As the dataset has a customer ID column, check “Dataset contains an ID column”.</li>
+                        <li data-i18n="tutorial.step2.li3">Pick the "CustomerID" column so it is not used as a feature.</li>
+						<li data-i18n="tutorial.step2.li4">Check “Hold out a validation set” so you can test accuracy after training.</li>
+						<li data-i18n="tutorial.step2.li5">Select the “Churn” column as the churn column.</li>
+						<li data-i18n="tutorial.step2.li6">Click "Train Churn Model" and watch the AI learn.</li>
+                        <li data-i18n="tutorial.step2.li7">Download the trained model and the validation CSV.</li>
 					</ol>
 				</div>
 				<div class="card">
-					<h2>3) Score Customers</h2>
+					<h2 data-i18n="tutorial.step3.title">3) Score Customers</h2>
 					<ol style="margin: 1em;">
-						<li>Open <a href="#/predict" target="_blank">Score Customers</a> in a new tab.</li>
-						<li>Upload the churn model and the validation CSV you just downloaded.</li>
-                        <li>Check “Dataset contains an ID column” and select the "CustomerID" column.</li>
-                        <li>Check "CSV still contains the churn column".</li>
-                        <li>Select the "Churn" column as the churn column.</li>
-						<li>Click "Score Customers" to see churn risk predictions.</li>
+						<li data-i18n="tutorial.step3.li1">Open <a href="#/predict" target="_blank">Score Customers</a> in a new tab.</li>
+						<li data-i18n="tutorial.step3.li2">Upload the churn model and the validation CSV you just downloaded.</li>
+                        <li data-i18n="tutorial.step3.li3">Check “Dataset contains an ID column” and select the "CustomerID" column.</li>
+                        <li data-i18n="tutorial.step3.li4">Check "CSV still contains the churn column".</li>
+                        <li data-i18n="tutorial.step3.li5">Select the "Churn" column as the churn column.</li>
+						<li data-i18n="tutorial.step3.li6">Click "Score Customers" to see churn risk predictions.</li>
 					</ol>
 				</div>
 				<div class="card">
-					<p><b>That’s it! You’ve built a customer churn predictor end-to-end.</b></p>
+					<p data-i18n="tutorial.done"><b>That’s it! You’ve built a customer churn predictor end-to-end.</b></p>
 				</div>
             </div>
         </div>
@@ -578,170 +582,170 @@
         <div class="documentation">
             <div class="container">
                 <div class="page-header">
-                    <h1 style="margin-top: 1em;">Documentation</h1>
-                    <p>What marijoAI is, and what powers it under the hood.</p>
+                    <h1 style="margin-top: 1em;" data-i18n="doc.title">Documentation</h1>
+                    <p data-i18n="doc.subtitle">What marijoAI is, and what powers it under the hood.</p>
                 </div>
 
                 <div class="card">
-                    <h2>What is marijoAI?</h2>
-                    <p style="margin-bottom: 1em;">
+                    <h2 data-i18n="doc.what.title">What is marijoAI?</h2>
+                    <p style="margin-bottom: 1em;" data-i18n="doc.what.p1">
                         marijoAI is a browser-based, no-code application that helps SaaS and subscription businesses predict <b>customer churn</b> using a neural network — entirely on your device.
                     </p>
-                    <p style="margin-bottom: 1em;">
+                    <p style="margin-bottom: 1em;" data-i18n="doc.what.p2">
                         You upload a CSV exported from your CRM, billing tool, or analytics platform. The app detects the format, cleans the data, trains a binary classifier, and lets you score new customer lists. Every step runs locally in your browser: no accounts, no servers, no data leaving your machine.
                     </p>
-                    <p>
+                    <p data-i18n="doc.what.p3">
                         It is designed for customer success, revenue, and product teams that need actionable churn predictions without a data science team, a vendor review, or a data processing agreement.
                     </p>
                 </div>
 
                 <div class="card">
-                    <h2>The Workflow</h2>
-                    <p style="margin-bottom: 1em;">marijoAI is structured around three simple pages:</p>
+                    <h2 data-i18n="doc.workflow.title">The Workflow</h2>
+                    <p style="margin-bottom: 1em;" data-i18n="doc.workflow.intro">marijoAI is structured around three simple pages:</p>
                     <ol style="margin-left: 1.5em; line-height: 1.9;">
-                        <li><b><a href="#/train">Train</a></b> — upload a CSV, pick the churn column, and train a neural network. The model learns from historical customers you already know churned or stayed.</li>
-                        <li><b><a href="#/predict">Score</a></b> — load a trained model and a new customer list to get a churn score, a risk tier, and the top drivers of churn across the dataset.</li>
-                        <li><b><a href="#/tutorial">Tutorial</a></b> — a step-by-step walk-through using an included public SaaS churn dataset so you can get a working model in under five minutes.</li>
+                        <li data-i18n="doc.workflow.li1"><b><a href="#/train">Train</a></b> — upload a CSV, pick the churn column, and train a neural network. The model learns from historical customers you already know churned or stayed.</li>
+                        <li data-i18n="doc.workflow.li2"><b><a href="#/predict">Score</a></b> — load a trained model and a new customer list to get a churn score, a risk tier, and the top drivers of churn across the dataset.</li>
+                        <li data-i18n="doc.workflow.li3"><b><a href="#/tutorial">Tutorial</a></b> — a step-by-step walk-through using an included public SaaS churn dataset so you can get a working model in under five minutes.</li>
                     </ol>
                 </div>
 
                 <div class="card">
-                    <h2>Browser-First, Privacy-First Architecture</h2>
-                    <p style="margin-bottom: 1em;">
+                    <h2 data-i18n="doc.arch.title">Browser-First, Privacy-First Architecture</h2>
+                    <p style="margin-bottom: 1em;" data-i18n="doc.arch.p1">
                         marijoAI is a single-page static web application. The entire stack — data parsing, model training, scoring, and visualization — executes in your browser tab. There is no backend, no database, and no telemetry.
                     </p>
-                    <p style="margin-bottom: 1em;">
+                    <p style="margin-bottom: 1em;" data-i18n="doc.arch.p2">
                         Concretely, this means:
                     </p>
                     <ul style="margin-left: 1.5em; line-height: 1.9;">
-                        <li>Your CSV files are read with the browser's <code>File</code> API and parsed in memory.</li>
-                        <li>Training runs on your CPU, in the same tab, using WebAssembly when available.</li>
-                        <li>Trained models are downloaded as plain JSON files to your local disk.</li>
-                        <li>Closing the tab clears all in-memory data.</li>
-                        <li>No cookies, no tracking scripts, no analytics.</li>
+                        <li data-i18n="doc.arch.li1">Your CSV files are read with the browser's <code>File</code> API and parsed in memory.</li>
+                        <li data-i18n="doc.arch.li2">Training runs on your CPU, in the same tab, using WebAssembly when available.</li>
+                        <li data-i18n="doc.arch.li3">Trained models are downloaded as plain JSON files to your local disk.</li>
+                        <li data-i18n="doc.arch.li4">Closing the tab clears all in-memory data.</li>
+                        <li data-i18n="doc.arch.li5">No cookies, no tracking scripts, no analytics.</li>
                     </ul>
                 </div>
 
                 <div class="card">
-                    <h2>Technology Stack</h2>
-                    <p style="margin-bottom: 1em;">The entire application is built with a deliberately minimal, dependency-light stack:</p>
+                    <h2 data-i18n="doc.stack.title">Technology Stack</h2>
+                    <p style="margin-bottom: 1em;" data-i18n="doc.stack.intro">The entire application is built with a deliberately minimal, dependency-light stack:</p>
                     <div class="grid grid-2">
                         <div class="data-info">
-                            <h3>Front-end</h3>
-                            <p><b>Vanilla HTML, CSS, and JavaScript (ES6+).</b> No React, Vue, Svelte, or build step for the UI. The app is a single <code>index.html</code> with page templates rendered by a small hash-based SPA router.</p>
+                            <h3 data-i18n="doc.stack.frontend.title">Front-end</h3>
+                            <p data-i18n="doc.stack.frontend.body"><b>Vanilla HTML, CSS, and JavaScript (ES6+).</b> No React, Vue, Svelte, or build step for the UI. The app is a single <code>index.html</code> with page templates rendered by a small hash-based SPA router.</p>
                         </div>
                         <div class="data-info">
-                            <h3>Styling</h3>
-                            <p><b>Hand-written CSS with custom properties</b> for the design system (primary indigo, accent pink, glassmorphic cards). Typography uses <b>Inter</b> from Google Fonts.</p>
+                            <h3 data-i18n="doc.stack.styling.title">Styling</h3>
+                            <p data-i18n="doc.stack.styling.body"><b>Hand-written CSS with custom properties</b> for the design system (primary indigo, accent pink, glassmorphic cards). Typography uses <b>Inter</b> from Google Fonts.</p>
                         </div>
                         <div class="data-info">
-                            <h3>CSV parsing</h3>
-                            <p><b><a href="https://www.papaparse.com/" target="_blank" rel="noopener">PapaParse 5.4</a></b> handles CSV reading, tolerant of messy real-world exports. Delimiter and header presence are auto-detected from the first few lines.</p>
+                            <h3 data-i18n="doc.stack.csv.title">CSV parsing</h3>
+                            <p data-i18n="doc.stack.csv.body"><b><a href="https://www.papaparse.com/" target="_blank" rel="noopener">PapaParse 5.4</a></b> handles CSV reading, tolerant of messy real-world exports. Delimiter and header presence are auto-detected from the first few lines.</p>
                         </div>
                         <div class="data-info">
-                            <h3>Neural network core</h3>
-                            <p><b><a href="https://www.assemblyscript.org/" target="_blank" rel="noopener">AssemblyScript</a></b> compiled to <b>WebAssembly</b> (<code>wasm/nn.wasm</code>) for fast training, with a pure-JavaScript fallback when WebAssembly is unavailable.</p>
+                            <h3 data-i18n="doc.stack.nn.title">Neural network core</h3>
+                            <p data-i18n="doc.stack.nn.body"><b><a href="https://www.assemblyscript.org/" target="_blank" rel="noopener">AssemblyScript</a></b> compiled to <b>WebAssembly</b> (<code>wasm/nn.wasm</code>) for fast training, with a pure-JavaScript fallback when WebAssembly is unavailable.</p>
                         </div>
                         <div class="data-info">
-                            <h3>Routing</h3>
-                            <p>A ~80-line <b>hash-based SPA router</b> (<code>js/router.js</code>) that swaps <code>&lt;template&gt;</code> contents into the DOM and invokes page initialization hooks.</p>
+                            <h3 data-i18n="doc.stack.routing.title">Routing</h3>
+                            <p data-i18n="doc.stack.routing.body">A ~80-line <b>hash-based SPA router</b> (<code>js/router.js</code>) that swaps <code>&lt;template&gt;</code> contents into the DOM and invokes page initialization hooks.</p>
                         </div>
                         <div class="data-info">
-                            <h3>Hosting</h3>
-                            <p>Fully static. The app can be served from any static host, or opened directly from disk as a local <code>index.html</code> file — no server required.</p>
+                            <h3 data-i18n="doc.stack.hosting.title">Hosting</h3>
+                            <p data-i18n="doc.stack.hosting.body">Fully static. The app can be served from any static host, or opened directly from disk as a local <code>index.html</code> file — no server required.</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h2>The Neural Network</h2>
-                    <p style="margin-bottom: 1em;">
+                    <h2 data-i18n="doc.nn.title">The Neural Network</h2>
+                    <p style="margin-bottom: 1em;" data-i18n="doc.nn.p1">
                         marijoAI uses a small, fixed <b>feed-forward neural network</b> for binary classification. The architecture is intentionally simple so it trains quickly on a laptop and generalizes well on typical tabular customer data:
                     </p>
                     <ul style="margin-left: 1.5em; line-height: 1.9; margin-bottom: 1em;">
-                        <li><b>Input layer</b> — one neuron per numeric feature detected in your CSV (the churn column and any ID column are excluded automatically).</li>
-                        <li><b>Hidden layer</b> — 64 neurons with <b>ReLU</b> activation.</li>
-                        <li><b>Output layer</b> — 1 neuron with <b>sigmoid</b> activation, producing a churn probability in <code>[0, 1]</code>.</li>
+                        <li data-i18n="doc.nn.li1"><b>Input layer</b> — one neuron per numeric feature detected in your CSV (the churn column and any ID column are excluded automatically).</li>
+                        <li data-i18n="doc.nn.li2"><b>Hidden layer</b> — 64 neurons with <b>ReLU</b> activation.</li>
+                        <li data-i18n="doc.nn.li3"><b>Output layer</b> — 1 neuron with <b>sigmoid</b> activation, producing a churn probability in <code>[0, 1]</code>.</li>
                     </ul>
-                    <p style="margin-bottom: 1em;">
+                    <p style="margin-bottom: 1em;" data-i18n="doc.nn.p2">
                         Weights are initialized with <b>Xavier / Glorot uniform</b> initialization. The loss function is <b>binary cross-entropy</b>, which is the standard choice for sigmoid-output classifiers.
                     </p>
-                    <p>
+                    <p data-i18n="doc.nn.p3">
                         Optimization uses <b>Adam</b> (adaptive moment estimation) with default hyper-parameters <code>β₁ = 0.9</code>, <code>β₂ = 0.999</code>, <code>ε = 1e-8</code>, a learning rate of <code>0.001</code>, a batch size of <code>32</code>, and <code>100</code> epochs. These values are tuned to work well out-of-the-box on typical subscription-business datasets.
                     </p>
                 </div>
 
                 <div class="card">
-                    <h2>WebAssembly Training Engine</h2>
-                    <p style="margin-bottom: 1em;">
+                    <h2 data-i18n="doc.wasm.title">WebAssembly Training Engine</h2>
+                    <p style="margin-bottom: 1em;" data-i18n="doc.wasm.p1">
                         The performance-critical inner loop — forward pass, back-propagation, Adam updates, epoch-level training — is implemented in <b>AssemblyScript</b> and compiled ahead of time to a compact <code>wasm/nn.wasm</code> module. The source lives in <code>assembly/index.ts</code>.
                     </p>
-                    <p style="margin-bottom: 1em;">
+                    <p style="margin-bottom: 1em;" data-i18n="doc.wasm.p2">
                         The WebAssembly module manages its own linear memory: weights, biases, Adam first- and second-moment estimates, gradient accumulators, and the training dataset are all stored as flat <code>f64</code> arrays at fixed pointer offsets. JavaScript uploads features and labels once, then drives training one epoch at a time, reading back loss and accuracy after each epoch to power the live progress UI.
                     </p>
-                    <p>
+                    <p data-i18n="doc.wasm.p3">
                         When WebAssembly is unavailable — for example on very old browsers or certain locked-down environments — the same network is trained by an equivalent <b>pure-JavaScript implementation</b> in <code>js/neural-network.js</code>. The model produced by either path is numerically compatible: weights can be exported from one and loaded into the other.
                     </p>
                 </div>
 
                 <div class="card">
-                    <h2>Data Pipeline</h2>
-                    <p style="margin-bottom: 1em;">Before any neuron sees your data, marijoAI performs an automatic, deterministic preprocessing pipeline:</p>
+                    <h2 data-i18n="doc.pipeline.title">Data Pipeline</h2>
+                    <p style="margin-bottom: 1em;" data-i18n="doc.pipeline.intro">Before any neuron sees your data, marijoAI performs an automatic, deterministic preprocessing pipeline:</p>
                     <ol style="margin-left: 1.5em; line-height: 1.9;">
-                        <li><b>Format auto-detection.</b> A sample of the first few lines is scanned to pick the most likely delimiter (<code>,</code>, <code>;</code>, tab, or <code>|</code>) and to decide whether the first row is a header, using a numeric-ratio heuristic.</li>
-                        <li><b>Row validation.</b> Empty rows and rows with no usable values are dropped.</li>
-                        <li><b>Column selection.</b> The churn column and optional ID column are excluded. Among the remaining columns, only those that contain at least one parseable number are kept as features.</li>
-                        <li><b>Deduplication.</b> Exact duplicate feature + label combinations are removed so they do not bias training.</li>
-                        <li><b>Missing-value imputation.</b> Non-numeric or empty cells in a feature column are replaced by the <b>column mean</b> computed from the valid values.</li>
-                        <li><b>Validation holdout.</b> If requested, a random <b>20%</b> of the data is held out as a validation set and exported as a separate CSV so you can measure real-world accuracy later.</li>
-                        <li><b>Min–max normalization.</b> Each feature is rescaled to <code>[0, 1]</code> using the min and max from the training rows only (to avoid leakage). These stats are saved with the model so scoring uses the exact same scaling.</li>
-                        <li><b>Label mapping.</b> Common textual churn labels — <code>yes</code>/<code>no</code>, <code>true</code>/<code>false</code>, <code>churned</code>/<code>retained</code>, <code>left</code>/<code>stayed</code>, <code>inactive</code>/<code>active</code> — are automatically mapped to <code>1</code>/<code>0</code>. The mapping is surfaced in the UI so you can verify it before training.</li>
+                        <li data-i18n="doc.pipeline.li1"><b>Format auto-detection.</b> A sample of the first few lines is scanned to pick the most likely delimiter (<code>,</code>, <code>;</code>, tab, or <code>|</code>) and to decide whether the first row is a header, using a numeric-ratio heuristic.</li>
+                        <li data-i18n="doc.pipeline.li2"><b>Row validation.</b> Empty rows and rows with no usable values are dropped.</li>
+                        <li data-i18n="doc.pipeline.li3"><b>Column selection.</b> The churn column and optional ID column are excluded. Among the remaining columns, only those that contain at least one parseable number are kept as features.</li>
+                        <li data-i18n="doc.pipeline.li4"><b>Deduplication.</b> Exact duplicate feature + label combinations are removed so they do not bias training.</li>
+                        <li data-i18n="doc.pipeline.li5"><b>Missing-value imputation.</b> Non-numeric or empty cells in a feature column are replaced by the <b>column mean</b> computed from the valid values.</li>
+                        <li data-i18n="doc.pipeline.li6"><b>Validation holdout.</b> If requested, a random <b>20%</b> of the data is held out as a validation set and exported as a separate CSV so you can measure real-world accuracy later.</li>
+                        <li data-i18n="doc.pipeline.li7"><b>Min–max normalization.</b> Each feature is rescaled to <code>[0, 1]</code> using the min and max from the training rows only (to avoid leakage). These stats are saved with the model so scoring uses the exact same scaling.</li>
+                        <li data-i18n="doc.pipeline.li8"><b>Label mapping.</b> Common textual churn labels — <code>yes</code>/<code>no</code>, <code>true</code>/<code>false</code>, <code>churned</code>/<code>retained</code>, <code>left</code>/<code>stayed</code>, <code>inactive</code>/<code>active</code> — are automatically mapped to <code>1</code>/<code>0</code>. The mapping is surfaced in the UI so you can verify it before training.</li>
                     </ol>
                 </div>
 
                 <div class="card">
-                    <h2>Scoring and Interpretation</h2>
-                    <p style="margin-bottom: 1em;">
+                    <h2 data-i18n="doc.scoring.title">Scoring and Interpretation</h2>
+                    <p style="margin-bottom: 1em;" data-i18n="doc.scoring.p1">
                         On the Score page, the trained model outputs a <b>churn score</b> between <code>0</code> (will stay) and <code>1</code> (will churn) for each customer. marijoAI turns that raw probability into actionable views:
                     </p>
                     <ul style="margin-left: 1.5em; line-height: 1.9; margin-bottom: 1em;">
-                        <li><b>Risk tiers.</b> Scores are bucketed into <b>Safe</b> (0.00–0.20), <b>Watch</b> (0.20–0.50), <b>At risk</b> (0.50–0.80), and <b>Critical</b> (0.80–1.00).</li>
-                        <li><b>Confidence.</b> How far the score is from the 0.5 decision boundary, so you can distinguish strong predictions from uncertain ones.</li>
-                        <li><b>Accuracy evaluation.</b> If the scored CSV still contains the true churn column, the app computes overall accuracy and a full <b>confusion matrix</b> (predicted vs. actual).</li>
-                        <li><b>Top churn drivers.</b> Global feature importance is estimated via <b>permutation importance</b>: for each feature, its values are shuffled across customers and the average change in the churn score is measured. Features whose shuffling changes predictions the most are the strongest drivers.</li>
+                        <li data-i18n="doc.scoring.li1"><b>Risk tiers.</b> Scores are bucketed into <b>Safe</b> (0.00–0.20), <b>Watch</b> (0.20–0.50), <b>At risk</b> (0.50–0.80), and <b>Critical</b> (0.80–1.00).</li>
+                        <li data-i18n="doc.scoring.li2"><b>Confidence.</b> How far the score is from the 0.5 decision boundary, so you can distinguish strong predictions from uncertain ones.</li>
+                        <li data-i18n="doc.scoring.li3"><b>Accuracy evaluation.</b> If the scored CSV still contains the true churn column, the app computes overall accuracy and a full <b>confusion matrix</b> (predicted vs. actual).</li>
+                        <li data-i18n="doc.scoring.li4"><b>Top churn drivers.</b> Global feature importance is estimated via <b>permutation importance</b>: for each feature, its values are shuffled across customers and the average change in the churn score is measured. Features whose shuffling changes predictions the most are the strongest drivers.</li>
                     </ul>
-                    <p>
+                    <p data-i18n="doc.scoring.p2">
                         Results can be sorted, filtered by score threshold, paginated, and exported to CSV for follow-up in your CRM or customer success tool.
                     </p>
                 </div>
 
                 <div class="card">
-                    <h2>Model Persistence</h2>
-                    <p style="margin-bottom: 1em;">
+                    <h2 data-i18n="doc.persist.title">Model Persistence</h2>
+                    <p style="margin-bottom: 1em;" data-i18n="doc.persist.p1">
                         A trained model is saved as a single, human-readable <b>JSON file</b>. It contains:
                     </p>
                     <ul style="margin-left: 1.5em; line-height: 1.9; margin-bottom: 1em;">
-                        <li>The network <b>architecture</b> (layer sizes and activations).</li>
-                        <li>All <b>weights and biases</b>.</li>
-                        <li>The <b>preprocessing metadata</b>: the ordered list of feature column names, per-column min/max for normalization, the churn column name, the ID column (if any), and the label-to-number mapping.</li>
+                        <li data-i18n="doc.persist.li1">The network <b>architecture</b> (layer sizes and activations).</li>
+                        <li data-i18n="doc.persist.li2">All <b>weights and biases</b>.</li>
+                        <li data-i18n="doc.persist.li3">The <b>preprocessing metadata</b>: the ordered list of feature column names, per-column min/max for normalization, the churn column name, the ID column (if any), and the label-to-number mapping.</li>
                     </ul>
-                    <p>
+                    <p data-i18n="doc.persist.p2">
                         Because preprocessing travels with the model, you can close the tab, come back a month later, re-upload the JSON with any CSV that has the same columns, and get perfectly consistent scoring. The model file is also small enough to check into version control or attach to an email.
                     </p>
                 </div>
 
                 <div class="card">
-                    <h2>Requirements and Compatibility</h2>
+                    <h2 data-i18n="doc.req.title">Requirements and Compatibility</h2>
                     <ul style="margin-left: 1.5em; line-height: 1.9;">
-                        <li><b>Any modern browser</b> — recent Chrome, Edge, Firefox, or Safari. WebAssembly is used automatically when present.</li>
-                        <li><b>No internet connection required</b> after the page is loaded. The app also runs from a local file for fully offline use.</li>
-                        <li><b>Any CSV</b> with at least one numeric feature column and a binary churn column. Datasets with tens of thousands of rows train in seconds on a typical laptop.</li>
+                        <li data-i18n="doc.req.li1"><b>Any modern browser</b> — recent Chrome, Edge, Firefox, or Safari. WebAssembly is used automatically when present.</li>
+                        <li data-i18n="doc.req.li2"><b>No internet connection required</b> after the page is loaded. The app also runs from a local file for fully offline use.</li>
+                        <li data-i18n="doc.req.li3"><b>Any CSV</b> with at least one numeric feature column and a binary churn column. Datasets with tens of thousands of rows train in seconds on a typical laptop.</li>
                     </ul>
                 </div>
 
                 <div class="card">
-                    <h2>Open Source</h2>
-                    <p>
+                    <h2 data-i18n="doc.oss.title">Open Source</h2>
+                    <p data-i18n="doc.oss.body">
                         marijoAI is released under the <b>MIT license</b>. The source code lives on <a href="https://github.com/marijoai/marijoai" target="_blank">GitHub</a>.
                     </p>
                 </div>
@@ -752,6 +756,7 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/shared.js"></script>
     <script src="js/nn-wasm.js"></script>
     <script src="js/neural-network.js"></script>

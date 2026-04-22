@@ -39,6 +39,7 @@
 
 		if (!route.templateId) {
 			mainContent.innerHTML = initialHomeHTML;
+			applyTranslations(mainContent);
 			window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
 			return;
 		}
@@ -51,11 +52,19 @@
 			mainContent.innerHTML = '<div class="container"><p style="padding:1rem;color:#c00;">Page not found.</p></div>';
 		}
 
+		applyTranslations(mainContent);
+
 		if (route.init && typeof window[route.init] === 'function') {
 			try { window[route.init](); } catch (e) { console.error('Init error for route', path, e); }
 		}
 
 		window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+	}
+
+	function applyTranslations(root) {
+		if (window.i18n && typeof window.i18n.translatePage === 'function') {
+			try { window.i18n.translatePage(root); } catch (e) { /* non-fatal */ }
+		}
 	}
 
 	function onHashChange() {
@@ -81,6 +90,13 @@
 	});
 
 	window.addEventListener('hashchange', onHashChange);
+
+	// Re-apply translations to the currently rendered route whenever the user
+	// switches language, so dynamic-content pages stay in sync without a reload.
+	document.addEventListener('marijoai:language-changed', () => {
+		if (mainContent) applyTranslations(mainContent);
+	});
+
 	// Initial navigation
 	onHashChange();
 })();

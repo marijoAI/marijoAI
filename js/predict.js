@@ -3,6 +3,11 @@
  * Handles model loading and making predictions
  */
 
+function _t(key, params) {
+    if (window.i18n && typeof window.i18n.t === 'function') return window.i18n.t(key, params);
+    return key;
+}
+
 class PredictManager {
     constructor() {
         this.trainedModel = null;
@@ -213,7 +218,7 @@ class PredictManager {
                 }
                 this.savedIdColumn = (modelData.config.preprocessing && modelData.config.preprocessing.idColumn) || null;
                 
-                this.showSuccess('Trained model loaded successfully!');
+                this.showSuccess(_t('predict.msg.model_loaded'));
                 this.updateModelInfo();
                 this.displayLabelMappings();
                 if (this.testData && this.testData.length) {
@@ -223,7 +228,7 @@ class PredictManager {
                     this.updateDataInfo();
                 }
             } catch (err) {
-                this.showError('Error loading model: ' + err.message);
+                this.showError(_t('predict.msg.err_load_model', { error: err.message }));
             } finally {
                 this.showLoading(false);
             }
@@ -248,12 +253,16 @@ class PredictManager {
                 transform: (v) => (v || '').toString().trim(),
                 complete: (results) => {
                     if (results.errors.length > 0) {
-                        this.showError('Error parsing CSV file: ' + results.errors[0].message);
+                        this.showError(_t('predict.msg.err_parse', { error: results.errors[0].message }));
                         return;
                     }
                     const valid = results.data.filter(row => row && typeof row === 'object' && Object.values(row).some(v => v !== '' && v !== null && v !== undefined));
                     this.testData = valid;
-                    this.showSuccess(`Successfully loaded ${valid.length} rows of test data (delimiter "${fmt.delimiter}", header: ${fmt.hasHeader ? 'yes' : 'no'})`);
+                    this.showSuccess(_t('predict.msg.csv_loaded', {
+                        rows: valid.length,
+                        delimiter: fmt.delimiter,
+                        header: fmt.hasHeader ? _t('train.msg.yes') : _t('train.msg.no')
+                    }));
                     const cols = Object.keys(this.testData[0] || {});
                     this.populateTargetOptions(cols);
                     this.populatePredictIdColumnOptions(cols);
@@ -261,11 +270,11 @@ class PredictManager {
                     this.updateDataInfo();
                 },
                 error: (error) => {
-                    this.showError('Error reading file: ' + error.message);
+                    this.showError(_t('predict.msg.err_read', { error: error.message }));
                 }
             });
         }).catch((e) => {
-            this.showError('Failed to detect CSV format: ' + (e && e.message ? e.message : e));
+            this.showError(_t('predict.msg.err_detect', { error: e && e.message ? e.message : e }));
         });
     }
 
@@ -275,7 +284,7 @@ class PredictManager {
         targetSelect.innerHTML = '';
         const placeholder = document.createElement('option');
         placeholder.value = '';
-        placeholder.textContent = '-- Select target column --';
+        placeholder.textContent = _t('select.pick_target');
         targetSelect.appendChild(placeholder);
         columns.forEach(col => {
             const opt = document.createElement('option');
@@ -308,7 +317,7 @@ class PredictManager {
         idSelect.innerHTML = '';
         const placeholder = document.createElement('option');
         placeholder.value = '';
-        placeholder.textContent = '-- Select ID column --';
+        placeholder.textContent = _t('select.pick_id');
         idSelect.appendChild(placeholder);
         opts.forEach(col => {
             const opt = document.createElement('option');
@@ -338,17 +347,17 @@ class PredictManager {
         const sel = document.getElementById('predict-id-column');
         const v = sel ? sel.value : '';
         if (!v || !columns.includes(v)) {
-            return { key: null, error: 'Please select which column is the ID column.' };
+            return { key: null, error: _t('predict.msg.err_pick_id') };
         }
         if (targetKey && v === targetKey) {
-            return { key: null, error: 'The ID column cannot be the same as the churn column.' };
+            return { key: null, error: _t('predict.msg.err_id_equals_target') };
         }
         return { key: v };
     }
 
     async makePredictions() {
         if (!this.trainedModel || !this.testData) {
-            this.showError('Please upload both trained model and test data');
+            this.showError(_t('predict.msg.err_upload_both'));
             return;
         }
 
@@ -444,7 +453,7 @@ class PredictManager {
                 if (reverseMappings && reverseMappings[predictedNumeric]) {
                     predictedClass = reverseMappings[predictedNumeric][0];
                 } else {
-                    predictedClass = predictedNumeric === 1 ? 'At Risk' : 'Safe';
+                    predictedClass = predictedNumeric === 1 ? _t('predict.risk_tiers.atrisk') : _t('predict.risk_tiers.safe');
                 }
                 
                 const riskTier = this.getRiskTier(predVal);
@@ -462,7 +471,7 @@ class PredictManager {
             });
 
 			this.predictions = results;
-            this.showSuccess(`Predictions completed for ${results.length} samples`);
+            this.showSuccess(_t('predict.msg.scored', { count: results.length }));
             this.showPredictionSummary();
             this.showPredictionResults();
 
@@ -478,7 +487,7 @@ class PredictManager {
             await this.computeAndShowTopChurnDrivers(features, predictions, featureKeys, expected);
 
         } catch (err) {
-            this.showError('Prediction error: ' + err.message);
+            this.showError(_t('predict.msg.err_predict', { error: err.message }));
         } finally {
             this.showLoading(false);
         }
@@ -486,23 +495,25 @@ class PredictManager {
 
     downloadPredictions() {
         if (!this.predictions) {
-            this.showError('No predictions to download');
+            this.showError(_t('predict.msg.err_no_predictions'));
             return;
         }
 
         const ordered = this.getOrderedPredictions();
         if (!ordered.length) {
-            this.showError('No rows match the current churn score filter. Adjust the threshold or choose Show all customers.');
+            this.showError(_t('predict.msg.err_no_filter_match'));
             return;
         }
 
-        const csvData = ordered.map((result) => ({
-            'Customer': result.datasetRow,
-            'Churn Score': result.prediction.toFixed(4),
-            'Confidence': result.confidence.toFixed(4),
-            'Risk Level': result.predictedClass,
-            'Risk Tier': result.riskTierLabel || this.getRiskTier(result.prediction).label
-        }));
+        const csvData = ordered.map((result) => {
+            const row = {};
+            row[_t('predict.col.customer')] = result.datasetRow;
+            row[_t('predict.col.score')] = result.prediction.toFixed(4);
+            row[_t('predict.col.confidence')] = result.confidence.toFixed(4);
+            row[_t('predict.col.risk_level')] = result.predictedClass;
+            row[_t('predict.col.risk_tier')] = result.riskTierLabel || this.getRiskTier(result.prediction).label;
+            return row;
+        });
 
         const csv = Papa.unparse(csvData);
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -515,7 +526,8 @@ class PredictManager {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        this.showSuccess(`Downloaded ${ordered.length} row${ordered.length === 1 ? '' : 's'} (current sort and filter).`);
+        const msgKey = ordered.length === 1 ? 'predict.msg.downloaded_one' : 'predict.msg.downloaded_many';
+        this.showSuccess(_t(msgKey, { count: ordered.length }));
     }
 
     resetPredictions() {
@@ -561,7 +573,7 @@ class PredictManager {
             predictIdSelect.innerHTML = '';
             const ph = document.createElement('option');
             ph.value = '';
-            ph.textContent = '-- Upload CSV first --';
+            ph.textContent = _t('select.upload_first');
             predictIdSelect.appendChild(ph);
         }
         this.updateScoreFilterThresholdDisabled();
@@ -697,15 +709,15 @@ class PredictManager {
     getRiskTier(score) {
         const s = (typeof score === 'number' && !isNaN(score)) ? score : 0;
         if (s < 0.20) {
-            return { key: 'safe', label: 'Safe', range: '0.00 – 0.20' };
+            return { key: 'safe', label: _t('predict.risk_tiers.safe'), range: '0.00 – 0.20' };
         }
         if (s < 0.50) {
-            return { key: 'watch', label: 'Watch', range: '0.20 – 0.50' };
+            return { key: 'watch', label: _t('predict.risk_tiers.watch'), range: '0.20 – 0.50' };
         }
         if (s < 0.80) {
-            return { key: 'atrisk', label: 'At risk', range: '0.50 – 0.80' };
+            return { key: 'atrisk', label: _t('predict.risk_tiers.atrisk'), range: '0.50 – 0.80' };
         }
-        return { key: 'critical', label: 'Critical', range: '0.80 – 1.00' };
+        return { key: 'critical', label: _t('predict.risk_tiers.critical'), range: '0.80 – 1.00' };
     }
 
     // Deterministic RNG (mulberry32) used for the permutation step so that
@@ -733,7 +745,7 @@ class PredictManager {
         const loadingSpan = document.querySelector('#predict-loading span');
 
         const originalLoadingText = loadingSpan ? loadingSpan.textContent : null;
-        if (loadingSpan) loadingSpan.textContent = 'Analyzing top churn drivers…';
+        if (loadingSpan) loadingSpan.textContent = _t('predict.msg.analyzing_drivers');
 
         card.style.display = 'block';
         if (skeletonEl) skeletonEl.style.display = 'flex';
@@ -827,16 +839,16 @@ class PredictManager {
         barsEl.innerHTML = '';
 
         if (!topN || !topN.length) {
-            if (summaryEl) summaryEl.textContent = 'Not enough information to identify churn drivers in this dataset.';
+            if (summaryEl) summaryEl.textContent = _t('predict.msg.drivers_none');
             return;
         }
 
         const max = topN[0].importance || 0;
         if (summaryEl) {
             if (max > 0) {
-                summaryEl.textContent = `Across all customers, changes in ${topN[0].key} move churn score the most.`;
+                summaryEl.textContent = _t('predict.msg.drivers_top', { feature: topN[0].key });
             } else {
-                summaryEl.textContent = 'All parameters look equally (un)important for this model. The score barely changes when any single parameter is scrambled.';
+                summaryEl.textContent = _t('predict.msg.drivers_flat');
             }
         }
 
@@ -969,10 +981,11 @@ class PredictManager {
             const total = this.predictions.length;
             const riskCount = atRisk.length;
             const pct = ((riskCount / total) * 100).toFixed(0);
-            headlineEl.textContent = `${riskCount} of ${total} customers (${pct}%) are at risk of churning`;
+            const headlineKey = riskCount === 1 ? 'predict.msg.at_risk_headline_one' : 'predict.msg.at_risk_headline_many';
+            headlineEl.textContent = _t(headlineKey, { count: riskCount, total: total, pct: pct });
             detailEl.textContent = riskCount > 0
-                ? 'Review the table below to identify which accounts need immediate attention.'
-                : 'No customers were flagged as high churn risk by the model.';
+                ? _t('predict.msg.at_risk_detail')
+                : _t('predict.msg.no_risk_detail');
             summaryEl.style.display = riskCount > 0 ? 'block' : 'none';
         }
 
@@ -1069,7 +1082,7 @@ class PredictManager {
             tbody.innerHTML = '';
             if (total === 0) {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td colspan="5" class="predictions-table-empty">No rows match the current churn score filter. Try another threshold or choose Show all customers.</td>`;
+                tr.innerHTML = `<td colspan="5" class="predictions-table-empty">${this.escapeHtml(_t('predict.msg.empty_filtered'))}</td>`;
                 tbody.appendChild(tr);
             } else {
                 slice.forEach((result) => {
@@ -1099,9 +1112,15 @@ class PredictManager {
 
         if (pageInfo) {
             if (total === 0) {
-                pageInfo.textContent = `No matches (${allCount} scored)`;
+                pageInfo.textContent = _t('predict.msg.page_no_match', { total: allCount });
             } else {
-                pageInfo.textContent = `Page ${this.predictionsPage} of ${pageCount} (${start + 1}–${end} of ${total})`;
+                pageInfo.textContent = _t('predict.msg.page_info', {
+                    page: this.predictionsPage,
+                    pages: pageCount,
+                    start: start + 1,
+                    end: end,
+                    total: total
+                });
             }
         }
         if (pagePrev) pagePrev.disabled = this.predictionsPage <= 1 || total === 0;
@@ -1110,15 +1129,15 @@ class PredictManager {
         if (tableNote) {
             const parts = [];
             if (this.isScoreFilterActive() && total < allCount) {
-                parts.push(`Showing ${total} of ${allCount} customers after the score filter.`);
+                parts.push(_t('predict.msg.note_filtered', { shown: total, total: allCount }));
             }
             if (total > size) {
-                parts.push('Use Previous / Next to browse.');
+                parts.push(_t('predict.msg.note_browse'));
             }
             if (total === 0 && allCount > 0) {
-                parts.push('Adjust or clear the filter to export rows.');
+                parts.push(_t('predict.msg.note_adjust_filter'));
             } else {
-                parts.push('Download Results exports only the rows selected by the applied filters, and in the sorting order selected.');
+                parts.push(_t('predict.msg.note_download_scope'));
             }
             tableNote.textContent = parts.join(' ');
         }
