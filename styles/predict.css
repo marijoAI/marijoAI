@@ -1,26 +1,26 @@
 .predict {
-  padding: 40px 0;
+  padding: 2.5em 0;
 }
 
 .prediction-info {
-  margin-bottom: 20px;
+  margin-bottom: 1.25em;
 }
 
 .prediction-info p {
   color: var(--text-muted);
-  margin-bottom: 15px;
+  margin-bottom: 0.9375em;
 }
 
 .requirements {
   background: rgba(255, 255, 255, 0.08);
-  padding: 16px;
+  padding: 1em;
   border-radius: var(--radius-sm);
-  border-left: 4px solid var(--primary);
+  border-left: 0.25em solid var(--primary);
 }
 
 .requirements h4 {
   color: white;
-  margin-bottom: 10px;
+  margin-bottom: 0.625em;
   font-weight: 700;
 }
 
@@ -31,10 +31,10 @@
 
 .requirements li {
   color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 5px;
-  padding-left: 20px;
+  margin-bottom: 0.3125em;
+  padding-left: 1.25em;
   position: relative;
-  font-size: 14px;
+  font-size: 0.875em;
 }
 
 .requirements li::before {
@@ -47,46 +47,46 @@
 
 .prediction-summary {
   background: rgba(255, 255, 255, 0.08);
-  padding: 20px;
+  padding: 1.25em;
   border-radius: var(--radius-md);
-  margin-top: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-top: 1.25em;
+  border: 0.0625em solid rgba(255, 255, 255, 0.15);
 }
 
 .prediction-summary h3 {
   color: white;
-  margin-bottom: 15px;
+  margin-bottom: 0.9375em;
 }
 
 .summary-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(12.5em, 1fr));
+  gap: 0.9375em;
+  margin-bottom: 1.25em;
 }
 
 .stat {
   background: rgba(255, 255, 255, 0.08);
-  padding: 16px;
+  padding: 1em;
   border-radius: var(--radius-sm);
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 0.0625em solid rgba(255, 255, 255, 0.08);
 }
 
 /* Evaluation metrics container and matrix table styles */
 .evaluation-metrics {
   background: #f5f3ff;
-  padding: 18px;
+  padding: 1.125em;
   border-radius: var(--radius-sm);
-  border-left: 4px solid var(--primary);
-  margin: 15px 0 20px 0;
+  border-left: 0.25em solid var(--primary);
+  margin: 0.9375em 0 1.25em 0;
   max-width: 100%;
   box-sizing: border-box;
 }
 
 .evaluation-metrics .summary-stats .stat {
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 0.0625em solid #e2e8f0;
 }
 
 .confusion-matrix {
@@ -99,22 +99,22 @@
 
 .confusion-matrix table {
   width: 100%;
-  min-width: 17rem;
+  min-width: 17em;
   border-collapse: collapse;
   background: white;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0.125em 0.75em rgba(0, 0, 0, 0.06);
   table-layout: auto;
 }
 
 .confusion-matrix th,
 .confusion-matrix td {
-  padding: 10px 14px;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 0.625em 0.875em;
+  border-bottom: 0.0625em solid #f1f5f9;
   text-align: center;
   color: var(--text);
-  font-size: 14px;
+  font-size: 0.875em;
   word-wrap: break-word;
   overflow-wrap: break-word;
   hyphens: auto;
@@ -124,23 +124,23 @@
   background: linear-gradient(135deg, var(--primary), #7c3aed);
   color: white;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 0.8125em;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
 .stat-label {
   display: block;
-  font-size: 13px;
+  font-size: 0.8125em;
   color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 4px;
+  margin-bottom: 0.25em;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
 .stat-value {
   display: block;
-  font-size: 20px;
+  font-size: 1.25em;
   font-weight: 700;
   color: white;
   letter-spacing: -0.02em;
@@ -165,12 +165,12 @@
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  gap: 16px;
-  margin-bottom: 16px;
-  padding: 12px 14px;
+  gap: 1em;
+  margin-bottom: 1em;
+  padding: 0.75em 0.875em;
   background: #f8fafc;
   border-radius: var(--radius-sm);
-  border: 1px solid #e2e8f0;
+  border: 0.0625em solid #e2e8f0;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
@@ -179,7 +179,7 @@
 .predictions-pagination-controls-section {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 1em;
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -193,7 +193,7 @@
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 10px;
+  gap: 0.625em;
   min-width: 0;
   max-width: none;
   flex: 0 0 auto;
@@ -201,7 +201,7 @@
 
 .pagination-toolbar-sort label,
 .pagination-toolbar-size label {
-  font-size: 14px;
+  font-size: 0.875em;
   font-weight: 500;
   color: var(--text-muted);
   margin: 0;
@@ -213,32 +213,32 @@
 .pagination-toolbar-sort select,
 .pagination-toolbar-size select {
   min-width: 0;
-  padding: 8px 12px;
-  font-size: 14px;
-  border: 1px solid #e2e8f0;
+  padding: 0.5em 0.75em;
+  font-size: 0.875em;
+  border: 0.0625em solid #e2e8f0;
   border-radius: var(--radius-sm);
   background: white;
   color: var(--text);
   flex: 0 0 auto;
   max-width: none;
-  width: 15rem;
+  width: 15em;
   box-sizing: border-box;
 }
 
 .pagination-toolbar-size select {
   flex: 0 0 auto;
-  min-width: 4.5rem;
-  width: 6rem;
+  min-width: 4.5em;
+  width: 6em;
 }
 
 .pagination-toolbar-sort select {
-  width: 16rem;
+  width: 16em;
 }
 
 .pagination-toolbar-nav {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75em;
   flex-wrap: nowrap;
   min-width: 0;
   max-width: none;
@@ -250,11 +250,11 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-bottom: 16px;
-  padding: 12px 14px;
+  margin-bottom: 1em;
+  padding: 0.75em 0.875em;
   background: #f8fafc;
   border-radius: var(--radius-sm);
-  border: 1px solid #e2e8f0;
+  border: 0.0625em solid #e2e8f0;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
@@ -274,10 +274,10 @@
 }
 
 .predictions-page-info {
-  font-size: 14px;
+  font-size: 0.875em;
   color: var(--text-muted);
   font-weight: 500;
-  min-width: 8rem;
+  min-width: 8em;
   max-width: none;
   text-align: center;
   flex: 0 0 auto;
@@ -294,12 +294,12 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 16px 24px;
-  margin-bottom: 16px;
-  padding: 12px 14px;
+  gap: 1em 1.5em;
+  margin-bottom: 1em;
+  padding: 0.75em 0.875em;
   background: #f1f5f9;
   border-radius: var(--radius-sm);
-  border: 1px solid #e2e8f0;
+  border: 0.0625em solid #e2e8f0;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
@@ -310,13 +310,13 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: 0.625em;
   flex-wrap: nowrap;
 }
 
 .pagination-toolbar-filter label,
 .pagination-toolbar-filter-threshold label {
-  font-size: 14px;
+  font-size: 0.875em;
   font-weight: 500;
   color: var(--text-muted);
   margin: 0;
@@ -332,10 +332,10 @@
 .pagination-toolbar-filter select {
   min-width: 0;
   max-width: none;
-  width: 16rem;
-  padding: 8px 12px;
-  font-size: 14px;
-  border: 1px solid #e2e8f0;
+  width: 16em;
+  padding: 0.5em 0.75em;
+  font-size: 0.875em;
+  border: 0.0625em solid #e2e8f0;
   border-radius: var(--radius-sm);
   background: white;
   color: var(--text);
@@ -343,10 +343,10 @@
 }
 
 .pagination-toolbar-filter-threshold input[type="number"] {
-  width: 7rem;
-  padding: 8px 12px;
-  font-size: 14px;
-  border: 1px solid #e2e8f0;
+  width: 7em;
+  padding: 0.5em 0.75em;
+  font-size: 0.875em;
+  border: 0.0625em solid #e2e8f0;
   border-radius: var(--radius-sm);
   background: white;
   color: var(--text);
@@ -365,13 +365,13 @@
 
 .predictions-table-empty {
   text-align: center;
-  padding: 1.5rem 1rem;
+  padding: 1.5em 1em;
   color: var(--text-muted);
 }
 
 .predictions-table {
   overflow-x: auto;
-  margin: 20px 0;
+  margin: 1.25em 0;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
@@ -383,24 +383,24 @@
   background: white;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0.125em 0.75em rgba(0, 0, 0, 0.06);
 }
 
 .predictions-table th {
   background: linear-gradient(135deg, var(--primary), #7c3aed);
   color: white;
-  padding: 12px 14px;
+  padding: 0.75em 0.875em;
   text-align: left;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 0.8125em;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
 .predictions-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 14px;
+  padding: 0.625em 0.875em;
+  border-bottom: 0.0625em solid #f1f5f9;
+  font-size: 0.875em;
   color: var(--text);
 }
 
@@ -422,9 +422,9 @@
 
 .confidence-badge {
   color: white;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
+  padding: 0.25em 0.625em;
+  border-radius: 62.4375em;
+  font-size: 0.75em;
   font-weight: 600;
   letter-spacing: 0.01em;
 }
@@ -433,9 +433,9 @@
 .risk-tier-badge {
   display: inline-block;
   color: white;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
+  padding: 0.25em 0.625em;
+  border-radius: 62.4375em;
+  font-size: 0.75em;
   font-weight: 600;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -459,44 +459,44 @@
 
 /* Risk tier breakdown card (shown above the predictions table) */
 .risk-tiers-summary {
-  margin-bottom: 20px;
-  padding: 18px;
+  margin-bottom: 1.25em;
+  padding: 1.125em;
   background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border-radius: 0.625em;
+  border: 0.0625em solid #e2e8f0;
+  box-shadow: 0 0.125em 0.75em rgba(0, 0, 0, 0.04);
 }
 
 .risk-tiers-title {
   color: var(--text);
   font-weight: 700;
   letter-spacing: -0.02em;
-  margin: 0 0 4px 0;
-  font-size: 1.05rem;
+  margin: 0 0 0.25em 0;
+  font-size: 1.05em;
 }
 
 .risk-tiers-subtitle {
   color: var(--text-muted);
-  font-size: 0.9rem;
-  margin: 0 0 14px 0;
+  font-size: 0.9em;
+  margin: 0 0 0.875em 0;
 }
 
 .risk-tiers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(11.25em, 1fr));
+  gap: 0.75em;
 }
 
 .risk-tier-card {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
-  padding: 14px;
+  gap: 0.375em;
+  padding: 0.875em;
   background: #f8fafc;
   border-radius: var(--radius-sm);
-  border: 1px solid #e2e8f0;
-  border-left-width: 4px;
+  border: 0.0625em solid #e2e8f0;
+  border-left-width: 0.25em;
 }
 
 .risk-tier-card.risk-tier-safe {
@@ -516,66 +516,66 @@
 }
 
 .risk-tier-range {
-  font-size: 12px;
+  font-size: 0.75em;
   color: var(--text-muted);
   letter-spacing: 0.01em;
 }
 
 .risk-tier-count {
-  font-size: 22px;
+  font-size: 1.375em;
   font-weight: 700;
   color: var(--text);
   line-height: 1.1;
 }
 
 .risk-tier-pct {
-  font-size: 13px;
+  font-size: 0.8125em;
   color: var(--text-muted);
   font-weight: 500;
 }
 
 /* Top Churn Drivers card: horizontal bar chart of permutation importances */
 .churn-drivers-card {
-  margin-bottom: 20px;
-  padding: 18px;
+  margin-bottom: 1.25em;
+  padding: 1.125em;
   background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border-radius: 0.625em;
+  border: 0.0625em solid #e2e8f0;
+  box-shadow: 0 0.125em 0.75em rgba(0, 0, 0, 0.04);
 }
 
 .churn-drivers-title {
   color: var(--text);
   font-weight: 700;
   letter-spacing: -0.02em;
-  margin: 0 0 4px 0;
-  font-size: 1.05rem;
+  margin: 0 0 0.25em 0;
+  font-size: 1.05em;
 }
 
 .churn-drivers-intro {
   color: var(--text-muted);
-  font-size: 0.9rem;
-  margin: 0 0 14px 0;
+  font-size: 0.9em;
+  margin: 0 0 0.875em 0;
 }
 
 .churn-drivers-skeleton {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px;
+  gap: 0.625em;
+  padding: 0.875em;
   background: #f8fafc;
-  border: 1px dashed #e2e8f0;
+  border: 0.0625em dashed #e2e8f0;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 0.875em;
 }
 
 .churn-drivers-spinner {
   display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #e2e8f0;
-  border-top: 2px solid var(--primary);
+  width: 1em;
+  height: 1em;
+  border: 0.125em solid #e2e8f0;
+  border-top: 0.125em solid var(--primary);
   border-radius: 50%;
   animation: spin 0.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
   flex: 0 0 auto;
@@ -583,23 +583,23 @@
 
 .churn-drivers-summary {
   color: var(--text);
-  font-size: 0.95rem;
+  font-size: 0.95em;
   font-weight: 600;
-  margin: 0 0 12px 0;
+  margin: 0 0 0.75em 0;
 }
 
 .churn-drivers-bars {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5em;
 }
 
 .churn-drivers-row {
   display: grid;
-  grid-template-columns: minmax(120px, 1.2fr) minmax(0, 3fr) 80px;
+  grid-template-columns: minmax(7.5em, 1.2fr) minmax(0, 3fr) 5em;
   align-items: center;
-  gap: 12px;
-  padding: 6px 8px;
+  gap: 0.75em;
+  padding: 0.375em 0.5em;
   border-radius: var(--radius-sm);
 }
 
@@ -608,7 +608,7 @@
 }
 
 .churn-drivers-name {
-  font-size: 13px;
+  font-size: 0.8125em;
   font-weight: 600;
   color: var(--text);
   overflow: hidden;
@@ -617,9 +617,9 @@
 }
 
 .churn-drivers-bar-track {
-  height: 12px;
+  height: 0.75em;
   background: #f1f5f9;
-  border-radius: 999px;
+  border-radius: 62.4375em;
   overflow: hidden;
   min-width: 0;
 }
@@ -627,12 +627,12 @@
 .churn-drivers-bar-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--primary), #7c3aed);
-  border-radius: 999px;
+  border-radius: 62.4375em;
   transition: width var(--transition);
 }
 
 .churn-drivers-value {
-  font-size: 13px;
+  font-size: 0.8125em;
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
   text-align: right;
@@ -640,27 +640,27 @@
 
 .churn-drivers-footnote {
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 0.75em;
   font-style: italic;
-  margin: 14px 0 0 0;
+  margin: 0.875em 0 0 0;
 }
 
 .table-note {
   text-align: center;
   color: var(--text-muted);
   font-style: italic;
-  margin-top: 12px;
-  font-size: 14px;
+  margin-top: 0.75em;
+  font-size: 0.875em;
 }
 
 .form-group small {
   display: block;
   color: var(--text-muted);
-  margin-top: 5px;
-  font-size: 12px;
+  margin-top: 0.3125em;
+  font-size: 0.75em;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .summary-stats {
     grid-template-columns: 1fr;
   }
@@ -670,34 +670,34 @@
   }
 
   .risk-tier-count {
-    font-size: 20px;
+    font-size: 1.25em;
   }
 
   .churn-drivers-row {
-    grid-template-columns: minmax(90px, 1fr) minmax(0, 2fr) 64px;
-    gap: 8px;
+    grid-template-columns: minmax(5.625em, 1fr) minmax(0, 2fr) 4em;
+    gap: 0.5em;
   }
 
   .churn-drivers-name {
-    font-size: 12px;
+    font-size: 0.75em;
   }
 
   .churn-drivers-value {
-    font-size: 12px;
+    font-size: 0.75em;
   }
 
   .evaluation-metrics {
-    padding: 14px 12px;
+    padding: 0.875em 0.75em;
   }
 
   .confusion-matrix th,
   .confusion-matrix td {
-    padding: 8px 8px;
-    font-size: 12px;
+    padding: 0.5em 0.5em;
+    font-size: 0.75em;
   }
 
   .confusion-matrix thead th {
-    font-size: 11px;
+    font-size: 0.6875em;
     letter-spacing: 0.01em;
   }
 
@@ -709,7 +709,7 @@
     width: 100%;
     max-width: 100%;
     justify-content: space-between;
-    gap: 8px;
+    gap: 0.5em;
   }
 
   .predictions-page-info {
@@ -722,7 +722,7 @@
   .predictions-filter-toolbar {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 0.625em;
   }
 
   .pagination-toolbar-sort,
@@ -745,19 +745,19 @@
   }
   
   .predictions-table {
-    font-size: 14px;
+    font-size: 0.875em;
   }
   
   .predictions-table th,
   .predictions-table td {
-    padding: 8px 10px;
+    padding: 0.5em 0.625em;
   }
   
   .stat {
-    padding: 12px;
+    padding: 0.75em;
   }
   
   .stat-value {
-    font-size: 18px;
+    font-size: 1.125em;
   }
 }

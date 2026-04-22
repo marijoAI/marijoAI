@@ -1,52 +1,52 @@
 .train {
-  padding: 40px 0;
+  padding: 2.5em 0;
 }
 
 .data-info,
 .model-info {
   background: #f5f3ff;
-  padding: 16px;
+  padding: 1em;
   border-radius: var(--radius-sm);
-  border-left: 4px solid var(--primary);
-  margin-top: 15px;
+  border-left: 0.25em solid var(--primary);
+  margin-top: 0.9375em;
 }
 
 .data-info h3,
 .model-info h3 {
   color: var(--primary);
-  margin-bottom: 10px;
-  font-size: 15px;
+  margin-bottom: 0.625em;
+  font-size: 0.9375em;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 
 .data-info p,
 .model-info p {
-  margin-bottom: 5px;
+  margin-bottom: 0.3125em;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 0.875em;
 }
 
 .progress-container {
-  margin-bottom: 20px;
+  margin-bottom: 1.25em;
 }
 
 .progress-text {
   text-align: center;
-  margin-top: 10px;
+  margin-top: 0.625em;
   color: var(--text-muted);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 0.875em;
   letter-spacing: -0.01em;
 }
 
 .button-group {
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 0.75em;
+  margin-top: 1.25em;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .button-group {
     flex-direction: column;
   }
