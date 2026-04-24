@@ -905,29 +905,23 @@ class TrainModelManager {
 
     showTrainingProgress() {
         const progressCard = document.getElementById('training-progress-card');
-        if (progressCard) {
-            progressCard.style.display = 'block';
-			requestAnimationFrame(() => {
-				requestAnimationFrame(() => {
-					// Append a temporary sentinel at the end and scroll it into view
-					const container = document.querySelector('.train .container') || document.body;
-					const sentinel = document.createElement('div');
-					sentinel.setAttribute('aria-hidden', 'true');
-					sentinel.style.cssText = 'height:1px;';
-					container.appendChild(sentinel);
-					sentinel.scrollIntoView({ behavior: 'smooth', block: 'end' });
-					// Fallback retries to ensure we hit the absolute bottom even if layout expands
-					const forceBottom = () => {
-						const se = document.scrollingElement || document.documentElement;
-						const max = Math.max(0, (se.scrollHeight || 0) - window.innerHeight);
-						window.scrollTo({ top: max, behavior: 'smooth' });
-					};
-					setTimeout(forceBottom, 60);
-					setTimeout(forceBottom, 200);
-					setTimeout(() => { if (sentinel.parentNode) sentinel.parentNode.removeChild(sentinel); }, 400);
-				});
-			});
-        }
+        if (!progressCard) return;
+        progressCard.style.display = 'block';
+
+        // Scroll so the Training Progress card sits at the top of the
+        // viewport with a small breathing-room margin. We wait two rAFs so
+        // the card is fully laid out (height can change as the
+        // just-revealed contents fill in) before we compute its position.
+        const MARGIN_PX = 16;
+        const scrollToCard = () => {
+            const rect = progressCard.getBoundingClientRect();
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
+            const targetY = Math.max(0, rect.top + currentScroll - MARGIN_PX);
+            window.scrollTo({ top: targetY, behavior: 'smooth' });
+        };
+        requestAnimationFrame(() => {
+            requestAnimationFrame(scrollToCard);
+        });
     }
 
     hideTrainingProgress() {

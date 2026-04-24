@@ -19,18 +19,19 @@ const PI: f64 = 3.141592653589793;
 // Packed RGBA colors (little-endian byte order = R, G, B, A,
 // so u32 = (A<<24)|(B<<16)|(G<<8)|R).
 const COLOR_CEILING:   u32 = 0xFFFACE87;   // 135,206,250  (light blue sky)
-const COLOR_FLOOR:     u32 = 0xFF5A1E0A;   //  10, 30, 90  (dark blue floor)
+const COLOR_FLOOR:     u32 = 0xFF5A1E0A;   //  10, 30, 90  (dark blue road)
 const COLOR_STAR_OUT:  u32 = 0xFF1DB9F6;   // 246,185, 29  (golden yellow)
 const COLOR_STAR_IN:   u32 = 0xFF78FFFF;   // 255,255,120  (bright yellow core)
-const COLOR_CAR_BODY:  u32 = 0xFF1E1EDC;   // 220, 30, 30  (red car body)
-const COLOR_CAR_DARK:  u32 = 0xFF1414A0;   // 160, 20, 20  (darker red)
-const COLOR_GLASS:     u32 = 0xFFE6C896;   // 150,200,230  (windshield glass)
-const COLOR_WHEEL:     u32 = 0xFF141414;   //  20, 20, 20  (tire)
-const COLOR_RIM:       u32 = 0xFF9C9C9C;   // 156,156,156  (wheel rim)
-const COLOR_TAILLIGHT: u32 = 0xFF4040FF;   // 255, 64, 64  (taillight)
-const COLOR_HEADLIGHT: u32 = 0xFFE6F5FF;   // 255,245,230  (headlight, warm white)
-const COLOR_PLATE:     u32 = 0xFFFFFFFF;   // 255,255,255  (license plate)
-const COLOR_BUMPER:    u32 = 0xFF282828;   //  40, 40, 40  (bumper / body trim)
+
+// Red ramp used to fake curvature on the engine cover — four shades from
+// deep shadow to bright highlight, plus a white specular tip for polished
+// paint highlights on the bulges.
+const COLOR_CAR_DARK:  u32 = 0xFF1414A0;   // 160, 20, 20  (shadow red)
+const COLOR_CAR_MID:   u32 = 0xFF1919C8;   // 200, 25, 25  (mid red)
+const COLOR_CAR_BODY:  u32 = 0xFF1E1EDC;   // 220, 30, 30  (body red)
+const COLOR_CAR_HIGH:  u32 = 0xFF5050FF;   // 255, 80, 80  (highlight red)
+const COLOR_SPECULAR:  u32 = 0xFFFFFFFF;   // 255,255,255  (specular white)
+const COLOR_CHROME:    u32 = 0xFFE0E0E0;   // 224,224,224  (chrome / silver)
 
 // Pixel buffer pointer + dimensions
 let pixelPtr: usize = 0;
@@ -347,95 +348,128 @@ function drawStars(): void {
 }
 
 // ---------------------------------------------------------------------------
-// Detailed car sprite (rear view, parked at the bottom of the screen)
+// First-person cockpit view: we're inside the car looking straight ahead,
+// and only the engine cover is visible in the foreground. The hood is a
+// perspective-shortened trapezoid with three-band lateral shading (fakes
+// curvature), a central crease, two domed power-bulges with specular
+// highlights, a chrome cowl strip at the windshield base, and a small
+// chrome hood ornament centred at the far edge.
 // ---------------------------------------------------------------------------
 function drawCar(): void {
   const w: i32 = screenW;
   const h: i32 = screenH;
 
-  const carW: i32 = (w * 2) / 5;
-  const carH: i32 = h / 4;
-  const startX: i32 = (w - carW) / 2;
-  const startY: i32 = h - carH - h / 50;
+  // Hood geometry: occupies the lower ~38 % of the screen.
+  const hoodBottomY: i32 = h;
+  const hoodTopY: i32 = (h * 62) / 100;
+  const hoodHeight: i32 = hoodBottomY - hoodTopY;
+
+  // Perspective: wider at the bottom (close to viewer), narrower at the top
+  // (where it meets the windshield base).
+  const bottomHalfW: i32 = (w * 48) / 100; // ≈96 % wide near the driver
+  const topHalfW:    i32 = (w * 22) / 100; // ≈44 % wide at the horizon
   const cx: i32 = w >> 1;
 
-  // Main body: a plus-sign-of-rectangles trick to emulate rounded corners.
-  fillRect(startX, startY + carH / 12, carW, carH - carH / 6, COLOR_CAR_BODY);
-  fillRect(startX + carW / 14, startY, carW - carW / 7, carH, COLOR_CAR_BODY);
+  // 1) Trapezoidal fill with a lateral three-band shade (body in the
+  //    middle, mid red just outside, deep red on the outer fenders) plus
+  //    a top-row darkening for aerial perspective.
+  for (let y: i32 = hoodTopY; y < hoodBottomY; y++) {
+    const t: f64 = <f64>(y - hoodTopY) / <f64>hoodHeight; // 0 top, 1 bottom
+    const halfW: i32 = <i32>(<f64>topHalfW + (<f64>bottomHalfW - <f64>topHalfW) * t);
+    const x0: i32 = cx - halfW;
+    const x1: i32 = cx + halfW;
+    const rowBase: usize = pixelPtr + <usize>(y * screenW) * 4;
+    const farRow: bool = t < 0.18; // furthest slice of the hood is a tad darker
 
-  // Rear windshield: trapezoid (wider near the hood, narrower near the roof).
-  const wsTop: i32 = startY + carH / 7;
-  const wsBot: i32 = startY + (carH * 11) / 24;
-  const wsH: i32 = wsBot - wsTop;
-  const wsHalfWTop: i32 = carW / 4;
-  const wsHalfWBot: i32 = (carW * 7) / 20;
-  for (let y: i32 = wsTop; y < wsBot; y++) {
-    if (y < 0 || y >= screenH) continue;
-    const t: f64 = <f64>(y - wsTop) / <f64>wsH;
-    const halfW: i32 = <i32>(<f64>wsHalfWTop + (<f64>wsHalfWBot - <f64>wsHalfWTop) * t);
-    for (let x: i32 = cx - halfW; x < cx + halfW; x++) {
-      if (x < 0 || x >= screenW) continue;
-      store<u32>(pixelPtr + <usize>((y * screenW + x) << 2), COLOR_GLASS);
+    for (let x: i32 = x0; x < x1; x++) {
+      const dx: f64 = <f64>(x - cx) / <f64>halfW;
+      const absDx: f64 = dx < 0 ? -dx : dx;
+      let color: u32;
+      if (absDx > 0.88) {
+        color = COLOR_CAR_DARK;
+      } else if (absDx > 0.62) {
+        color = farRow ? COLOR_CAR_DARK : COLOR_CAR_MID;
+      } else {
+        color = farRow ? COLOR_CAR_MID : COLOR_CAR_BODY;
+      }
+      store<u32>(rowBase + (<usize>x << 2), color);
     }
   }
 
-  // Darker band between windshield and body (the "roof shadow").
-  fillRect(cx - wsHalfWBot - 1, wsBot, (wsHalfWBot << 1) + 2, carH / 40 + 1, COLOR_CAR_DARK);
+  // 2) Central hood crease: one dark pixel column, full length of the hood.
+  for (let y: i32 = hoodTopY; y < hoodBottomY; y++) {
+    putPixel(cx, y, COLOR_CAR_DARK);
+  }
 
-  // Taillights (two bright-red rectangles).
-  const tlW: i32 = carW / 7;
-  const tlH: i32 = carH / 10;
-  const tlY: i32 = startY + (carH * 5) / 8;
-  fillRect(startX + carW / 24, tlY, tlW, tlH, COLOR_TAILLIGHT);
-  fillRect(startX + carW - carW / 24 - tlW, tlY, tlW, tlH, COLOR_TAILLIGHT);
+  // 3) Two symmetric power-bulges with shaded highlights.
+  const bulgeCY: i32 = hoodTopY + (hoodHeight * 3) / 10;
+  const bulgeOffsetX: i32 = w / 10;
+  const bulgeRadX: i32 = w / 30;
+  const bulgeRadY: i32 = hoodHeight / 10;
+  drawHoodBulge(cx - bulgeOffsetX, bulgeCY, bulgeRadX, bulgeRadY);
+  drawHoodBulge(cx + bulgeOffsetX, bulgeCY, bulgeRadX, bulgeRadY);
 
-  // Bright inner headlight glow (smaller lighter square inset into taillight).
-  const glowW: i32 = tlW >> 1;
-  const glowH: i32 = tlH >> 1;
-  fillRect(
-    startX + carW / 24 + ((tlW - glowW) >> 1),
-    tlY + ((tlH - glowH) >> 1),
-    glowW,
-    glowH,
-    COLOR_HEADLIGHT
-  );
-  fillRect(
-    startX + carW - carW / 24 - tlW + ((tlW - glowW) >> 1),
-    tlY + ((tlH - glowH) >> 1),
-    glowW,
-    glowH,
-    COLOR_HEADLIGHT
-  );
+  // 4) Chrome cowl strip: thin silver band at the top of the hood, where a
+  //    real car has the gap between hood and windshield.
+  const cowlStartX: i32 = cx - topHalfW;
+  const cowlEndX: i32 = cx + topHalfW;
+  for (let y: i32 = hoodTopY; y < hoodTopY + 2; y++) {
+    if (y < 0 || y >= screenH) continue;
+    const rowBase: usize = pixelPtr + <usize>(y * screenW) * 4;
+    for (let x: i32 = cowlStartX; x < cowlEndX; x++) {
+      if (x < 0 || x >= screenW) continue;
+      store<u32>(rowBase + (<usize>x << 2), COLOR_CHROME);
+    }
+  }
 
-  // Bumper (dark band near the bottom).
-  const bumperH: i32 = carH / 10;
-  fillRect(startX, startY + carH - bumperH, carW, bumperH, COLOR_BUMPER);
+  // 5) Small chrome hood ornament: a silver dome with a white specular cap,
+  //    centred just below the cowl strip.
+  const ornR: i32 = (w / 90) > 2 ? (w / 90) : 2;
+  const ornY: i32 = hoodTopY + (hoodHeight / 20) + ornR;
+  fillCircle(cx, ornY, ornR, COLOR_CHROME);
+  const innerR: i32 = ornR > 2 ? ornR - 1 : 1;
+  fillCircle(cx - 1, ornY - 1, innerR, COLOR_SPECULAR);
+}
 
-  // License plate (small white rectangle centred on the bumper).
-  const plateW: i32 = carW / 4;
-  const plateH: i32 = bumperH * 3 / 4;
-  fillRect(
-    cx - (plateW >> 1),
-    startY + carH - bumperH + ((bumperH - plateH) >> 1),
-    plateW,
-    plateH,
-    COLOR_PLATE
-  );
-
-  // Wheels (round tires with gray rims) — positioned at the bottom corners,
-  // straddling the bumper for a "peeking out" look.
-  const wheelR: i32 = carH / 6;
-  const wheelY: i32 = startY + carH - (bumperH >> 1);
-  const wheelXL: i32 = startX + wheelR;
-  const wheelXR: i32 = startX + carW - wheelR;
-  fillCircle(wheelXL, wheelY, wheelR, COLOR_WHEEL);
-  fillCircle(wheelXR, wheelY, wheelR, COLOR_WHEEL);
-  const rimR: i32 = wheelR >> 1 > 0 ? wheelR >> 1 : 1;
-  fillCircle(wheelXL, wheelY, rimR, COLOR_RIM);
-  fillCircle(wheelXR, wheelY, rimR, COLOR_RIM);
-
-  // Central hood stripe for a little depth.
-  fillRect(cx, startY + carH / 12, 1, carH - carH / 6, COLOR_CAR_DARK);
+// Filled ellipse with directional shading — used for the hood's power
+// bulges. The virtual light source sits above and to the left, producing a
+// small white specular highlight at the crest and a deeper-red shadow on
+// the lower-right quadrant.
+function drawHoodBulge(cx: i32, cy: i32, rx: i32, ry: i32): void {
+  if (rx < 2) rx = 2;
+  if (ry < 2) ry = 2;
+  const rx2f: f64 = <f64>rx * <f64>rx;
+  const ry2f: f64 = <f64>ry * <f64>ry;
+  for (let y: i32 = -ry; y <= ry; y++) {
+    const py: i32 = cy + y;
+    if (py < 0 || py >= screenH) continue;
+    const fy: f64 = <f64>y;
+    const yFrac: f64 = 1.0 - (fy * fy) / ry2f;
+    if (yFrac < 0) continue;
+    const xExt: i32 = <i32>(Math.sqrt(yFrac * rx2f));
+    const rowBase: usize = pixelPtr + <usize>(py * screenW) * 4;
+    for (let dx: i32 = -xExt; dx <= xExt; dx++) {
+      const px: i32 = cx + dx;
+      if (px < 0 || px >= screenW) continue;
+      const nx: f64 = <f64>dx / <f64>rx;
+      const ny: f64 = fy / <f64>ry;
+      // Light coming from upper-left: brighter as nx and ny decrease.
+      const lighting: f64 = (-ny - nx) * 0.55;
+      let color: u32;
+      if (lighting > 0.55) {
+        color = COLOR_SPECULAR;
+      } else if (lighting > 0.25) {
+        color = COLOR_CAR_HIGH;
+      } else if (lighting > -0.05) {
+        color = COLOR_CAR_BODY;
+      } else if (lighting > -0.35) {
+        color = COLOR_CAR_MID;
+      } else {
+        color = COLOR_CAR_DARK;
+      }
+      store<u32>(rowBase + (<usize>px << 2), color);
+    }
+  }
 }
 
 // Required by --exportStart in some configurations.

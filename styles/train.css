@@ -124,35 +124,9 @@
   background: #0a1e5a;
 }
 
-.car-game-close {
-  position: absolute;
-  top: 2vh;
-  right: 2vw;
-  width: 3em;
-  height: 3em;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  font-size: 1.75em;
-  line-height: 1;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-
-.car-game-close:hover {
-  background: rgba(220, 30, 30, 0.9);
-  color: #fff;
-  text-decoration: none;
-}
-
-/* Positioned BELOW the close button (top-right column) so the two never
-   collide regardless of the score text length. */
 .car-game-score {
   position: absolute;
-  top: 9vh;
+  top: 2vh;
   right: 2vw;
   padding: 0.5em 1em;
   background: rgba(0, 0, 0, 0.6);
