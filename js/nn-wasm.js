@@ -1,7 +1,15 @@
 /**
- * WebAssembly Neural Network Loader
- * Loads the compiled WASM module and exposes it as window._wasmNN
- * Falls back gracefully if WASM is unavailable.
+ * WebAssembly Neural Network Loader.
+ *
+ * Loads the compiled WASM module and exposes it as `window._wasmNN`.
+ * The binary is embedded as base64 in `js/nn-wasm-embed.js` so loading works
+ * identically under `http(s)://` and `file://`. A `fetch()` fallback remains
+ * only for environments where the embed script is missing (e.g. developing
+ * against a rebuilt wasm without re-running the embed step).
+ *
+ * Consumers must `await window._wasmNNReady` before touching `_wasmNN` — if
+ * loading fails the promise resolves to `false` and `_wasmNN` stays `null`,
+ * which surfaces as a clear error when a NeuralNetwork is constructed.
  */
 
 (function () {
@@ -9,28 +17,54 @@
 
     const WASM_PATH = 'wasm/nn.wasm';
 
+    function base64ToBytes(b64) {
+        const bin = atob(b64);
+        const len = bin.length;
+        const out = new Uint8Array(len);
+        for (let i = 0; i < len; i++) out[i] = bin.charCodeAt(i);
+        return out;
+    }
+
     async function loadWasm() {
         if (typeof WebAssembly === 'undefined') {
-            console.warn('[WASM] WebAssembly not supported in this browser. Using JS fallback.');
+            console.error('[WASM] WebAssembly is not supported in this browser.');
             return null;
         }
 
-        try {
-            let wasmModule;
+        const imports = { env: { abort: () => { throw new Error('WASM abort'); } } };
+        let wasmModule = null;
 
-            if (typeof WebAssembly.instantiateStreaming === 'function') {
-                const response = fetch(WASM_PATH);
-                wasmModule = await WebAssembly.instantiateStreaming(response, {
-                    env: { abort: () => { throw new Error('WASM abort'); } }
-                });
-            } else {
-                const response = await fetch(WASM_PATH);
-                const bytes = await response.arrayBuffer();
-                wasmModule = await WebAssembly.instantiate(bytes, {
-                    env: { abort: () => { throw new Error('WASM abort'); } }
-                });
+        // 1. Preferred: instantiate from embedded base64 bytes (works under file://).
+        if (typeof window._nnWasmBase64 === 'string' && window._nnWasmBase64.length > 0) {
+            try {
+                const bytes = base64ToBytes(window._nnWasmBase64);
+                wasmModule = await WebAssembly.instantiate(bytes, imports);
+            } catch (err) {
+                console.warn('[WASM] Embedded nn.wasm failed to instantiate:',
+                    err && err.message);
             }
+        }
 
+        // 2. Fallback: fetch the binary (requires http(s)).
+        if (wasmModule == null) {
+            try {
+                if (typeof WebAssembly.instantiateStreaming === 'function') {
+                    wasmModule = await WebAssembly.instantiateStreaming(
+                        fetch(WASM_PATH), imports
+                    );
+                } else {
+                    const response = await fetch(WASM_PATH);
+                    const bytes = await response.arrayBuffer();
+                    wasmModule = await WebAssembly.instantiate(bytes, imports);
+                }
+            } catch (err) {
+                console.error('[WASM] Failed to load nn.wasm:',
+                    err && err.message);
+                return null;
+            }
+        }
+
+        try {
             const exports = wasmModule.instance.exports;
 
             // Validate that required functions exist
@@ -45,7 +79,7 @@
 
             for (const fn of required) {
                 if (!exports[fn]) {
-                    console.warn(`[WASM] Missing export: ${fn}. Using JS fallback.`);
+                    console.error(`[WASM] Missing export: ${fn}.`);
                     return null;
                 }
             }
@@ -55,7 +89,7 @@
 
             return exports;
         } catch (err) {
-            console.warn('[WASM] Failed to load module:', err.message, '- Using JS fallback.');
+            console.error('[WASM] Failed to instantiate module:', err && err.message);
             return null;
         }
     }

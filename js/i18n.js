@@ -141,6 +141,14 @@
             'train.complete.download_model': 'Download Churn Model',
             'train.complete.download_validation': 'Download Validation CSV',
 
+            /* ===== Car-game easter egg ===== */
+            'car_game.banner': 'Find training too long? Play our little car game while waiting!',
+            'car_game.banner_desktop_only': '(playable on Desktop only)',
+            'car_game.hint': 'Use the arrow keys to drive — collect the stars. Multiple arrows can be pressed at once.',
+            'car_game.hud.stars': 'Stars: {n}',
+            'car_game.training_complete': 'Training complete, you can close the game!',
+            'car_game.close_aria': 'Close game and return to training',
+
             /* Select placeholders */
             'select.upload_first': '-- Upload CSV first --',
             'select.pick_target': '-- Select target column --',
@@ -486,6 +494,14 @@
             'train.complete.download_model': 'Télécharger le modèle de churn',
             'train.complete.download_validation': 'Télécharger le CSV de validation',
 
+            /* ===== Easter-egg jeu de voiture ===== */
+            'car_game.banner': 'L\u2019entraînement est trop long ? Jouez à notre petit jeu de voiture en attendant !',
+            'car_game.banner_desktop_only': '(jouable sur ordinateur uniquement)',
+            'car_game.hint': 'Utilisez les flèches du clavier pour conduire — attrapez les étoiles. Plusieurs flèches peuvent être pressées en même temps.',
+            'car_game.hud.stars': 'Étoiles : {n}',
+            'car_game.training_complete': 'Entraînement terminé, vous pouvez fermer le jeu !',
+            'car_game.close_aria': 'Fermer le jeu et revenir à l\u2019entraînement',
+
             'select.upload_first': '-- Importez un CSV d\u2019abord --',
             'select.pick_target': '-- Choisir la colonne cible --',
             'select.pick_id': '-- Choisir la colonne d\u2019identifiant --',
@@ -827,6 +843,14 @@
             'train.complete.body': '¡Tu modelo de churn está listo! Descárgalo y ve a Puntuar clientes para identificar las cuentas en riesgo.',
             'train.complete.download_model': 'Descargar modelo de churn',
             'train.complete.download_validation': 'Descargar CSV de validación',
+
+            /* ===== Easter-egg juego de coche ===== */
+            'car_game.banner': '¿El entrenamiento te parece largo? ¡Juega a nuestro pequeño juego de coches mientras esperas!',
+            'car_game.banner_desktop_only': '(jugable solo en ordenador)',
+            'car_game.hint': 'Usa las flechas del teclado para conducir — recoge las estrellas. Se pueden pulsar varias flechas a la vez.',
+            'car_game.hud.stars': 'Estrellas: {n}',
+            'car_game.training_complete': 'Entrenamiento completado, ¡puedes cerrar el juego!',
+            'car_game.close_aria': 'Cerrar el juego y volver al entrenamiento',
 
             'select.upload_first': '-- Sube un CSV primero --',
             'select.pick_target': '-- Selecciona la columna objetivo --',

@@ -12,7 +12,8 @@
 		'/documentation': { templateId: 'tmpl-documentation', init: null },
 		'/legal': { templateId: 'tmpl-legal', init: null },
 		'/privacy': { templateId: 'tmpl-privacy', init: null },
-		'/cookies': { templateId: 'tmpl-cookies', init: null }
+		'/cookies': { templateId: 'tmpl-cookies', init: null },
+		'/car-game': { templateId: 'tmpl-car-game', init: 'initCarGamePage' }
 	};
 
 	function getPathFromHash() {
@@ -78,6 +79,9 @@
 		if (!a) return;
 		const href = a.getAttribute('href');
 		if (!href) return;
+		// Respect links that should open in a new tab (target="_blank") or
+		// modifier-clicks (Ctrl/Cmd/middle-click) the user makes to force a new tab.
+		if (a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
 		if (href.startsWith('#/')) {
 			e.preventDefault();
 			const target = href;

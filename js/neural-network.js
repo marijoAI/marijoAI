@@ -1,28 +1,36 @@
 /**
- * Neural Network Library (ReLU + Sigmoid, Binary Cross-Entropy, Adam)
- * Uses WebAssembly for training/inference when available, with pure JS fallback.
+ * Neural Network (ReLU hidden + Sigmoid output, Binary Cross-Entropy, Adam).
+ *
+ * Training runs inside a dedicated Web Worker (`js/nn-worker.js`, embedded
+ * into `js/nn-worker-embed.js`), so browser background-tab throttling and
+ * freezing have NO effect on training speed — workers live on their own
+ * event loop that runs even when the owning tab is hidden or not focused.
+ *
+ * Inference stays on the main thread using the WASM module loaded in
+ * `js/nn-wasm.js` (exposed as `window._wasmNN`), because prediction is fast
+ * enough to not benefit from a worker round-trip. After training finishes,
+ * the trained weights are pushed into the main-thread WASM so that
+ * `forward()` / `predict()` can use them immediately.
+ *
+ * Both the WASM binary and the worker source are embedded as `window.*`
+ * strings, so the app loads identically over `http(s)://` and `file://`.
+ *
+ * Callers MUST await `window._wasmNNReady` before constructing a network.
  */
-
 class NeuralNetwork {
     constructor(config) {
+        if (!window._wasmNN) {
+            throw new Error(
+                'NeuralNetwork: WebAssembly module not loaded. ' +
+                'Await window._wasmNNReady before constructing a network.'
+            );
+        }
+
         this.config = config;
         this.layers = [];
         this.weights = [];
         this.biases = [];
-        this.optimizerState = null;
-        this.useWasm = this._canUseWasm();
         this.initializeNetwork();
-    }
-
-    _canUseWasm() {
-        if (!window._wasmNN) return false;
-        const arch = this.config.architecture;
-        if (!arch || !arch.hiddenLayers) return false;
-        if (arch.hiddenLayers.length !== 1) return false;
-        if (arch.hiddenLayers[0].activation !== 'relu') return false;
-        if (arch.outputLayer.units !== 1) return false;
-        if (arch.outputLayer.activation !== 'sigmoid') return false;
-        return true;
     }
 
     initializeNetwork() {
@@ -48,14 +56,10 @@ class NeuralNetwork {
             activation: architecture.outputLayer.activation
         });
 
-        if (this.useWasm) {
-            this._initWasm();
-        } else {
-            this._initJS();
-        }
+        this._initWasm();
     }
 
-    // ── WASM initialization ─────────────────────────────────────────
+    // ── WASM lifecycle ─────────────────────────────────────────────
     _initWasm() {
         const wasm = window._wasmNN;
         const inputSize = this.config.architecture.inputLayer.units;
@@ -120,372 +124,13 @@ class NeuralNetwork {
         wasm.nn_reset_adam();
     }
 
-    // ── JS initialization (fallback) ────────────────────────────────
-    _initJS() {
-        for (let i = 0; i < this.layers.length - 1; i++) {
-            const currentLayer = this.layers[i];
-            const nextLayer = this.layers[i + 1];
-            const limit = Math.sqrt(6 / (currentLayer.units + nextLayer.units));
-            const weights = [];
-            const biases = [];
-
-            for (let j = 0; j < nextLayer.units; j++) {
-                const neuronWeights = [];
-                for (let k = 0; k < currentLayer.units; k++) {
-                    neuronWeights.push((Math.random() * 2 - 1) * limit);
-                }
-                weights.push(neuronWeights);
-                biases.push(0);
-            }
-
-            this.weights.push(weights);
-            this.biases.push(biases);
-        }
-    }
-
-    // ── Activation functions (ReLU + Sigmoid only) ──────────────────
-    static relu(x) { return Math.max(0, x); }
-    static sigmoid(x) { return 1 / (1 + Math.exp(-x)); }
-
-    static activationDerivative(activation, z) {
-        if (activation === 'relu') {
-            if (Array.isArray(z)) { return z.map(v => v > 0 ? 1 : 0); }
-            return z > 0 ? 1 : 0;
-        }
-        if (activation === 'sigmoid') {
-            if (Array.isArray(z)) { return z.map(v => { const s = NeuralNetwork.sigmoid(v); return s * (1 - s); }); }
-            const s = NeuralNetwork.sigmoid(z);
-            return s * (1 - s);
-        }
-        return 1;
-    }
-
-    applyActivation(x, activation) {
-        if (activation === 'relu') return Array.isArray(x) ? x.map(val => NeuralNetwork.relu(val)) : NeuralNetwork.relu(x);
-        if (activation === 'sigmoid') return Array.isArray(x) ? x.map(val => NeuralNetwork.sigmoid(val)) : NeuralNetwork.sigmoid(x);
-        return x;
-    }
-
-    // ── Forward pass ────────────────────────────────────────────────
+    // ── Forward pass ───────────────────────────────────────────────
     forward(input) {
         if (!input || !Array.isArray(input)) throw new Error('Input must be an array');
-
-        if (this.useWasm) {
-            return this._forwardWasm(input);
-        }
-        return this._forwardJS(input);
-    }
-
-    _forwardWasm(input) {
         const wasm = window._wasmNN;
         const helpers = window._wasmNNHelpers;
         helpers.uploadPredictInput(wasm, input);
-        const result = wasm.nn_predict();
-        return [result];
-    }
-
-    _forwardJS(input) {
-        let activations = [];
-        for (let i = 0; i < input.length; i++) activations.push(input[i]);
-
-        for (let i = 0; i < this.weights.length; i++) {
-            const layerWeights = this.weights[i];
-            const layerBiases = this.biases[i];
-            const nextLayer = this.layers[i + 1];
-            const newActivations = [];
-
-            for (let j = 0; j < layerWeights.length; j++) {
-                let sum = layerBiases[j];
-                for (let k = 0; k < activations.length; k++) {
-                    sum += activations[k] * layerWeights[j][k];
-                }
-                newActivations.push(sum);
-            }
-
-            activations = this.applyActivation(newActivations, nextLayer.activation);
-        }
-        return activations;
-    }
-
-    forwardWithCache(input) {
-        if (!input || !Array.isArray(input)) throw new Error('Input must be an array');
-
-        const layerInputs = [];
-        const layerZs = [];
-        const layerActivations = [];
-
-        let activations = [];
-        for (let i = 0; i < input.length; i++) activations.push(input[i]);
-        layerInputs.push(activations);
-
-        for (let i = 0; i < this.weights.length; i++) {
-            const layerWeights = this.weights[i];
-            const layerBiases = this.biases[i];
-            const nextLayer = this.layers[i + 1];
-            const z = [];
-            for (let j = 0; j < layerWeights.length; j++) {
-                let sum = layerBiases[j];
-                for (let k = 0; k < activations.length; k++) {
-                    sum += activations[k] * layerWeights[j][k];
-                }
-                z.push(sum);
-            }
-            const aNext = this.applyActivation(z, nextLayer.activation);
-            layerZs.push(z);
-            layerActivations.push(aNext);
-            activations = aNext;
-            if (i < this.weights.length - 1) layerInputs.push(activations);
-        }
-        return { output: activations, layerInputs, layerZs, layerActivations };
-    }
-
-    // ── Optimizer state (JS fallback) ───────────────────────────────
-    initializeOptimizerState() {
-        const mW = [], vW = [], mB = [], vB = [];
-        for (let wi = 0; wi < this.weights.length; wi++) {
-            const layerW = this.weights[wi];
-            const mWL = [], vWL = [], mBL = [], vBL = [];
-            for (let r = 0; r < layerW.length; r++) {
-                const mWR = [], vWR = [];
-                for (let c = 0; c < layerW[r].length; c++) { mWR.push(0); vWR.push(0); }
-                mWL.push(mWR); vWL.push(vWR); mBL.push(0); vBL.push(0);
-            }
-            mW.push(mWL); vW.push(vWL); mB.push(mBL); vB.push(vBL);
-        }
-        this.optimizerState = { t: 0, mW, vW, mB, vB };
-    }
-
-    applyAdamUpdate(gradWeights, gradBiases, learningRate, invBatch, beta1, beta2, epsilon) {
-        if (!this.optimizerState) this.initializeOptimizerState();
-
-        this.optimizerState.t += 1;
-        const t = this.optimizerState.t;
-        const biasCorr1 = 1 - Math.pow(beta1, t);
-        const biasCorr2 = 1 - Math.pow(beta2, t);
-        const lrT = learningRate * Math.sqrt(biasCorr2) / (biasCorr1 || 1e-12);
-
-        for (let wi = 0; wi < this.weights.length; wi++) {
-            for (let r = 0; r < this.weights[wi].length; r++) {
-                for (let c = 0; c < this.weights[wi][r].length; c++) {
-                    const g = gradWeights[wi][r][c] * invBatch;
-                    this.optimizerState.mW[wi][r][c] = beta1 * this.optimizerState.mW[wi][r][c] + (1 - beta1) * g;
-                    this.optimizerState.vW[wi][r][c] = beta2 * this.optimizerState.vW[wi][r][c] + (1 - beta2) * (g * g);
-                    this.weights[wi][r][c] -= lrT * (this.optimizerState.mW[wi][r][c] / (Math.sqrt(this.optimizerState.vW[wi][r][c]) + epsilon));
-                }
-                const gb = gradBiases[wi][r] * invBatch;
-                this.optimizerState.mB[wi][r] = beta1 * this.optimizerState.mB[wi][r] + (1 - beta1) * gb;
-                this.optimizerState.vB[wi][r] = beta2 * this.optimizerState.vB[wi][r] + (1 - beta2) * (gb * gb);
-                this.biases[wi][r] -= lrT * (this.optimizerState.mB[wi][r] / (Math.sqrt(this.optimizerState.vB[wi][r]) + epsilon));
-            }
-        }
-    }
-
-    // ── Loss ────────────────────────────────────────────────────────
-    static binaryCrossentropy(yTrue, yPred) {
-        if (typeof yTrue !== 'number' || typeof yPred !== 'number') return NaN;
-        if (isNaN(yTrue) || isNaN(yPred)) return NaN;
-        const epsilon = 1e-15;
-        const clipped = Math.max(epsilon, Math.min(1 - epsilon, yPred));
-        return -(yTrue * Math.log(clipped) + (1 - yTrue) * Math.log(1 - clipped));
-    }
-
-    calculateLoss(yTrue, yPred) {
-        const predValue = Array.isArray(yPred) ? yPred[0] : yPred;
-        const trueValue = Array.isArray(yTrue) ? yTrue[0] : yTrue;
-        return NeuralNetwork.binaryCrossentropy(trueValue, predValue);
-    }
-
-    calculateAccuracy(yTrue, yPred) {
-        const predValue = Array.isArray(yPred) ? yPred[0] : yPred;
-        const trueValue = Array.isArray(yTrue) ? yTrue[0] : yTrue;
-        return (predValue > 0.5 ? 1 : 0) === trueValue ? 1 : 0;
-    }
-
-    // ── Training (dispatcher) ───────────────────────────────────────
-    async train(xTrain, yTrain, config) {
-        if (!Array.isArray(xTrain) || !Array.isArray(yTrain)) throw new Error('Training data must be arrays');
-        if (xTrain.length === 0 || yTrain.length === 0) throw new Error('Training data cannot be empty');
-        if (xTrain.length !== yTrain.length) throw new Error('xTrain and yTrain must have the same length');
-
-        if (this.useWasm) {
-            return this._trainWasm(xTrain, yTrain, config);
-        }
-        return this._trainJS(xTrain, yTrain, config);
-    }
-
-    // ── WASM training ───────────────────────────────────────────────
-    async _trainWasm(xTrain, yTrain, config) {
-        const wasm = window._wasmNN;
-        const helpers = window._wasmNNHelpers;
-        const nSamples = xTrain.length;
-        const inputSize = this.config.architecture.inputLayer.units;
-
-        const {
-            epochs = 100,
-            batchSize = 32,
-            learningRate = 0.001,
-            onEpochEnd = null,
-            adamBeta1 = 0.9,
-            adamBeta2 = 0.999,
-            adamEpsilon = 1e-8
-        } = config;
-
-        wasm.nn_alloc_training_data(nSamples);
-        helpers.uploadFeatures(wasm, xTrain, inputSize);
-        helpers.uploadLabels(wasm, yTrain);
-
-        const history = { loss: [], accuracy: [] };
-
-        console.log(`[WASM] Training ${nSamples} samples, ${inputSize} features, ${epochs} epochs`);
-        const t0 = performance.now();
-
-        for (let epoch = 0; epoch < epochs; epoch++) {
-            wasm.nn_train_epoch(batchSize, learningRate, adamBeta1, adamBeta2, adamEpsilon);
-
-            const loss = wasm.nn_get_epoch_loss();
-            const accuracy = wasm.nn_get_epoch_accuracy();
-
-            history.loss.push(loss);
-            history.accuracy.push(accuracy);
-
-            if (onEpochEnd) {
-                await onEpochEnd({ epoch: epoch + 1, loss, accuracy });
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 0));
-        }
-
-        const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
-        console.log(`[WASM] Training complete in ${elapsed}s`);
-
-        this._syncWeightsFromWasm();
-        return history;
-    }
-
-    // ── JS training (fallback) ──────────────────────────────────────
-    async _trainJS(xTrain, yTrain, config) {
-        const {
-            epochs = 100,
-            batchSize = 32,
-            learningRate = 0.001,
-            onEpochEnd = null,
-            adamBeta1 = 0.9,
-            adamBeta2 = 0.999,
-            adamEpsilon = 1e-8
-        } = config;
-
-        console.log('[JS] Training with pure JavaScript fallback');
-
-        const history = { loss: [], accuracy: [] };
-
-        for (let epoch = 0; epoch < epochs; epoch++) {
-            const indices = [];
-            for (let i = 0; i < xTrain.length; i++) indices.push(i);
-            const shuffledIndices = this.shuffleArray(indices);
-
-            let epochLoss = 0;
-            let epochAccuracy = 0;
-            let batchCount = 0;
-
-            for (let i = 0; i < xTrain.length; i += batchSize) {
-                const batchIndices = shuffledIndices.slice(i, i + batchSize);
-                const batchX = batchIndices.map(idx => xTrain[idx]);
-                const batchY = batchIndices.map(idx => yTrain[idx]);
-
-                let batchLoss = 0;
-                let batchAccuracy = 0;
-
-                const gradWeights = [];
-                const gradBiases = [];
-                for (let wi = 0; wi < this.weights.length; wi++) {
-                    const layerW = this.weights[wi];
-                    const gwLayer = [];
-                    const gbLayer = [];
-                    for (let r = 0; r < layerW.length; r++) {
-                        gwLayer.push(new Array(layerW[r].length).fill(0));
-                        gbLayer.push(0);
-                    }
-                    gradWeights.push(gwLayer);
-                    gradBiases.push(gbLayer);
-                }
-
-                for (let j = 0; j < batchX.length; j++) {
-                    const cache = this.forwardWithCache(batchX[j]);
-                    const prediction = cache.output;
-                    batchLoss += this.calculateLoss(batchY[j], prediction);
-                    batchAccuracy += this.calculateAccuracy(batchY[j], prediction);
-
-                    const numLayers = this.weights.length;
-                    const deltas = [];
-                    for (let di = 0; di < numLayers; di++) {
-                        deltas.push(new Array(this.weights[di].length).fill(0));
-                    }
-
-                    const lastIdx = numLayers - 1;
-                    const yTrueVal = Array.isArray(batchY[j]) ? batchY[j][0] : batchY[j];
-                    const yPredVal = Array.isArray(prediction) ? prediction[0] : prediction;
-
-                    // Sigmoid + binary cross-entropy: simplified gradient
-                    deltas[lastIdx][0] = yPredVal - yTrueVal;
-
-                    for (let li = lastIdx - 1; li >= 0; li--) {
-                        const currentWeights = this.weights[li + 1];
-                        const currentDelta = deltas[li + 1];
-                        const prevZ = cache.layerZs[li];
-                        const prevActDer = NeuralNetwork.activationDerivative(this.layers[li + 1].activation, prevZ);
-                        for (let k = 0; k < prevActDer.length; k++) {
-                            let sumVal = 0;
-                            for (let m = 0; m < currentWeights.length; m++) {
-                                sumVal += currentWeights[m][k] * currentDelta[m];
-                            }
-                            deltas[li][k] = sumVal * prevActDer[k];
-                        }
-                    }
-
-                    for (let gi = 0; gi < this.weights.length; gi++) {
-                        const aPrev = (gi === 0) ? cache.layerInputs[0] : cache.layerActivations[gi - 1];
-                        for (let r = 0; r < this.weights[gi].length; r++) {
-                            for (let c = 0; c < this.weights[gi][r].length; c++) {
-                                gradWeights[gi][r][c] += deltas[gi][r] * aPrev[c];
-                            }
-                            gradBiases[gi][r] += deltas[gi][r];
-                        }
-                    }
-                }
-
-                const invBatch = batchX.length > 0 ? (1 / batchX.length) : 1;
-                this.applyAdamUpdate(gradWeights, gradBiases, learningRate, invBatch, adamBeta1, adamBeta2, adamEpsilon);
-
-                epochLoss += batchLoss / (batchX.length > 0 ? batchX.length : 1);
-                epochAccuracy += batchAccuracy / (batchX.length > 0 ? batchX.length : 1);
-                batchCount++;
-            }
-
-            const avgLoss = epochLoss / batchCount;
-            const avgAccuracy = epochAccuracy / batchCount;
-
-            history.loss.push(avgLoss);
-            history.accuracy.push(avgAccuracy);
-
-            if (onEpochEnd) {
-                await onEpochEnd({ epoch: epoch + 1, loss: avgLoss, accuracy: avgAccuracy });
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 10));
-        }
-
-        return history;
-    }
-
-    // ── Utilities ───────────────────────────────────────────────────
-    shuffleArray(array) {
-        if (!Array.isArray(array)) throw new Error('shuffleArray requires an array input');
-        const shuffled = array.slice();
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
+        return [wasm.nn_predict()];
     }
 
     predict(x) {
@@ -495,8 +140,141 @@ class NeuralNetwork {
         return this.forward(x);
     }
 
+    // ── Training (delegated to a Web Worker) ───────────────────────
+    async train(xTrain, yTrain, config) {
+        if (!Array.isArray(xTrain) || !Array.isArray(yTrain)) throw new Error('Training data must be arrays');
+        if (xTrain.length === 0 || yTrain.length === 0) throw new Error('Training data cannot be empty');
+        if (xTrain.length !== yTrain.length) throw new Error('xTrain and yTrain must have the same length');
+
+        if (typeof Worker === 'undefined') {
+            throw new Error(
+                'NeuralNetwork.train(): Web Workers are not available in this environment.'
+            );
+        }
+        if (typeof window._nnWorkerSource !== 'string' || window._nnWorkerSource.length === 0) {
+            throw new Error(
+                'NeuralNetwork.train(): Worker source missing. ' +
+                'Make sure js/nn-worker-embed.js is loaded.'
+            );
+        }
+        if (typeof window._nnWasmBase64 !== 'string' || window._nnWasmBase64.length === 0) {
+            throw new Error(
+                'NeuralNetwork.train(): nn.wasm base64 missing. ' +
+                'Make sure js/nn-wasm-embed.js is loaded.'
+            );
+        }
+
+        const {
+            epochs = 100,
+            batchSize = 32,
+            learningRate = 0.001,
+            onEpochEnd = null,
+            adamBeta1 = 0.9,
+            adamBeta2 = 0.999,
+            adamEpsilon = 1e-8
+        } = config;
+
+        const inputSize = this.config.architecture.inputLayer.units;
+        const hiddenSize = this.config.architecture.hiddenLayers[0].units;
+        const outputSize = this.config.architecture.outputLayer.units;
+        const nSamples = xTrain.length;
+
+        // Flatten features/labels into Float64Arrays for zero-copy transfer
+        // (the underlying ArrayBuffers are transferred to the worker, which
+        // avoids a structured-clone memcpy for big training sets).
+        const featuresFlat = new Float64Array(nSamples * inputSize);
+        for (let i = 0; i < nSamples; i++) {
+            const row = xTrain[i];
+            const base = i * inputSize;
+            for (let j = 0; j < inputSize; j++) featuresFlat[base + j] = row[j];
+        }
+        const labelsFlat = new Float64Array(nSamples);
+        for (let i = 0; i < nSamples; i++) {
+            labelsFlat[i] = Array.isArray(yTrain[i]) ? yTrain[i][0] : yTrain[i];
+        }
+
+        // Build the Worker source by prepending the nn.wasm base64 as a
+        // `const NN_WASM_B64 = "...";` line. The worker uses it to
+        // instantiate WASM without needing a network fetch.
+        const bootstrap =
+            'const NN_WASM_B64 = ' + JSON.stringify(window._nnWasmBase64) + ';\n' +
+            window._nnWorkerSource;
+        const blob = new Blob([bootstrap], { type: 'application/javascript' });
+        const blobUrl = URL.createObjectURL(blob);
+        const worker = new Worker(blobUrl);
+
+        const history = { loss: [], accuracy: [] };
+        const t0 = performance.now();
+
+        console.log(
+            `[WASM worker] Training ${nSamples} samples, ${inputSize} features, ${epochs} epochs`
+        );
+
+        try {
+            await new Promise((resolve, reject) => {
+                worker.onerror = (ev) => {
+                    reject(new Error(ev.message || 'Worker error'));
+                };
+                worker.onmessage = async (e) => {
+                    const msg = e.data;
+                    if (!msg || !msg.type) return;
+                    try {
+                        if (msg.type === 'epoch') {
+                            history.loss.push(msg.loss);
+                            history.accuracy.push(msg.accuracy);
+                            if (onEpochEnd) {
+                                await onEpochEnd({
+                                    epoch: msg.epoch,
+                                    loss: msg.loss,
+                                    accuracy: msg.accuracy
+                                });
+                            }
+                        } else if (msg.type === 'done') {
+                            this.weights = msg.weights;
+                            this.biases = msg.biases;
+                            // Mirror trained weights into the main-thread WASM
+                            // instance so forward()/predict() pick them up.
+                            this._pushWeightsToWasm();
+                            resolve();
+                        } else if (msg.type === 'error') {
+                            reject(new Error(msg.message || 'Worker error'));
+                        }
+                        // 'ready' is informational; no action required.
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+
+                worker.postMessage({
+                    type: 'train',
+                    nSamples,
+                    inputSize,
+                    hiddenSize,
+                    outputSize,
+                    featuresFlat,
+                    labelsFlat,
+                    epochs,
+                    batchSize,
+                    learningRate,
+                    adamBeta1,
+                    adamBeta2,
+                    adamEpsilon
+                }, [featuresFlat.buffer, labelsFlat.buffer]);
+            });
+        } finally {
+            worker.terminate();
+            URL.revokeObjectURL(blobUrl);
+        }
+
+        const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
+        console.log(`[WASM worker] Training complete in ${elapsed}s`);
+
+        return history;
+    }
+
+    // ── Persistence ────────────────────────────────────────────────
     save() {
-        if (this.useWasm) this._syncWeightsFromWasm();
+        this._syncWeightsFromWasm();
         return {
             config: this.config,
             weights: this.weights,
@@ -510,10 +288,7 @@ class NeuralNetwork {
         network.weights = modelData.weights;
         network.biases = modelData.biases;
         network.layers = modelData.layers;
-
-        if (network.useWasm) {
-            network._pushWeightsToWasm();
-        }
+        network._pushWeightsToWasm();
         return network;
     }
 }

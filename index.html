@@ -306,6 +306,11 @@
                         </div>
                         <p class="progress-text" id="progress-text">Epoch 0 of 100</p>
                     </div>
+                    <a id="car-game-banner" class="car-game-banner" href="#/car-game" target="_blank" rel="noopener" aria-label="Open car game in a new tab">
+                        <span class="car-game-banner-icon" aria-hidden="true">🚗</span>
+                        <span class="car-game-banner-text" data-i18n="car_game.banner">Find training too long? Play our little car game while waiting!</span>
+                        <span class="car-game-banner-suffix" data-i18n="car_game.banner_desktop_only">(playable on Desktop only)</span>
+                    </a>
                     <div class="training-history" style="margin-top: 1.5rem;">
                         <h3 style="margin-bottom: 1em;" data-i18n="train.progress.history_title">Training History</h3>
                         <div id="history-container" style="max-height: 300px; overflow-y: auto; background: #f8fafc; padding: 1rem; border-radius: 10px; border: 1px solid #e2e8f0;">
@@ -754,12 +759,28 @@
         </div>
     </template>
 
+    <!-- Car Game (easter egg, full-viewport page) -->
+    <template id="tmpl-car-game">
+        <div class="car-game-page">
+            <canvas class="car-game-canvas" width="480" height="300"></canvas>
+            <div class="car-game-training-done" style="display: none;"></div>
+            <a class="car-game-close" href="#/train" data-i18n-aria-label="car_game.close_aria" aria-label="Close game">×</a>
+            <div class="car-game-score"></div>
+            <div class="car-game-error" style="display: none;"></div>
+            <div class="car-game-hint" data-i18n="car_game.hint">Use the arrow keys to drive — collect the stars. Multiple arrows can be pressed at once.</div>
+        </div>
+    </template>
+
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/shared.js"></script>
+    <script src="js/nn-wasm-embed.js"></script>
     <script src="js/nn-wasm.js"></script>
+    <script src="js/nn-worker-embed.js"></script>
     <script src="js/neural-network.js"></script>
+    <script src="js/car-game-wasm-embed.js"></script>
+    <script src="js/car-game.js"></script>
     <script src="js/train.js"></script>
     <script src="js/predict.js"></script>
     <script src="js/router.js"></script>

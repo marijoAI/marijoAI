@@ -2,7 +2,9 @@
   "private": true,
   "scripts": {
     "asbuild": "asc assembly/index.ts -o wasm/nn.wasm -O --runtime stub",
-    "build": "npm run asbuild"
+    "asbuild:car-game": "asc assembly/car-game.ts -o wasm/car-game.wasm -O --runtime stub",
+    "asembed:wasm": "node tools/embed-wasm.js",
+    "build": "npm run asbuild && npm run asbuild:car-game && npm run asembed:wasm"
   },
   "devDependencies": {
     "assemblyscript": "^0.27.0"
