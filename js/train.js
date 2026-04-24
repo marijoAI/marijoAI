@@ -950,6 +950,21 @@ class TrainModelManager {
 					downloadValBtn.style.display = 'none';
 				}
 			}
+
+            // Scroll to the bottom of the page so the newly revealed
+            // "Training Complete" card (and its download buttons) is in view.
+            // Wait two rAFs so the card is fully laid out before we measure
+            // the document height.
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const doc = document.documentElement;
+                    const targetY = Math.max(
+                        doc.scrollHeight,
+                        document.body.scrollHeight
+                    );
+                    window.scrollTo({ top: targetY, behavior: 'smooth' });
+                });
+            });
         }
     }
 
