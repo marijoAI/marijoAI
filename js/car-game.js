@@ -22,6 +22,10 @@
     const RENDER_W = 480;
     const RENDER_H = 300;
     const WASM_PATH = 'wasm/car-game.wasm';
+    const CAR_IMAGE_PATH = 'car_game_assets/image_red_car.png';
+    // Player car sprite occupies this fraction of the canvas height; width is
+    // derived from the image's natural aspect ratio.
+    const CAR_HEIGHT_FRAC = 0.55;
     const STORAGE_KEY = 'marijoai.training_state';
 
     // Decode a base64 string into a Uint8Array (browser-compatible).
@@ -44,7 +48,20 @@
         wasmReady: null,
         pixelView: null,
         imageData: null,
+        carImage: null,        // HTMLImageElement once loaded
+        carImageReady: false,  // true after the image successfully decoded
     };
+
+    function ensureCarImage() {
+        if (state.carImage) return;
+        const img = new Image();
+        img.onload = () => { state.carImageReady = true; };
+        img.onerror = () => {
+            console.warn('[CarGame] Failed to load car sprite:', CAR_IMAGE_PATH);
+        };
+        img.src = CAR_IMAGE_PATH;
+        state.carImage = img;
+    }
 
     async function loadWasm() {
         if (typeof WebAssembly === 'undefined') return null;
@@ -177,6 +194,20 @@
         }
         page.ctx.putImageData(state.imageData, 0, 0);
 
+        // Player's car sprite, drawn on top of the raycaster scene at the
+        // bottom-centre of the canvas (anchored to the bottom edge).
+        if (state.carImageReady && state.carImage) {
+            const img = state.carImage;
+            const aspect = (img.naturalWidth && img.naturalHeight)
+                ? (img.naturalWidth / img.naturalHeight)
+                : 1;
+            const drawH = Math.round(RENDER_H * CAR_HEIGHT_FRAC);
+            const drawW = Math.round(drawH * aspect);
+            const drawX = Math.round((RENDER_W - drawW) / 2);
+            const drawY = RENDER_H - drawH;
+            page.ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        }
+
         page.scoreEl.textContent = _t('car_game.hud.stars', { n: w.cg_get_score() });
 
         page.rafId = requestAnimationFrame(frame);
@@ -208,6 +239,10 @@
             visHandler: null,
         };
         page.ctx = page.canvas.getContext('2d');
+        // Make sure scaled drawImage stays crisp on the low-res canvas, then
+        // kick off the car sprite decode as early as possible.
+        page.ctx.imageSmoothingEnabled = true;
+        ensureCarImage();
 
         // Keyboard handlers — multiple arrows can be held simultaneously.
         page.keyDown = (e) => {
