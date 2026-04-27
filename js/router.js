@@ -12,8 +12,7 @@
 		'/documentation': { templateId: 'tmpl-documentation', init: null },
 		'/legal': { templateId: 'tmpl-legal', init: null },
 		'/privacy': { templateId: 'tmpl-privacy', init: null },
-		'/cookies': { templateId: 'tmpl-cookies', init: null },
-		'/car-game': { templateId: 'tmpl-car-game', init: 'initCarGamePage' }
+		'/cookies': { templateId: 'tmpl-cookies', init: null }
 	};
 
 	function getPathFromHash() {

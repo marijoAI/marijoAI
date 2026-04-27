@@ -511,10 +511,7 @@ class TrainModelManager {
         this.showSuccess(_t('train.msg.starting'));
         this.showTrainingProgress();
         this.clearHistoryTable();
-        if (window.carGame && typeof window.carGame.notifyTrainingStarted === 'function') {
-            window.carGame.notifyTrainingStarted();
-        }
-        
+
         this.trainingProgress = {
             isTraining: true,
             currentEpoch: 0,
@@ -544,10 +541,7 @@ class TrainModelManager {
             this.trainingProgress.isTraining = false;
             this.showSuccess(_t('train.msg.training_complete'));
             this.showTrainingComplete();
-            if (window.carGame && typeof window.carGame.notifyTrainingComplete === 'function') {
-                window.carGame.notifyTrainingComplete();
-            }
-            
+
         } catch (err) {
             this.showError(_t('train.msg.err_training', { error: err.message }));
             this.trainingProgress.isTraining = false;
@@ -690,10 +684,7 @@ class TrainModelManager {
         this.hideModelInfo();
         this.hideTrainingProgress();
         this.hideTrainingComplete();
-        if (window.carGame && typeof window.carGame.notifyTrainingReset === 'function') {
-            try { window.carGame.notifyTrainingReset(); } catch (e) { /* non-fatal */ }
-        }
-        
+
         const dataFileInput = document.getElementById('data-file');
         if (dataFileInput) dataFileInput.value = '';
         const hasIdEl = document.getElementById('train-has-id-column');

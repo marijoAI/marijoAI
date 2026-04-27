@@ -3,7 +3,7 @@
  *
  * Runs the WASM training loop off the main thread so that browser background
  * throttling (and in the worst case full tab freezing) cannot slow training
- * down when the user switches focus to another tab (e.g. the car game).
+ * down when the user switches focus to another tab.
  *
  * The main thread builds this worker from a Blob URL and prepends a
  * `NN_WASM_B64` declaration holding the base64-encoded nn.wasm bytes. That

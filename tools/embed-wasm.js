@@ -20,12 +20,6 @@ const ROOT = path.join(__dirname, '..');
 
 const WASM_TARGETS = [
     {
-        src: path.join(ROOT, 'wasm', 'car-game.wasm'),
-        out: path.join(ROOT, 'js', 'car-game-wasm-embed.js'),
-        global: '_carGameWasmBase64',
-        label: 'wasm/car-game.wasm',
-    },
-    {
         src: path.join(ROOT, 'wasm', 'nn.wasm'),
         out: path.join(ROOT, 'js', 'nn-wasm-embed.js'),
         global: '_nnWasmBase64',
