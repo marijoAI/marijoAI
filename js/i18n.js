@@ -239,6 +239,8 @@
 
             'predict.col.customer': 'Customer',
             'predict.col.score': 'Churn Score',
+            'predict.col.biggest_driver': 'Biggest churn driver',
+            'predict.col.biggest_driver_th_title': 'The single metric that most shifts this row\u2019s churn score versus typical values in your uploaded list.',
             'predict.col.confidence': 'Confidence',
             'predict.col.risk_level': 'Risk Level',
             'predict.col.risk_tier': 'Risk Tier',
@@ -274,6 +276,8 @@
             'predict.msg.note_browse': 'Use Previous / Next to browse.',
             'predict.msg.note_adjust_filter': 'Adjust or clear the filter to export rows.',
             'predict.msg.note_download_scope': 'Download Results exports only the rows selected by the applied filters, and in the sorting order selected.',
+            'predict.biggest_driver.calculating': 'Calculating…',
+            'predict.biggest_driver.no_standout': 'No standout factor',
 
             /* ===== Tutorial ===== */
             'tutorial.title': 'Step-by-Step Tutorial',
@@ -358,6 +362,7 @@
             'doc.scoring.li2': '<b>Confidence.</b> How far the score is from the 0.5 decision boundary, so you can distinguish strong predictions from uncertain ones.',
             'doc.scoring.li3': '<b>Accuracy evaluation.</b> If the scored CSV still contains the true churn column, the app computes overall accuracy and a full <b>confusion matrix</b> (predicted vs. actual).',
             'doc.scoring.li4': '<b>Top churn drivers.</b> Global feature importance is estimated via <b>permutation importance</b>: for each feature, its values are shuffled across customers and the average change in the churn score is measured. Features whose shuffling changes predictions the most are the strongest drivers.',
+            'doc.scoring.li5': '<b>Biggest churn driver.</b> After scoring, each row gets one metric name — the factor that most strongly moves that row\u2019s churn score compared with typical values in your uploaded list. Sorting and exports include this column once calculation finishes.',
             'doc.scoring.p2': 'Results can be sorted, filtered by score threshold, paginated, and exported to CSV for follow-up in your CRM or customer success tool.',
             'doc.persist.title': 'Model Persistence',
             'doc.persist.p1': 'A trained model is saved as a single, human-readable <b>JSON file</b>. It contains:',
@@ -582,6 +587,8 @@
 
             'predict.col.customer': 'Client',
             'predict.col.score': 'Score de churn',
+            'predict.col.biggest_driver': 'Principal facteur de churn',
+            'predict.col.biggest_driver_th_title': 'La métrique qui déplace le plus le score de churn pour cette ligne par rapport aux valeurs habituelles dans votre liste importée.',
             'predict.col.confidence': 'Confiance',
             'predict.col.risk_level': 'Niveau de risque',
             'predict.col.risk_tier': 'Tranche de risque',
@@ -616,6 +623,8 @@
             'predict.msg.note_browse': 'Utilisez Précédent / Suivant pour naviguer.',
             'predict.msg.note_adjust_filter': 'Ajustez ou effacez le filtre pour exporter des lignes.',
             'predict.msg.note_download_scope': '« Télécharger les résultats » n\u2019exporte que les lignes sélectionnées par les filtres actifs, et dans l\u2019ordre de tri choisi.',
+            'predict.biggest_driver.calculating': 'Calcul en cours…',
+            'predict.biggest_driver.no_standout': 'Aucun facteur dominant',
 
             /* ===== Tutorial ===== */
             'tutorial.title': 'Tutoriel pas à pas',
@@ -700,6 +709,7 @@
             'doc.scoring.li2': '<b>Confiance.</b> À quel point le score est éloigné de la frontière de décision à 0,5, afin de distinguer les prédictions solides des prédictions incertaines.',
             'doc.scoring.li3': '<b>Évaluation de la précision.</b> Si le CSV scoré contient encore la vraie colonne de churn, l\u2019application calcule la précision globale et une <b>matrice de confusion</b> complète (prédit vs. réel).',
             'doc.scoring.li4': '<b>Principaux facteurs de churn.</b> L\u2019importance globale des variables est estimée via la <b>permutation importance</b> : pour chaque variable, ses valeurs sont mélangées entre les clients et la variation moyenne du score de churn est mesurée. Les variables dont le mélange modifie le plus les prédictions sont les facteurs les plus puissants.',
+            'doc.scoring.li5': '<b>Principal facteur de churn.</b> Après le scoring, chaque ligne affiche une métrique — le facteur qui fait le plus bouger le score de churn pour cette ligne par rapport aux valeurs habituelles dans votre liste importée. Une fois le calcul terminé, cette colonne suit le tri et l\u2019export.',
             'doc.scoring.p2': 'Les résultats peuvent être triés, filtrés par seuil de score, paginés et exportés en CSV pour un suivi dans votre CRM ou votre outil Customer Success.',
             'doc.persist.title': 'Persistance du modèle',
             'doc.persist.p1': 'Un modèle entraîné est sauvegardé sous la forme d\u2019un unique <b>fichier JSON</b> lisible par un humain. Il contient :',
@@ -923,6 +933,8 @@
 
             'predict.col.customer': 'Cliente',
             'predict.col.score': 'Puntuación de churn',
+            'predict.col.biggest_driver': 'Mayor factor de churn',
+            'predict.col.biggest_driver_th_title': 'La métrica que más mueve la puntuación de churn de esta fila frente a valores típicos en tu lista subida.',
             'predict.col.confidence': 'Confianza',
             'predict.col.risk_level': 'Nivel de riesgo',
             'predict.col.risk_tier': 'Tramo de riesgo',
@@ -957,6 +969,8 @@
             'predict.msg.note_browse': 'Usa Anterior / Siguiente para navegar.',
             'predict.msg.note_adjust_filter': 'Ajusta o quita el filtro para exportar filas.',
             'predict.msg.note_download_scope': '«Descargar resultados» exporta solo las filas seleccionadas por los filtros aplicados y en el orden elegido.',
+            'predict.biggest_driver.calculating': 'Calculando…',
+            'predict.biggest_driver.no_standout': 'Sin factor destacado',
 
             /* ===== Tutorial ===== */
             'tutorial.title': 'Tutorial paso a paso',
@@ -1041,6 +1055,7 @@
             'doc.scoring.li2': '<b>Confianza.</b> Distancia de la puntuación respecto al umbral de decisión de 0,5, para distinguir predicciones sólidas de predicciones dudosas.',
             'doc.scoring.li3': '<b>Evaluación de precisión.</b> Si el CSV puntuado aún contiene la columna de churn real, la aplicación calcula la precisión global y una <b>matriz de confusión</b> completa (predicho vs. real).',
             'doc.scoring.li4': '<b>Principales factores de churn.</b> La importancia global de las variables se estima mediante <b>permutation importance</b>: para cada variable se barajan sus valores entre los clientes y se mide el cambio medio en la puntuación de churn. Las variables cuya permutación más altera las predicciones son los factores más fuertes.',
+            'doc.scoring.li5': '<b>Mayor factor de churn.</b> Tras puntuar, cada fila muestra una métrica — la que más mueve la puntuación de churn para esa fila frente a valores típicos en tu lista subida. Una vez acaba el cálculo, esa columna respeta el orden y la exportación.',
             'doc.scoring.p2': 'Los resultados se pueden ordenar, filtrar por umbral de puntuación, paginar y exportar a CSV para seguirlos en tu CRM o tu herramienta de Customer Success.',
             'doc.persist.title': 'Persistencia del modelo',
             'doc.persist.p1': 'Un modelo entrenado se guarda como un único <b>archivo JSON</b> legible por humanos. Contiene:',

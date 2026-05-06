@@ -509,18 +509,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="predictions-pagination-nav-section">
-                            <div class="pagination-toolbar-nav">
-                                <button type="button" class="btn btn-secondary btn-small" id="predictions-page-prev" data-i18n="predict.page.prev">Previous</button>
-                                <span id="predictions-page-info" class="predictions-page-info"></span>
-                                <button type="button" class="btn btn-secondary btn-small" id="predictions-page-next" data-i18n="predict.page.next">Next</button>
-                            </div>
-                        </div>
                         <table id="predictions-table">
                             <thead>
                                 <tr>
                                     <th data-i18n="predict.col.customer">Customer</th>
                                     <th data-i18n="predict.col.score">Churn Score</th>
+                                    <th data-i18n-text="predict.col.biggest_driver" data-i18n-title="predict.col.biggest_driver_th_title">Biggest churn driver</th>
                                     <th data-i18n="predict.col.confidence">Confidence</th>
                                     <th data-i18n="predict.col.risk_level">Risk Level</th>
                                     <th data-i18n="predict.col.risk_tier">Risk Tier</th>
@@ -528,6 +522,13 @@
                             </thead>
                             <tbody></tbody>
                         </table>
+                        <div class="predictions-pagination-nav-section" style="margin-top: 1.5em;">
+                            <div class="pagination-toolbar-nav">
+                                <button type="button" class="btn btn-secondary btn-small" id="predictions-page-prev" data-i18n="predict.page.prev">Previous</button>
+                                <span id="predictions-page-info" class="predictions-page-info"></span>
+                                <button type="button" class="btn btn-secondary btn-small" id="predictions-page-next" data-i18n="predict.page.next">Next</button>
+                            </div>
+                        </div>
                         <p class="table-note" id="table-note"></p>
                     </div>
                 </div>
@@ -713,6 +714,7 @@
                         <li data-i18n="doc.scoring.li2"><b>Confidence.</b> How far the score is from the 0.5 decision boundary, so you can distinguish strong predictions from uncertain ones.</li>
                         <li data-i18n="doc.scoring.li3"><b>Accuracy evaluation.</b> If the scored CSV still contains the true churn column, the app computes overall accuracy and a full <b>confusion matrix</b> (predicted vs. actual).</li>
                         <li data-i18n="doc.scoring.li4"><b>Top churn drivers.</b> Global feature importance is estimated via <b>permutation importance</b>: for each feature, its values are shuffled across customers and the average change in the churn score is measured. Features whose shuffling changes predictions the most are the strongest drivers.</li>
+                        <li data-i18n="doc.scoring.li5"><b>Biggest churn driver.</b> After scoring, each row shows one metric name — the factor that most shifts that row\u2019s churn score compared with typical values in your uploaded list. Exports include this column once calculation finishes.</li>
                     </ul>
                     <p data-i18n="doc.scoring.p2">
                         Results can be sorted, filtered by score threshold, paginated, and exported to CSV for follow-up in your CRM or customer success tool.

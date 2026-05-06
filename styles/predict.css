@@ -369,6 +369,12 @@
   color: var(--text-muted);
 }
 
+.prediction-biggest-driver {
+  max-width: 14rem;
+  word-break: break-word;
+  font-weight: 500;
+}
+
 .predictions-table {
   overflow-x: auto;
   margin: 1.25em 0;

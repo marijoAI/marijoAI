@@ -23,7 +23,14 @@ class PredictManager {
         this.predictionsPage = 1;
         this.predictionsPageSize = 20;
         this.predictionsSortMode = 'dataset-asc';
-        
+
+        /** Biggest driver column (occlusion over top global drivers, model input space). */
+        this.explainFeatureMatrix = null;
+        this.explainColMeans = null;
+        this.explainTopColumnIndices = null;
+        this.explainFeatureKeys = null;
+        this.explainNCols = 0;
+
         this.init();
     }
 
@@ -433,6 +440,17 @@ class PredictManager {
                 return arr;
             });
 
+            const rowLen = (features[0] || []).length;
+            this.explainNCols = Math.min(
+                Array.isArray(featureKeys) ? featureKeys.length : 0,
+                typeof expected === 'number' ? expected : rowLen,
+                rowLen
+            );
+            this.explainFeatureKeys = featureKeys.slice(0, this.explainNCols);
+            this.explainFeatureMatrix = features.map((r) => r.slice(0, this.explainNCols));
+            this.explainColMeans = null;
+            this.explainTopColumnIndices = null;
+
 			// Make predictions
 			const predictions = this.trainedModel.predict(features);
             
@@ -482,8 +500,8 @@ class PredictManager {
 				this.hideEvaluationMetrics();
 			}
 
-            // Compute "Top Churn Drivers" via permutation importance.
-            // We await here so the predict-loading spinner stays visible while we compute.
+            this.showLoading(false);
+
             await this.computeAndShowTopChurnDrivers(features, predictions, featureKeys, expected);
 
         } catch (err) {
@@ -509,6 +527,8 @@ class PredictManager {
             const row = {};
             row[_t('predict.col.customer')] = result.datasetRow;
             row[_t('predict.col.score')] = result.prediction.toFixed(4);
+            const bd = result.biggestDriver;
+            row[_t('predict.col.biggest_driver')] = bd !== undefined && bd !== null ? String(bd) : _t('predict.biggest_driver.calculating');
             row[_t('predict.col.confidence')] = result.confidence.toFixed(4);
             row[_t('predict.col.risk_level')] = result.predictedClass;
             row[_t('predict.col.risk_tier')] = result.riskTierLabel || this.getRiskTier(result.prediction).label;
@@ -559,7 +579,13 @@ class PredictManager {
         this.hidePredictionResults();
 		this.hideEvaluationMetrics();
         this.hideChurnDriversCard();
-        
+
+        this.explainFeatureMatrix = null;
+        this.explainColMeans = null;
+        this.explainTopColumnIndices = null;
+        this.explainFeatureKeys = null;
+        this.explainNCols = 0;
+
         const modelFileInput = document.getElementById('predict-model-file');
         const testDataInput = document.getElementById('test-data');
         if (modelFileInput) modelFileInput.value = '';
@@ -697,6 +723,109 @@ class PredictManager {
         });
     }
 
+    computeColumnMeans(matrix, nCols) {
+        const means = new Array(Math.max(0, nCols)).fill(0);
+        const N = matrix ? matrix.length : 0;
+        if (N === 0 || nCols <= 0) return means;
+        for (let i = 0; i < N; i++) {
+            const row = matrix[i];
+            for (let j = 0; j < nCols; j++) means[j] += row[j];
+        }
+        for (let j = 0; j < nCols; j++) means[j] /= N;
+        return means;
+    }
+
+    /**
+     * Occlusion-style impacts for one row: replace each top-driver column with the cohort mean
+     * in model-input space. impact = baseline - masked (positive ⇒ this field pulls churn up).
+     */
+    computeRowWhyImpacts(rowIdx) {
+        const idxList = this.explainTopColumnIndices;
+        const matrix = this.explainFeatureMatrix;
+        const means = this.explainColMeans;
+        if (
+            !this.trainedModel ||
+            !this.predictions ||
+            rowIdx < 0 ||
+            rowIdx >= this.predictions.length ||
+            !idxList ||
+            idxList.length === 0 ||
+            !matrix ||
+            !means
+        ) {
+            return [];
+        }
+        const baseRow = matrix[rowIdx];
+        if (!baseRow) return [];
+
+        const baseline = this.predictions[rowIdx].prediction;
+        const batch = [];
+        for (let k = 0; k < idxList.length; k++) {
+            const j = idxList[k];
+            const copy = baseRow.slice();
+            copy[j] = means[j];
+            batch.push(copy);
+        }
+        const preds = this.trainedModel.predict(batch);
+        const keys = this.explainFeatureKeys || [];
+        const items = [];
+        for (let k = 0; k < idxList.length; k++) {
+            const j = idxList[k];
+            const raw = preds[k];
+            const pv = Array.isArray(raw) ? raw[0] : raw;
+            const masked = (typeof pv === 'number' && !isNaN(pv)) ? pv : 0.5;
+            const impact = baseline - masked;
+            items.push({
+                key: keys[j] != null ? String(keys[j]) : `Column ${j}`,
+                impact
+            });
+        }
+        return items;
+    }
+
+    fillBiggestDriverAllRows(text) {
+        if (!this.predictions || !this.predictions.length) return;
+        for (let i = 0; i < this.predictions.length; i++) {
+            this.predictions[i].biggestDriver = text;
+        }
+    }
+
+    /**
+     * After global churn drivers are known: #1 local driver per row (feature name only).
+     * Uses same occlusion signals as the old “Why?” panel; yields so the UI stays responsive.
+     */
+    async computeAllBiggestDriversForAllRows() {
+        const preds = this.predictions;
+        const none = _t('predict.biggest_driver.no_standout');
+        const eps = 1e-5;
+        if (!preds || !preds.length) return;
+
+        const idxList = this.explainTopColumnIndices;
+        const matrixOk = this.explainFeatureMatrix && this.explainFeatureMatrix.length;
+        const meansOk = this.explainColMeans && this.explainColMeans.length;
+        if (!idxList || idxList.length === 0 || !matrixOk || !meansOk) {
+            this.fillBiggestDriverAllRows(none);
+            return;
+        }
+
+        const N = preds.length;
+        for (let i = 0; i < N; i++) {
+            const items = this.computeRowWhyImpacts(i);
+            let winner = null;
+            let maxAbs = eps;
+            for (let k = 0; k < items.length; k++) {
+                const it = items[k];
+                const a = Math.abs(it.impact);
+                if (a > maxAbs) {
+                    maxAbs = a;
+                    winner = it;
+                }
+            }
+            preds[i].biggestDriver = winner ? winner.key : none;
+            if ((i & 63) === 63) await new Promise((r) => setTimeout(r, 0));
+        }
+    }
+
     getConfidenceColor(confidence) {
         if (confidence > 0.8) return '#27ae60'; // Green
         if (confidence > 0.6) return '#f39c12'; // Orange
@@ -739,19 +868,21 @@ class PredictManager {
     // The larger the change, the more the model depends on that feature.
     async computeAndShowTopChurnDrivers(features, baselinePredictions, featureKeys, expected) {
         const card = document.getElementById('churn-drivers-card');
-        if (!card) return;
         const skeletonEl = document.getElementById('churn-drivers-skeleton');
         const contentEl = document.getElementById('churn-drivers-content');
         const loadingSpan = document.querySelector('#predict-loading span');
 
         const originalLoadingText = loadingSpan ? loadingSpan.textContent : null;
-        if (loadingSpan) loadingSpan.textContent = _t('predict.msg.analyzing_drivers');
-
-        card.style.display = 'block';
-        if (skeletonEl) skeletonEl.style.display = 'flex';
-        if (contentEl) contentEl.style.display = 'none';
 
         try {
+            if (!card) return;
+
+            if (loadingSpan) loadingSpan.textContent = _t('predict.msg.analyzing_drivers');
+
+            card.style.display = 'block';
+            if (skeletonEl) skeletonEl.style.display = 'flex';
+            if (contentEl) contentEl.style.display = 'none';
+
             const N = features.length;
             const firstRow = features[0] || [];
             const rowLen = firstRow.length;
@@ -763,6 +894,8 @@ class PredictManager {
 
             if (N === 0 || nCols === 0 || !this.trainedModel) {
                 card.style.display = 'none';
+                this.explainTopColumnIndices = null;
+                this.explainColMeans = null;
                 return;
             }
 
@@ -807,7 +940,8 @@ class PredictManager {
 
                 importances[c] = {
                     key: featureKeys[c],
-                    importance: sumAbs / N
+                    importance: sumAbs / N,
+                    colIndex: c
                 };
 
                 // Restore this column before moving to the next feature.
@@ -819,15 +953,31 @@ class PredictManager {
 
             importances.sort((a, b) => b.importance - a.importance);
             const topN = importances.slice(0, 10);
+            const explainK = Math.min(8, topN.length);
+            this.explainColMeans = (this.explainFeatureMatrix && this.explainFeatureMatrix.length)
+                ? this.computeColumnMeans(this.explainFeatureMatrix, nCols)
+                : null;
+            this.explainTopColumnIndices = explainK > 0 ? topN.slice(0, explainK).map((x) => x.colIndex) : [];
             this.renderTopChurnDrivers(topN);
         } catch (e) {
             console.error('Error computing churn drivers:', e);
             card.style.display = 'none';
+            this.explainTopColumnIndices = null;
+            this.explainColMeans = null;
         } finally {
             if (skeletonEl) skeletonEl.style.display = 'none';
             if (contentEl) contentEl.style.display = 'block';
             if (loadingSpan && originalLoadingText !== null) {
                 loadingSpan.textContent = originalLoadingText;
+            }
+            try {
+                await this.computeAllBiggestDriversForAllRows();
+            } catch (e2) {
+                console.error('Error computing biggest drivers:', e2);
+                this.fillBiggestDriverAllRows(_t('predict.biggest_driver.no_standout'));
+            }
+            if (this.predictions && this.predictions.length) {
+                this.renderPredictionsTablePage();
             }
         }
     }
@@ -1082,17 +1232,22 @@ class PredictManager {
             tbody.innerHTML = '';
             if (total === 0) {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td colspan="5" class="predictions-table-empty">${this.escapeHtml(_t('predict.msg.empty_filtered'))}</td>`;
+                tr.innerHTML = `<td colspan="6" class="predictions-table-empty">${this.escapeHtml(_t('predict.msg.empty_filtered'))}</td>`;
                 tbody.appendChild(tr);
             } else {
                 slice.forEach((result) => {
                     const rowNum = result.datasetRow;
                     const tierKey = result.riskTierKey || this.getRiskTier(result.prediction).key;
                     const tierLabel = result.riskTierLabel || this.getRiskTier(result.prediction).label;
+                    const driverText = result.biggestDriver === undefined || result.biggestDriver === null
+                        ? _t('predict.biggest_driver.calculating')
+                        : String(result.biggestDriver);
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                     <td>${rowNum}</td>
                     <td>${result.prediction.toFixed(4)}</td>
+                    <td class="prediction-biggest-driver">${this.escapeHtml(driverText)}</td>
                     <td>
                         <span class="confidence-badge" style="background-color: ${this.getConfidenceColor(result.confidence)}">
                             ${(result.confidence * 100).toFixed(1)}%
