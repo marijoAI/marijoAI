@@ -131,6 +131,7 @@ class PredictManager {
                 if (this.predictionsPage > 1) {
                     this.predictionsPage--;
                     this.renderPredictionsTablePage();
+                    this.scrollPredictionsTableIntoView();
                 }
             });
         }
@@ -141,6 +142,7 @@ class PredictManager {
                 if (this.predictionsPage < pages) {
                     this.predictionsPage++;
                     this.renderPredictionsTablePage();
+                    this.scrollPredictionsTableIntoView();
                 }
             });
         }
@@ -1199,6 +1201,25 @@ class PredictManager {
             return arr;
         }
         return arr;
+    }
+
+    /** Align top of predictions table below the site header (same ~100px clearance as results reveal). */
+    scrollPredictionsTableIntoView() {
+        const headerOffset = 100;
+        const run = () => {
+            const el = document.getElementById('predictions-table');
+            if (!el) return;
+            const rect = el.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const targetY = rect.top + scrollTop - headerOffset;
+            const y = Math.max(0, targetY);
+            try {
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            } catch (e) {
+                window.scrollTo(0, y);
+            }
+        };
+        setTimeout(run, 0);
     }
 
     renderPredictionsTablePage() {
