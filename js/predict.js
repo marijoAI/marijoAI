@@ -387,47 +387,70 @@ class PredictManager {
             }
             const idKey = idResolved.key;
 
-            // Determine feature keys
+            // Determine feature keys & build matrix (numeric + one-hot if model was trained with featureColumns)
             let featureKeys = [];
+            let explainLabels = [];
             const preprocessing = this.trainedModel && this.trainedModel.config ? this.trainedModel.config.preprocessing : null;
-            if (preprocessing && Array.isArray(preprocessing.featureKeys)) {
-                // Exact order from training (ID was already excluded at train time)
-                featureKeys = preprocessing.featureKeys.slice();
+            const codec = window.MLFeatureCodec;
+
+            if (preprocessing && Array.isArray(preprocessing.featureColumns) && codec) {
+                explainLabels = codec.pipelineExplainLabels(preprocessing.featureColumns);
+                featureKeys =
+                    preprocessing.featureKeys && preprocessing.featureKeys.length
+                        ? preprocessing.featureKeys.slice()
+                        : cols.filter(k => k !== idKey && k !== targetKey);
             } else {
-                const featureCandidates = cols.filter(k => k !== idKey && k !== targetKey);
-                featureKeys = featureCandidates.filter(k => {
-                    for (let i = 0; i < this.testData.length; i++) {
-                        const v = this.testData[i][k];
-                        if (v !== '' && v !== null && v !== undefined) {
-                            const n = parseFloat(v);
-                            if (!isNaN(n)) return true;
+                if (preprocessing && Array.isArray(preprocessing.featureKeys)) {
+                    featureKeys = preprocessing.featureKeys.slice();
+                } else {
+                    const featureCandidates = cols.filter(k => k !== idKey && k !== targetKey);
+                    featureKeys = featureCandidates.filter(k => {
+                        for (let i = 0; i < this.testData.length; i++) {
+                            const v = this.testData[i][k];
+                            if (v !== '' && v !== null && v !== undefined) {
+                                const n = parseFloat(v);
+                                if (!isNaN(n)) return true;
+                            }
                         }
-                    }
-                    return false;
-                });
+                        return false;
+                    });
+                }
+                explainLabels = featureKeys.map(k => String(k));
             }
 
-            // Build feature matrix
-            let features = this.testData.map(row => featureKeys.map(k => {
-                const n = parseFloat(row[k]);
-                return isNaN(n) ? 0 : n;
-            }));
+            let features;
+            if (preprocessing && Array.isArray(preprocessing.featureColumns) && codec) {
+                features = this.testData.map((row) =>
+                    codec.encodeFeatureRow(
+                        preprocessing.featureColumns,
+                        preprocessing.mins || {},
+                        preprocessing.maxs || {},
+                        preprocessing.means || {},
+                        row
+                    )
+                );
+            } else {
+                features = this.testData.map((row) => featureKeys.map((k) => {
+                    const n = parseFloat(row[k]);
+                    return isNaN(n) ? 0 : n;
+                }));
 
-            // Apply training-time normalization if available
-            if (preprocessing && preprocessing.mins && preprocessing.maxs) {
-                const mins = preprocessing.mins;
-                const maxs = preprocessing.maxs;
-                features = features.map(arr => {
-                    return arr.map((val, idx) => {
-                        const key = featureKeys[idx];
-                        const min = typeof mins[key] === 'number' ? mins[key] : 0;
-                        const max = typeof maxs[key] === 'number' ? maxs[key] : 1;
-                        let scaled = (val - min) / (max - min || 1);
-                        if (scaled < 0) scaled = 0;
-                        if (scaled > 1) scaled = 1;
-                        return scaled;
+                // Apply training-time normalization if available
+                if (preprocessing && preprocessing.mins && preprocessing.maxs) {
+                    const mins = preprocessing.mins;
+                    const maxs = preprocessing.maxs;
+                    features = features.map((arr) => {
+                        return arr.map((val, idx) => {
+                            const key = featureKeys[idx];
+                            const min = typeof mins[key] === 'number' ? mins[key] : 0;
+                            const max = typeof maxs[key] === 'number' ? maxs[key] : 1;
+                            let scaled = (val - min) / (max - min || 1);
+                            if (scaled < 0) scaled = 0;
+                            if (scaled > 1) scaled = 1;
+                            return scaled;
+                        });
                     });
-                });
+                }
             }
 
             // Match model input size by trimming/padding
@@ -444,11 +467,11 @@ class PredictManager {
 
             const rowLen = (features[0] || []).length;
             this.explainNCols = Math.min(
-                Array.isArray(featureKeys) ? featureKeys.length : 0,
+                explainLabels.length,
                 typeof expected === 'number' ? expected : rowLen,
                 rowLen
             );
-            this.explainFeatureKeys = featureKeys.slice(0, this.explainNCols);
+            this.explainFeatureKeys = explainLabels.slice(0, this.explainNCols);
             this.explainFeatureMatrix = features.map((r) => r.slice(0, this.explainNCols));
             this.explainColMeans = null;
             this.explainTopColumnIndices = null;
@@ -504,7 +527,7 @@ class PredictManager {
 
             this.showLoading(false);
 
-            await this.computeAndShowTopChurnDrivers(features, predictions, featureKeys, expected);
+            await this.computeAndShowTopChurnDrivers(features, predictions, explainLabels, expected);
 
         } catch (err) {
             this.showError(_t('predict.msg.err_predict', { error: err.message }));
@@ -868,7 +891,8 @@ class PredictManager {
     // For each feature column, we shuffle that column across all customers,
     // re-score, and measure the mean absolute change in churn score vs. baseline.
     // The larger the change, the more the model depends on that feature.
-    async computeAndShowTopChurnDrivers(features, baselinePredictions, featureKeys, expected) {
+    /** @param {(string|null|undefined)[]} featureLabels one name per input dimension (includes one-hot-expanded names). */
+    async computeAndShowTopChurnDrivers(features, baselinePredictions, featureLabels, expected) {
         const card = document.getElementById('churn-drivers-card');
         const skeletonEl = document.getElementById('churn-drivers-skeleton');
         const contentEl = document.getElementById('churn-drivers-content');
@@ -889,7 +913,7 @@ class PredictManager {
             const firstRow = features[0] || [];
             const rowLen = firstRow.length;
             const nCols = Math.min(
-                Array.isArray(featureKeys) ? featureKeys.length : 0,
+                Array.isArray(featureLabels) ? featureLabels.length : 0,
                 typeof expected === 'number' ? expected : rowLen,
                 rowLen
             );
@@ -941,7 +965,7 @@ class PredictManager {
                 }
 
                 importances[c] = {
-                    key: featureKeys[c],
+                    key: featureLabels[c],
                     importance: sumAbs / N,
                     colIndex: c
                 };
@@ -1099,17 +1123,39 @@ class PredictManager {
             const idResolved = this.getPredictIdKey(cols, targetKey);
             const idKey = idResolved.key;
             const featureCandidates = cols.filter(k => k !== idKey && k !== targetKey);
-            const numericFeatureKeys = featureCandidates.filter(k => {
-                for (let i = 0; i < this.testData.length; i++) {
-                    const v = this.testData[i][k];
-                    if (v !== '' && v !== null && v !== undefined) {
-                        const n = parseFloat(v);
-                        if (!isNaN(n)) return true;
-                    }
+            let featureCountText = '';
+            const prep =
+                this.trainedModel &&
+                this.trainedModel.config &&
+                this.trainedModel.config.preprocessing;
+            const codec = window.MLFeatureCodec;
+            if (prep && Array.isArray(prep.featureColumns) && codec) {
+                const dims = codec.pipelineInputDimension(prep.featureColumns);
+                const nCol =
+                    prep.featureKeys && prep.featureKeys.length
+                        ? prep.featureKeys.length
+                        : featureCandidates.length;
+                featureCountText =
+                    nCol === dims
+                        ? String(dims)
+                        : String(dims) + ' (' + String(nCol) + ' ' + _t('train.features_source_cols') + ')';
+            } else if (codec) {
+                try {
+                    const pipeline = codec.buildFeaturePipeline(featureCandidates, this.testData);
+                    const dims = codec.pipelineInputDimension(pipeline);
+                    const nCol = featureCandidates.length;
+                    featureCountText =
+                        nCol === dims
+                            ? String(nCol)
+                            : String(dims) + ' (' + String(nCol) + ' ' + _t('train.features_source_cols') + ')';
+                } catch (e) {
+                    featureCountText = String(featureCandidates.length);
                 }
-                return false;
-            });
-            features.textContent = numericFeatureKeys.length;
+            }
+            if (!featureCountText) {
+                featureCountText = String(featureCandidates.length);
+            }
+            features.textContent = featureCountText;
             dataInfo.style.display = 'block';
         }
     }

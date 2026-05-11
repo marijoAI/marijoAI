@@ -305,38 +305,20 @@ class TrainModelManager {
             }
             let idKey = idResolved.key;
             const candidateKeys = columns.filter(k => k !== labelKey && k !== idKey);
-			const featureKeys = candidateKeys.filter(k => {
-				for (let i = 0; i < validData.length; i++) {
-					const v = validData[i][k];
-					if (v !== '' && v !== null && v !== undefined) {
-						const n = parseFloat(v);
-						if (!isNaN(n) && isFinite(n)) return true;
-					}
-				}
-				return false;
-			});
+			const codec = window.MLFeatureCodec;
+			if (!codec) {
+				this.showError(_t('train.msg.err_prepare', { error: 'MLFeatureCodec not loaded' }));
+				return null;
+			}
 
-			// Remove duplicates
+			// Remove duplicates (all candidate columns, not only numeric)
 			const seen = new Set();
 			validData = validData.filter(row => {
-				const key = featureKeys.map(k => String(row[k])).join('|') + '|' + String(row[labelKey]);
-				if (seen.has(key)) return false;
-				seen.add(key);
+				const dupKey = candidateKeys.map(k => String(row[k])).join('|') + '|' + String(row[labelKey]);
+				if (seen.has(dupKey)) return false;
+				seen.add(dupKey);
 				return true;
 			});
-
-			// Impute missing numeric values with column mean
-			const means = {};
-			for (let i = 0; i < featureKeys.length; i++) {
-				const k = featureKeys[i];
-				const vals = [];
-				for (let r = 0; r < validData.length; r++) {
-					const n = parseFloat(validData[r][k]);
-					if (!isNaN(n) && isFinite(n)) vals.push(n);
-				}
-				const mean = vals.length ? (vals.reduce((a,b)=>a+b,0) / vals.length) : 0;
-				means[k] = mean;
-			}
 
 			// Optional validation split (holdout)
 			let rows = validData.slice();
@@ -355,12 +337,31 @@ class TrainModelManager {
 				this.validationData = null;
 			}
 
-			// Normalization stats from training rows
+			const featureColumns = codec.buildFeaturePipeline(candidateKeys, trainRows);
+
+			// Impute missing numeric values with column mean (training rows only)
+			const means = {};
+			for (let p = 0; p < featureColumns.length; p++) {
+				const col = featureColumns[p];
+				if (col.kind !== 'numeric') continue;
+				const k = col.key;
+				const vals = [];
+				for (let r = 0; r < trainRows.length; r++) {
+					const n = parseFloat(trainRows[r][k]);
+					if (!isNaN(n) && isFinite(n)) vals.push(n);
+				}
+				means[k] = vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
+			}
+
+			// Min–max normalization from training rows (numeric columns only)
 			const mins = {};
 			const maxs = {};
-			for (let i = 0; i < featureKeys.length; i++) {
-				const k = featureKeys[i];
-				let min = Infinity, max = -Infinity;
+			for (let p = 0; p < featureColumns.length; p++) {
+				const col = featureColumns[p];
+				if (col.kind !== 'numeric') continue;
+				const k = col.key;
+				let min = Infinity;
+				let max = -Infinity;
 				for (let r = 0; r < trainRows.length; r++) {
 					const v = parseFloat(trainRows[r][k]);
 					const val = isNaN(v) ? means[k] : v;
@@ -369,25 +370,15 @@ class TrainModelManager {
 				}
 				if (!isFinite(min)) min = 0;
 				if (!isFinite(max)) max = 1;
-				if (max === min) { max = min + 1; }
+				if (max === min) max = min + 1;
 				mins[k] = min;
 				maxs[k] = max;
 			}
 
-			// Build features (normalized)
-			const features = trainRows.map(row => {
-				const arr = [];
-				for (let i = 0; i < featureKeys.length; i++) {
-					const key = featureKeys[i];
-					const v = parseFloat(row[key]);
-					const raw = isNaN(v) ? means[key] : v;
-					let scaled = (raw - mins[key]) / (maxs[key] - mins[key]);
-					if (scaled < 0) scaled = 0;
-					if (scaled > 1) scaled = 1;
-					arr.push(scaled);
-				}
-				return arr;
-			});
+			// Build feature matrix: scaled numerics + one-hot for categorical text columns
+			const features = trainRows.map((row) =>
+				codec.encodeFeatureRow(featureColumns, mins, maxs, means, row)
+			);
 
             // Build labels vector, map common string labels to 0/1 for binary
 			// Track mappings for user visibility
@@ -429,17 +420,19 @@ class TrainModelManager {
 
             console.log('Label column:', labelKey);
             console.log('ID column:', idKey);
-            console.log('Feature keys:', featureKeys);
+            console.log('Feature columns (pipeline):', featureColumns);
 			// Convert labelMappings Map to object for JSON serialization
 			const labelMappingsObj = {};
 			labelMappings.forEach((value, key) => {
 				labelMappingsObj[key] = value;
 			});
 			// Save preprocessing metadata for Predict (including label mappings)
-			this.preprocessing = { 
-				featureKeys: featureKeys.slice(), 
-				mins, 
+			this.preprocessing = {
+				featureKeys: candidateKeys.slice(),
+				featureColumns: featureColumns.slice(),
+				mins,
 				maxs,
+				means,
 				labelMappings: labelMappingsObj,
 				labelKey: labelKey
 			};
@@ -740,17 +733,27 @@ class TrainModelManager {
             const idResolved = this.getTrainIdKey(cols, labelKey);
             let idKey = idResolved.key;
             const featureCandidates = cols.filter(k => k !== labelKey && k !== idKey);
-            const numericFeatureKeys = featureCandidates.filter(k => {
-                for (let i = 0; i < this.data.length; i++) {
-                    const v = this.data[i][k];
-                    if (v !== '' && v !== null && v !== undefined) {
-                        const n = parseFloat(v);
-                        if (!isNaN(n)) return true;
-                    }
+            let featureCountText = '';
+            if (window.MLFeatureCodec) {
+                try {
+                    const pipeline = window.MLFeatureCodec.buildFeaturePipeline(
+                        featureCandidates,
+                        this.data
+                    );
+                    const dims = window.MLFeatureCodec.pipelineInputDimension(pipeline);
+                    const nCol = featureCandidates.length;
+                    featureCountText =
+                        nCol === dims
+                            ? String(nCol)
+                            : String(dims) + ' (' + String(nCol) + ' ' + _t('train.features_source_cols') + ')';
+                } catch (e) {
+                    featureCountText = String(featureCandidates.length);
                 }
-                return false;
-            });
-            dataFeatures.textContent = numericFeatureKeys.length;
+            }
+            if (!featureCountText) {
+                featureCountText = String(featureCandidates.length);
+            }
+            dataFeatures.textContent = featureCountText;
             
             // Display label mappings if available
             if (labelMappingsContainer && this.labelMappings && Object.keys(this.labelMappings).length > 0) {
