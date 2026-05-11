@@ -81,7 +81,7 @@
                             <div class="feature-card">
                                 <div class="feature-icon">🔮</div>
                                 <h3 data-i18n="home.features.score.title">Score Your Customers</h3>
-                                <p data-i18n="home.features.score.body">Load your trained model and a customer list to get instant churn risk scores, confidence levels, and see exactly who needs attention now.</p>
+                                <p data-i18n="home.features.score.body">Load your trained model and a customer list for instant churn risk scores and clear risk tiers — so you can see who needs attention now.</p>
                                 <a href="#/predict" class="feature-link" data-i18n="home.features.score.cta">Score Customers →</a>
                             </div>
                         </div>
@@ -432,19 +432,6 @@
                             </div>
                         </div>
                     </div>
-                    <div id="churn-drivers-card" class="churn-drivers-card" style="display: none;">
-                        <h3 class="churn-drivers-title" data-i18n="predict.drivers.title">Top Churn Drivers</h3>
-                        <p class="churn-drivers-intro" data-i18n="predict.drivers.intro">Across the whole customer list, these are the parameters that influence the churn score the most.</p>
-                        <div id="churn-drivers-skeleton" class="churn-drivers-skeleton" style="display: none;">
-                            <div class="churn-drivers-spinner"></div>
-                            <span data-i18n="predict.drivers.analyzing">Analyzing what drives churn in your dataset…</span>
-                        </div>
-                        <div id="churn-drivers-content" class="churn-drivers-content" style="display: none;">
-                            <p id="churn-drivers-summary" class="churn-drivers-summary"></p>
-                            <div id="churn-drivers-bars" class="churn-drivers-bars"></div>
-                            <p class="churn-drivers-footnote" data-i18n="predict.drivers.footnote">The value on the right is how much the churn score moves, on average, when that parameter is scrambled across customers. Bigger = more important.</p>
-                        </div>
-                    </div>
                     <div id="evaluation-metrics" class="evaluation-metrics" style="display: none;">
                         <h3 data-i18n="predict.metrics.title">Model Accuracy (vs. known outcomes)</h3>
                         <div class="summary-stats">
@@ -514,8 +501,6 @@
                                 <tr>
                                     <th data-i18n="predict.col.customer">Customer</th>
                                     <th data-i18n="predict.col.score">Churn Score</th>
-                                    <th data-i18n-text="predict.col.biggest_driver" data-i18n-title="predict.col.biggest_driver_th_title">Biggest churn driver</th>
-                                    <th data-i18n="predict.col.confidence">Confidence</th>
                                     <th data-i18n="predict.col.risk_level">Risk Level</th>
                                     <th data-i18n="predict.col.risk_tier">Risk Tier</th>
                                 </tr>
@@ -605,7 +590,7 @@
                     <p style="margin-bottom: 1em;" data-i18n="doc.workflow.intro">marijoAI is structured around three simple pages:</p>
                     <ol style="margin-left: 1.5em; line-height: 1.9;">
                         <li data-i18n="doc.workflow.li1"><b><a href="#/train">Train</a></b> — upload a CSV, pick the churn column, and train a neural network. The model learns from historical customers you already know churned or stayed.</li>
-                        <li data-i18n="doc.workflow.li2"><b><a href="#/predict">Score</a></b> — load a trained model and a new customer list to get a churn score, a risk tier, and the top drivers of churn across the dataset.</li>
+                        <li data-i18n="doc.workflow.li2"><b><a href="#/predict">Score</a></b> — load a trained model and a new customer list to get a churn score and a risk tier for each customer.</li>
                         <li data-i18n="doc.workflow.li3"><b><a href="#/tutorial">Tutorial</a></b> — a step-by-step walk-through using an included public SaaS churn dataset so you can get a working model in under five minutes.</li>
                     </ol>
                 </div>
@@ -711,10 +696,7 @@
                     </p>
                     <ul style="margin-left: 1.5em; line-height: 1.9; margin-bottom: 1em;">
                         <li data-i18n="doc.scoring.li1"><b>Risk tiers.</b> Scores are bucketed into <b>Safe</b> (0.00–0.20), <b>Watch</b> (0.20–0.50), <b>At risk</b> (0.50–0.80), and <b>Critical</b> (0.80–1.00).</li>
-                        <li data-i18n="doc.scoring.li2"><b>Confidence.</b> How far the score is from the 0.5 decision boundary, so you can distinguish strong predictions from uncertain ones.</li>
-                        <li data-i18n="doc.scoring.li3"><b>Accuracy evaluation.</b> If the scored CSV still contains the true churn column, the app computes overall accuracy and a full <b>confusion matrix</b> (predicted vs. actual).</li>
-                        <li data-i18n="doc.scoring.li4"><b>Top churn drivers.</b> Global feature importance is estimated via <b>permutation importance</b>: for each feature, its values are shuffled across customers and the average change in the churn score is measured. Features whose shuffling changes predictions the most are the strongest drivers.</li>
-                        <li data-i18n="doc.scoring.li5"><b>Biggest churn driver.</b> After scoring, each row shows one metric name — the factor that most shifts that row\u2019s churn score compared with typical values in your uploaded list. Exports include this column once calculation finishes.</li>
+                        <li data-i18n="doc.scoring.li2"><b>Accuracy evaluation.</b> If the scored CSV still contains the true churn column, the app computes overall accuracy and a full <b>confusion matrix</b> (predicted vs. actual).</li>
                     </ul>
                     <p data-i18n="doc.scoring.p2">
                         Results can be sorted, filtered by score threshold, paginated, and exported to CSV for follow-up in your CRM or customer success tool.

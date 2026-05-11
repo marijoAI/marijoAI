@@ -145,22 +145,6 @@ window.sharedUtils = sharedUtils;
         return n;
     };
 
-    /** One label per input dimension (for importance / “biggest driver” UI). */
-    ML.pipelineExplainLabels = function (pipeline) {
-        const labels = [];
-        for (let i = 0; i < pipeline.length; i++) {
-            const col = pipeline[i];
-            if (col.kind === 'numeric') {
-                labels.push(col.key);
-            } else {
-                for (let j = 0; j < col.categories.length; j++) {
-                    labels.push(col.key + '=' + col.categories[j]);
-                }
-            }
-        }
-        return labels;
-    };
-
     /**
      * @param {object} mins maxs means keyed by column name (numeric only)
      */
