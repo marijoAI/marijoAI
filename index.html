@@ -613,37 +613,6 @@
                 </div>
 
                 <div class="card">
-                    <h2 data-i18n="doc.stack.title">Technology Stack</h2>
-                    <p style="margin-bottom: 1em;" data-i18n="doc.stack.intro">The entire application is built with a deliberately minimal, dependency-light stack:</p>
-                    <div class="grid grid-2">
-                        <div class="data-info">
-                            <h3 data-i18n="doc.stack.frontend.title">Front-end</h3>
-                            <p data-i18n="doc.stack.frontend.body"><b>Vanilla HTML, CSS, and JavaScript (ES6+).</b> No React, Vue, Svelte, or build step for the UI. The app is a single <code>index.html</code> with page templates rendered by a small hash-based SPA router.</p>
-                        </div>
-                        <div class="data-info">
-                            <h3 data-i18n="doc.stack.styling.title">Styling</h3>
-                            <p data-i18n="doc.stack.styling.body"><b>Hand-written CSS with custom properties</b> for the design system (primary indigo, accent pink, glassmorphic cards). Typography uses <b>Inter</b> from Google Fonts.</p>
-                        </div>
-                        <div class="data-info">
-                            <h3 data-i18n="doc.stack.csv.title">CSV parsing</h3>
-                            <p data-i18n="doc.stack.csv.body"><b><a href="https://www.papaparse.com/" target="_blank" rel="noopener">PapaParse 5.4</a></b> handles CSV reading, tolerant of messy real-world exports. Delimiter and header presence are auto-detected from the first few lines.</p>
-                        </div>
-                        <div class="data-info">
-                            <h3 data-i18n="doc.stack.nn.title">Neural network core</h3>
-                            <p data-i18n="doc.stack.nn.body"><b><a href="https://www.assemblyscript.org/" target="_blank" rel="noopener">AssemblyScript</a></b> compiled to <b>WebAssembly</b> (<code>wasm/nn.wasm</code>) for fast training, with a pure-JavaScript fallback when WebAssembly is unavailable.</p>
-                        </div>
-                        <div class="data-info">
-                            <h3 data-i18n="doc.stack.routing.title">Routing</h3>
-                            <p data-i18n="doc.stack.routing.body">A ~80-line <b>hash-based SPA router</b> (<code>js/router.js</code>) that swaps <code>&lt;template&gt;</code> contents into the DOM and invokes page initialization hooks.</p>
-                        </div>
-                        <div class="data-info">
-                            <h3 data-i18n="doc.stack.hosting.title">Hosting</h3>
-                            <p data-i18n="doc.stack.hosting.body">Fully static. The app can be served from any static host, or opened directly from disk as a local <code>index.html</code> file — no server required.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
                     <h2 data-i18n="doc.nn.title">The Neural Network</h2>
                     <p style="margin-bottom: 1em;" data-i18n="doc.nn.p1">
                         marijoAI uses a small, fixed <b>feed-forward neural network</b> for binary classification. The architecture is intentionally simple so it trains quickly on a laptop and generalizes well on typical tabular customer data:
